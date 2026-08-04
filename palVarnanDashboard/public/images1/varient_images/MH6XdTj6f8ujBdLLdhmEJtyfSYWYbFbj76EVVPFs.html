@@ -1,0 +1,900 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="OKw7ThN8zqKJMwasu9or7bOOGqYl1ekNfWAmaIC4" />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <title>SRS Estimate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+    <title>Estimate</title>
+    <script src="https://use.fontawesome.com/bcf6e17f6b.js"></script>
+
+    <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .hed {
+            color: #2a1770;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .sub {
+            page-break-before: always;
+        }
+
+        .para_tags {
+            color: #000;
+            font-weight: 600;
+            font-size: 12px;
+            display: flex;
+            /* justify-content: center; */
+        }
+
+        .table table {
+            border-collapse: collapse;
+            border: 1px solid #000;
+            border-color: #000 !important;
+        }
+
+        .table table tr th,
+        .table table tr td {
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #000000 !important;
+        }
+
+        /* .footer {
+                    position:absolute;
+    bottom:0px;
+    text-align:center;
+    width:100%;
+    padding-bottom:10px;
+  } */
+        body {
+            margin: 0px;
+            padding: 0px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+        }
+
+        /* @page {
+            size: A4;
+            margin: 0;
+        } */
+
+        @media screen {
+            .footer {
+                position: fixed;
+                bottom: 0px;
+                text-align: center;
+                width: 100%;
+                padding-bottom: 10px;
+            }
+        }
+
+        @media print {
+            .footer {
+
+                position: fixed;
+                bottom: 0px;
+                text-align: center;
+                width: 100%;
+                padding-bottom: 10px;
+            }
+        }
+
+        .text-danger {
+            color: red;
+        }
+
+        .socialmedialink {
+            justify-content: center;
+            list-style-type: none;
+            display: flex;
+        }
+
+        .socialmedialink li {
+            margin: 0px 15px;
+            border-radius: 50px;
+        }
+
+        .invoice {
+            page-break-before: always;
+            /* Ensure invoice starts on a new page */
+        }
+
+        .head1 {
+            width: 70px;
+        }
+
+        .head2 {
+            width: 13px;
+        }
+
+        .head3 {
+            color: #e1271d;
+            width: 100%;
+            text-wrap: balance;
+        }
+
+        .head4 {
+            width: 125px;
+        }
+    </style>
+</head>
+
+<body>
+    <button style="text-align: end;" class="new_ordr active btn btn-primary" id="exportButt"
+        onclick="exportToPDF()">Export to PDF</button>
+    <input type="hidden" class="ck_vals" value="{{ $estimates->est_id }}">
+    <div class="tophead" style="position:relative" id="content">
+
+        <div class="container-fluid" style="background: var(--bs-light);">
+            <table class="table table-bordered mb-0">
+                <thead>
+                    <tr>
+                        <!--<td colspan="5">    <h1 class="hed"></h1></td>-->
+
+                        <td colspan="3" class="text-end"
+                            style="padding: 50px; display:flex; justify-content: start; align-items: flex-start;">
+                            @php
+                                $fj = App\Models\Lead::where('id', $estimates->leadid)->first();
+                            @endphp
+                            @if ($estimates->select_company == null || $estimates->select_company == 0)
+                                <h1 class="hed" style="text-align: start;margin-top:25px"></h1>
+                            @else
+                                <h1 class="hed" style="text-align: start;margin-top:25px"></h1>
+                            @endif
+
+                            <!--<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/SKTM_LOGO_2.png'))) }}"-->
+                            <!--    style="width:370px;">-->
+
+                        </td>
+                        <td colspan="5" style="text-align: center;padding: 15px 10px 15px 10px;">
+                            @if ($estimates->select_company == null || $estimates->select_company == 0)
+                                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/SRS_LOGO.jpeg'))) }}"
+                                    style="width:200px;">
+                            @else
+                                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/srseng.jpg'))) }}"
+                                    style="width:200px;">
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        @if ($estimates->select_company == null || $estimates->select_company == 0)
+                            <td colspan="5">
+                                <p class="para_tags"><span class="head1">Address</span><span
+                                        class="head2">:</span><span class="head3"> 21, POONGA NAGAR, MACHAMPALAYAM,
+                                        SUNDARAPURAM(PO),
+                                        COIMBATORE-641024. </span></p>
+                                <p class="para_tags"><span class="head1">Contact</span>
+                                    <span class="head2">:</span><span class="head3">9943324006, 9943324007, 9751456734</span>
+                                </p>
+
+                                <p class="para_tags"><span class="head1">Email</span><span class="head2">:</span>
+                                    <span class="head3">srssolarsystemscbe@gmail.com</span>
+                                </p>
+                                <p class="para_tags"><span class="head1">Website</span><span class="head2">:</span>
+                                    <span class="head3">SRS SOLAR SYSTEMS</span>
+                                </p>
+                                {{-- @if ($gst = App\Models\Companydetail::first()) --}}
+                                    <p class="para_tags"><span class="head1">GST</span><span
+                                            class="head2">:</span><span class="head3"> 33AMTPD6728K1ZN</span>
+                                    </p>
+                                {{-- @endif --}}
+                            </td>
+                        @else
+                            <td colspan="5">
+                                <p class="para_tags"><span class="head1">Address</span><span
+                                        class="head2">:</span><span class="head3"> 21, POONGA NAGAR, MACHAMPALAYAM,
+                                        SUNDARAPURAM(PO),
+                                        COIMBATORE-641024. </span></p>
+                                <p class="para_tags"><span class="head1">Contact</span>
+                                    <span class="head2">:</span><span class="head3">9943324006, 9943324007, 9751456734</span>
+                                </p>
+
+                                <p class="para_tags"><span class="head1">Email</span><span class="head2">:</span>
+                                    <span class="head3">srssenthil@gmail.com</span>
+                                </p>
+                                <p class="para_tags"><span class="head1">Website</span><span class="head2">:</span>
+                                    <span class="head3">SRS ENGINEERINGS</span>
+                                </p>
+                                {{-- @if ($gst = App\Models\Companydetail::first()) --}}
+                                    <p class="para_tags"><span class="head1">GST</span><span
+                                            class="head2">:</span><span class="head3"> 33AYRPS8222K1ZT</span>
+                                    </p>
+                                {{-- @endif --}}
+                            </td>
+                        @endif
+                        <td colspan="4">
+                            {{-- <p class="text-danger para_tags">Billing To</p> --}}
+                            {{-- <p class=""style="margin-top:2px"><b>Client Name : {{ $estimates->customername }}</b></p> --}}
+                            <p class="para_tags"><span class="head4">Client Name</span><span
+                                    class="head2">:</span><span class="head3">@php echo nl2br($estimates->customername) @endphp</span></p>
+                            <p class="para_tags"><span class="head4">Billing To</span><span
+                                    class="head2">:</span><span class="head3">@php echo nl2br($estimates->billto_address) @endphp</span></p>
+                            {{-- <p class="para_tags" style="margin-top:5px;margin-bottom:1px">
+                                <b>{{ $estimates->companyname }}</b>
+                            </p> --}}
+                            {{-- <p class="para_tags" style="line-height:1"><span>Billing To : </span>@php echo nl2br($estimates->billto_address) @endphp</p> --}}
+                            <!--<p class=""style="margin-top:2px;font-size:14px;"><b>GST : {{ $estimates->gstno }}</b>-->
+                            <!--</p>-->
+                            <p class="para_tags"><span class="head4">GST</span><span class="head2">:</span><span
+                                    class="head3">{{ $estimates->gstno }}</span></p>
+                            {{-- style="margin-bottom: 34px;" --}}
+                            <p class="para_tags"><span class="head4"> </span><span class="head2"
+                                    style="color:white">-</span><span class="head3"> </span></p>
+                        </td>
+                    </tr>
+                    {{-- <tr>
+                        <td colspan="7">
+                            <p class="para_tags">Contact: <span class="text-danger">
+                                    7540072782,7540072781,9003440677</span></p>
+                            <p class="para_tags">Email: <span class="text-danger"> argtechmechinery21@gmail.com</span>
+                            </p>
+                            @if ($gst = App\Models\Companydetail::first())
+                                <p class="para_tags">GST: <span class="text-danger"> {{ $gst->gstno }}</span>
+                                </p>
+                            @endif
+                        </td>
+                    </tr> --}}
+                    <tr>
+                        @if ($gst = App\Models\Companydetail::first())
+                            <td colspan="5">Estimate No : {{ $estimates->est_id }}</td>
+                        @endif
+                        <td colspan="6" class="">DATE : @php echo date("d-m-Y",strtotime($estimates->created_at)) @endphp</td>
+                    </tr>
+                </thead>
+            </table>
+            {{-- <div class="row align-items-center mt-1">
+
+                    <div class="col-lg-8">
+                        <h1 class="hed">ARG TECH MACHINERY</h1>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <p class="para_tags">Address: <span class="text-danger"> 220/2, Vadakkuthottam Rd,
+                                        Malumichampatti,
+                                        Tamil Nadu 641050</span></p>
+                            </div>
+                            <div class="col-lg-6">
+                                <p class="para_tags">Contact: <span class="text-danger">
+                                        7540072782,7540072781,9003440677</span></p>
+                                <p class="para_tags">Email: <span class="text-danger"> argtechmechinery21@gmail.com</span>
+                                </p>
+                                @if ($gst = App\Models\Companydetail::first())
+                                    <p class="para_tags">GST: <span class="text-danger"> {{ $gst->gstno }}</span>
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/estimate.png'))) }}"
+                            style="width:170px;padding-left:25px">
+                    </div>
+                </div> --}}
+            <!--<table style="width:100%;background-color:#ccc;padding:10px">-->
+            <!--    <tr>-->
+            <!--        @if ($gst = App\Models\Companydetail::first())
+-->
+            <!--            <td style="padding:10px 10px">GST : {{ $gst->gstno }}</td>-->
+            <!--            {{-- <td style="width:75%;padding-left:30px"></td> --}}-->
+            <!--
+@endif-->
+
+            <!--        {{-- <td>TOTAL : Rs. @php echo number_format($estimates->estimate_amount,2) @endphp</td> --}}-->
+            <!--        <td class="text-end">DATE : @php echo date("d-m-Y",strtotime($estimates->created_at)) @endphp</td>-->
+            <!--    </tr>-->
+            <!--</table>-->
+
+            <table class="table table-bordered " style="width:100%;padding:30px 30px 0px 30px;">
+                <thead style="background-color:#2a186e">
+                    {{-- <tr>
+                            <td colspan="5"></td>
+                            <td>PAYMENT TERM</td>
+                            <td>DISPATCH TERM</td>
+                        </tr> --}}
+                    <tr>
+                        <td style="padding:5px;font-size:13px;color:#fff;">S.No</td>
+                        <td style="padding:5px;font-size:13px;color:#fff;">Item Descriptions</td>
+                        <td style="padding:5px;font-size:13px;color:#fff;">HSN Code</td>
+                        <td style="padding:5px;font-size:13px;color:#fff;">Qty</td>
+                        <td style="padding:5px;font-size:13px;color:#fff;">Rate</td>
+                        <td style="padding:5px;font-size:13px;color:#fff;">GST(%)</td>
+                        <td style="padding:5px;font-size:13px;color:#fff;">GST Amt</td>
+                        <td style="padding:5px;font-size:13px;color:#fff;">Amount</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $i=1; @endphp
+
+                    @if ($estimateproducts)
+                        @foreach ($estimateproducts as $products)
+                            <tr>
+                                <td style="padding:10px;background-color:#f7f7f7; width:1vh;">@php echo $i++ @endphp</td>
+                                <td style="padding:10px; width:30vh; word-wrap: break-word;">
+                                    @if ($productname = App\Models\Product::where('id', $products->productname)->first())
+                                        {{ $productname->productname }}
+                                    @endif
+                                    <br>
+                                    <span
+                                        style="font-size:15px; margin-top:15px; width: 1vh; height: auto;">{!! $products->productdesc !!}</span>
+                                </td>
+                                <td style="padding:10px;background-color:#f7f7f7; width:10vh;">
+                                    {{ $products->hsncode }}
+                                </td>
+                                <td style="padding:10px;text-align:right; width:1vh;">{{ $products->qty }}</td>
+                                <td style="padding:10px;background-color:#f7f7f7;text-align:right; width: 1vh;">
+                                    {{ $products->rate }}</td>
+                                <td style="padding:10px;text-align:right; width:1vh;">{{ $products->gst }}</td>
+                                 <td style="padding:10px;text-align:right; width:1vh;">{{ $products->gstamt }}</td>
+                                <td style="padding:10px;background-color:#f7f7f7;text-align:right; width:1vh;">
+                                    {{ $products->amount }}</td>
+                            </tr>
+                        @endforeach
+                    @endif
+@php
+    use App\Models\estimateproduct;
+
+    $products = estimateproduct::where('est_id', $estimates->est_id)->get();
+    $subtotal = $products->sum(function ($product) {
+        return $product->qty * $product->rate;
+    });
+@endphp
+                    <tr>
+                        <td colspan="6"></td>
+                        <td style="padding:5px; border: 1px;">
+                            <p style="text-align:left;font-size:15px;">SUB TOTAL</p>
+                        </td>
+                        <td style="background-color:#f7f7f7;padding:5px;text-align:right">{{ number_format($subtotal, 2) }}</td>
+                        {{-- @if ($subtotal = App\Models\estimateproduct::where('est_id', $estimates->est_id)->first())
+                            <td style="background-color:#f7f7f7;padding:5px;text-align:right">@php echo number_format($subtotal->subtotal,2) @endphp </td>
+                        @endif --}}
+
+                    </tr>
+                    <tr>
+                        <td rowspan="3" colspan="6" style="padding:0px 0px 0px 0px;vertical-align: bottom;">
+                            <p style="padding-left: 5px; font-weight:600;">Total In Words
+                                <!--<p><br>-->
+                            <p style="padding-left: 5px;">
+                                @php
+                                    $number = $estimates->estimate_amount;
+                                    $no = floor($number);
+                                    $point = round($number - $no, 2) * 100;
+                                    $hundred = null;
+                                    $digits_1 = strlen($no);
+                                    $i = 0;
+                                    $str = [];
+                                    $words = [
+                                        '0' => '',
+                                        '1' => 'one',
+                                        '2' => 'two',
+                                        '3' => 'three',
+                                        '4' => 'four',
+                                        '5' => 'five',
+                                        '6' => 'six',
+                                        '7' => 'seven',
+                                        '8' => 'eight',
+                                        '9' => 'nine',
+                                        '10' => 'ten',
+                                        '11' => 'eleven',
+                                        '12' => 'twelve',
+                                        '13' => 'thirteen',
+                                        '14' => 'fourteen',
+                                        '15' => 'fifteen',
+                                        '16' => 'sixteen',
+                                        '17' => 'seventeen',
+                                        '18' => 'eighteen',
+                                        '19' => 'nineteen',
+                                        '20' => 'twenty',
+                                        '30' => 'thirty',
+                                        '40' => 'forty',
+                                        '50' => 'fifty',
+                                        '60' => 'sixty',
+                                        '70' => 'seventy',
+                                        '80' => 'eighty',
+                                        '90' => 'ninety',
+                                    ];
+                                    $digits = ['', 'hundred', 'thousand', 'lakh', 'crore'];
+                                    while ($i < $digits_1) {
+                                        $divider = $i == 2 ? 10 : 100;
+                                        $number = floor($no % $divider);
+                                        $no = floor($no / $divider);
+                                        $i += $divider == 10 ? 1 : 2;
+                                        if ($number) {
+                                            $plural = ($counter = count($str)) && $number > 9 ? 's' : null;
+                                            $hundred = $counter == 1 && $str[0] ? ' and ' : null;
+                                            $str[] =
+                                                $number < 21
+                                                    ? $words[$number] .
+                                                        ' ' .
+                                                        $digits[$counter] .
+                                                        $plural .
+                                                        ' ' .
+                                                        $hundred
+                                                    : $words[floor($number / 10) * 10] .
+                                                        ' ' .
+                                                        $words[$number % 10] .
+                                                        ' ' .
+                                                        $digits[$counter] .
+                                                        $plural .
+                                                        ' ' .
+                                                        $hundred;
+                                        } else {
+                                            $str[] = null;
+                                        }
+                                    }
+                                    $str = array_reverse($str);
+                                    $result = implode('', $str);
+                                    $points = $point
+                                        ? '.' . $words[$point / 10] . ' ' . $words[($point = $point % 10)]
+                                        : '';
+                                    echo "<p style='text-transform:capitalize;padding-left:5px;'>" .
+                                        $result .
+                                        'Rupees  </p>';
+                                @endphp
+
+                            </p>
+                        </td>
+                        <td rowspan="2" style="padding:10px;">
+                            @if ($estimates->discounttype != 0)
+                                <p style="text-align:left;font-size:15px">DISCOUNT </p>
+
+                            @endif
+                            <p style="text-align:left;font-size:15px">GST</p>
+
+                            <p style="text-align:left;font-size:15px">TOTAL</p>
+
+
+                        </td>
+                        <td rowspan="2" style="padding:10px;">
+                            @if ($estimates->discounttype == 1)
+                                <p style="text-align:right;">(-)@php echo number_format($estimates->discountamt,2) @endphp</p>
+                                <!--<br>-->
+                            @endif
+                            @if ($estimates->discounttype == 2)
+                                <p style="text-align:right;">(-) @php echo number_format($estimates->discountamt,2) @endphp</p>
+                                <!--<br>-->
+                            @endif
+                            {{-- @if ($cgsttotal = App\Models\estimateproduct::where('est_id', $estimates->est_id)->first())
+                                <p style="text-align:right">@php echo number_format($cgsttotal->cgsttotal,2) @endphp </p>
+                            @endif --}}
+
+                            <!--<br>-->
+                            @php
+    $gstTotal = \App\Models\estimateproduct::where('est_id', $estimates->est_id)->sum('gstamt');
+@endphp
+                             <p style="text-align:right">{{ number_format($gstTotal, 2) }}</p>
+                            {{-- @if ($sgsttotal = App\Models\estimateproduct::where('est_id', $estimates->est_id)->first())
+                                <p style="text-align:right">@php echo number_format($sgsttotal->sgsttotal,2) @endphp</p>
+                            @endif --}}
+                            <!--<br>-->
+                            <p style="text-align:right;">₹@php echo number_format($estimates->wodiscountamt,2) @endphp</p>
+                            <!--<br>-->
+                            <!--<p style="text-align:left;">Rs. @php echo number_format($estimates->estimate_amount,2) @endphp</p>-->
+                        </td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+            @if ($estimates->select_company == null || $estimates->select_company == 0)
+            <div class="sub" style="margin-top:50px;margin-bottom:20px;">
+                <h2 class="bank-head"
+                    style="font-size: 26px;
+            font-weight: bold;
+            color: #2a1770;">BANK DETAILS
+                </h2>
+                {{-- @if ($bankdetails = App\Models\Companydetail::first()) --}}
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">BANK NAME : </span> UNION BANK
+                    </h4>
+
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">ACCOUNT NAME : </span>
+                        SRS SOLAR SYSTEMS</h4>
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">ACCOUNT NO : </span>
+                        252511100001653</h4>
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">IFSC CODE : </span> UBIN0825255
+                    </h4>
+                    {{-- <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">SWIFT CODE : </span>
+                        </h4>
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">MICR CODE : </span>
+                    </h4> --}}
+                     <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">ACCOUNT TYPE : </span>CURRENT ACCOUNT
+                    </h4>
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">BRANCH : </span> SUNDARAPURAM
+                    </h4>
+                {{-- @endif --}}
+            </div>
+            @else
+<div class="sub" style="margin-top:50px;margin-bottom:20px;">
+                <h2 class="bank-head"
+                    style="font-size: 26px;
+            font-weight: bold;
+            color: #2a1770;">BANK DETAILS
+                </h2>
+                {{-- @if ($bankdetails = App\Models\Companydetail::first()) --}}
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">BANK NAME : </span> CANARA BANK
+                    </h4>
+
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">ACCOUNT NAME : </span>
+                        SRS ENGINEERINGS</h4>
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">ACCOUNT NO : </span>
+                        3556201000136</h4>
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">IFSC CODE : </span> CNRB0003556
+                    </h4>
+                    {{-- <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">SWIFT CODE : </span>
+                        </h4>
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">MICR CODE : </span>
+                    </h4> --}}
+                     <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">ACCOUNT TYPE : </span>CURRENT ACCOUNT
+                    </h4>
+                    <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">BRANCH : </span> SUNDARAPURAM
+                    </h4>
+                     <h4 style="font-size: 20px;"><span class="bank-sub"
+                            style="font-size: 20px;font-weight: 600;">GOOGLE PAY NUMBER : </span> 9943324006
+                    </h4>
+
+                {{-- @endif --}}
+            </div>
+            @endif
+            <table class="table table-bordered "
+                style="width:100%;padding:0px 30px;margin-bottom:20px;margin-top:20px;   ">
+                <tr>
+                    <td>
+                        <p style="font-weight:600; margin-bottom: 10px;color: #000; font-size: 20px;">Terms and
+                            conditions:</p>
+                        <p style="margin-bottom: 8px;color: #000; font-size: 13px;">1) Warranty does not cover any breakage.</p>
+                            <p style="margin-bottom: 8px;color: #000; font-size: 13px;">2) Once goods are sold, they will not be taken back.</p>
+                            <p style="margin-bottom: 8px;color: #000; font-size: 13px;">3) Over voltage damage is not covered under warranty.</p>
+                            <p style="margin-bottom: 8px;color: #000; font-size: 13px;">4) All disputes are subject to Coimbatore jurisdiction only.</p>
+                            <p style="font-weight:600; margin-bottom: 10px;color: #000; font-size: 20px;">Payment Terms</p>
+                            <p style="margin-bottom: 8px;color: #000; font-size: 13px;">1) 100% Advance.</p>
+
+                    </td>
+                </tr>
+            </table>
+            <!--<table class="table table-bordered invoice"-->
+            <!--    style="width:100%;padding:0px 30px;margin-bottom:20px;margin-top:20px;   ">-->
+            <!--    <tr>-->
+            <!--        <td>-->
+            <!--            <p style="font-weight:600; margin-bottom: 10px;color: #000; font-size: 20px;">Terms and-->
+            <!--                conditions:-->
+            <!--            </p>-->
+            <!--            <p style="margin-bottom: 8px;color: #000; font-size: 13px;">1) Electric parts (heater,-->
+            <!--                control-->
+            <!--                switch instigation lights, motor) will not come under service warranty and guarantee.-->
+            <!--            </p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">2) 12 months service warranty-->
+            <!--                and-->
+            <!--                guarantee for Semi-automatic machine /automatic machine from invoice date.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">3) Once order has been received-->
+            <!--                no-->
+            <!--                modification allowed in dies specifications. incase if customer need to change die size-->
+            <!--                or-->
+            <!--                machine specifications that losses will be customer side. </p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">4) If you want check-->
+            <!--                machine/Product-->
+            <!--                quality you have to visit company directly at that time of delivery.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">5) Delivery transportation and-->
+            <!--                Packing-->
+            <!--                is customer side. The company will not be responsible for the damages during-->
+            <!--                transportation.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">6) Service Person will attend-->
+            <!--                the-->
+            <!--                problem in 3working days inside Tamilnadu and 7 working days for other states.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">7) During service period-->
+            <!--                customers have-->
+            <!--                to provide food and accommodation for our service engineer. Service and labor charges-->
+            <!--                free.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">8) If you have any problem with-->
+            <!--                machine-->
+            <!--                you have to provide a clear mail regarding the problem. Based on your mail confirmation-->
+            <!--                my-->
+            <!--                person will attend for service.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">9) Once order received suit not-->
+            <!--                be-->
+            <!--                cancelled. Sold machine and product will not take back at any circumstances.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">10) The damage occurs due to-->
+            <!--                using the-->
+            <!--                other company dies or material in our machine we will not be responsible for that and we-->
+            <!--                will-->
+            <!--                cancel your service. The customer not having rights to take any kind of legal and-->
+            <!--                illegal action-->
+            <!--                against company. Manual and electrical problem will not come under service and warranty.-->
+            <!--            </p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">11) No refunds of payments.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">12) Force Majeure & Limited-->
+            <!--                Liability:-->
+            <!--                All conditions of Force Majeure and limited liability will be applicable under all-->
+            <!--                unforeseen-->
+            <!--                circumstances/ uncontrollable events/ acts of nature as per GOD’s will.</p>-->
+            <!--            <p style="margin-bottom: 10px;color: #000; font-size: 13px;">13) Jurisdiction: Coimbatore,-->
+            <!--                Tamilnadu.-->
+            <!--            </p>-->
+            <!--        </td>-->
+            <!--    </tr>-->
+            <!--</table>-->
+            <!--@if ($fj->company_id == 1)-->
+            <!--    <table class="table table-bordered" style="width:100%;padding:0px 30px;margin-bottom:20px;">-->
+            <!--        <tr>-->
+            <!--            <td style="width:25%;font-size: 20px;">-->
+            <!--                <p><b>BANK DETAILS</b></p>-->
+            <!--            </td>-->
+            <!--            <td></td>-->
+            <!--        </tr>-->
+            <!--        @if ($bankdetails = App\Models\Companydetail::first())
+-->
+            <!--            <tr>-->
+            <!--                <td style="width:25%;font-size: 13px">Bank Name</td>-->
+            <!--                <td style="width:35%;font-size:13px"> {{ $bankdetails->bankname }}</td>-->
+
+            <!--            </tr>-->
+            <!--            @if ($bankdetails->accountname != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">Account Name</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetails->accountname }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetails->accountnumber != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">Account Number</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetails->accountnumber }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetails->ifsccode != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">IFSC Code</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetails->ifsccode }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetails->swiftcode != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">Swift Code</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetails->swiftcode }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetails->micrcode != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">MICR Code</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetails->micrcode }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetails->branch_name != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">Branch</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetails->branch_name }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--
+@endif-->
+
+            <!--    </table>-->
+        <!--@else-->
+            <!--    <table class="table table-bordered" style="width:100%;padding:0px 30px;margin-bottom:20px;">-->
+            <!--        <tr>-->
+            <!--            <td style="width:25%;font-size: 20px;">-->
+            <!--                <p><b>BANK DETAILS</b></p>-->
+            <!--            </td>-->
+            <!--            <td></td>-->
+            <!--        </tr>-->
+            <!--        @if ($bankdetailss = App\Models\Companydetailtwo::first())
+-->
+            <!--            <tr>-->
+            <!--                <td style="width:25%;font-size: 13px">Bank Name</td>-->
+            <!--                <td style="width:35%;font-size:13px"> {{ $bankdetailss->bankname }}</td>-->
+
+            <!--            </tr>-->
+            <!--            @if ($bankdetailss->accountname != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">Account Name</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetailss->accountname }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetailss->accountnumber != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">Account Number</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetailss->accountnumber }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetailss->ifsccode != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">IFSC Code</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetailss->ifsccode }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetailss->swiftcode != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">Swift Code</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetailss->swiftcode }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetailss->micrcode != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">MICR Code</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetailss->micrcode }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--            @if ($bankdetailss->branch_name != '')
+-->
+            <!--                <tr>-->
+            <!--                    <td style="font-size: 13px">Branch</td>-->
+            <!--                    <td style="font-size:13px"> {{ $bankdetailss->branch_name }}</td>-->
+            <!--                </tr>-->
+            <!--
+@endif-->
+
+            <!--
+@endif-->
+
+            <!--    </table>-->
+            <!--@endif-->
+            <!--<table class="table table-bordered" style="width:100%;padding:0px 30px;margin-bottom:50px">-->
+            <!--    <tr>-->
+            <!--        <td style="font-weight:600; margin-bottom: 25px;color: #000; font-size: 20px;">DECLERATION</td>-->
+            <!--    </tr>-->
+            <!--    <tr>-->
+            <!--        <td>-->
+            <!--            <p style="font-size: 13px;">We declared that this invoice shows the actual price of the goods-->
+            <!--                described and that all-->
+            <!--                particulars are true and correct.</p>-->
+            <!--        </td>-->
+            <!--    </tr>-->
+            <!--</table>-->
+
+
+            <table style="width:100%;padding:0px 30px;margin-bottom:10px">
+
+                @if ($bankdetails = App\Models\Companydetail::first())
+                    <tr>
+                        <td rowspan="7" style="text-align:right;vertical-align:bottom">
+
+                            {{-- <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/vinosign.png'))) }}"
+                            style="margin:0 auto;display:right;width:150px;padding-left:25px"> --}}
+                            <!--<p>For</p>-->
+                            @if ($estimates->select_company == null || $estimates->select_company == 0)
+                            <p><b style="color:#2d368e  ;font-size:18px;">SRS SOLAR SYSTEMS</b></p>
+                            @else
+                            <p><b style="color:#2d368e  ;font-size:18px;">SRS ENGINEERINGS</b></p>
+                            @endif
+                        </td>
+
+                    </tr>
+                @endif
+
+            </table>
+            <table style="width:100%;padding:0px 30px;margin-top:20px;">
+
+                <!--@if ($bankdetails = App\Models\Companydetail::first())-->
+                    <tr>
+                        <td rowspan="7" style="text-align:right;vertical-align:bottom;margin-top:20px">
+
+                            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/signsrs.png'))) }}"
+                            style="margin:0 auto;display:right;width:150px;padding-left:25px">
+                            <!--<p>For</p>-->
+                            <p><b style="color:#2d368e  ;font-size:18px;">Authorized Signature</b></p>
+                        </td>
+
+                    </tr>
+                <!--@endif-->
+
+            </table>
+
+        </div>
+        <div class="">
+            <table style="width:100%;border-collapse: collapse;margin-top:35px;">
+                <tr style="text-align: center; background-color:#F9A100; border-collapse: collapse;">
+                    @if ($estimates->select_company == null || $estimates->select_company == 0)
+                    <td style="padding:10px 0px;width:33.33%;font-size:10px;">&nbsp;&nbsp;9943324006, 9943324007, 9751456734</td>
+                    @else
+                      <td style="padding:10px 0px;width:33.33%;font-size:10px;">&nbsp;&nbsp;9943324006, 9943324007, 9751456734</td>
+                    @endif
+                    {{-- <td style="width:33.33%;font-size:10px;">&nbsp;&nbsp;www.saitechnosolutions.com</td>
+                <td style="width:33.33%;font-size:10px;">&nbsp;&nbsp;sales@saitechnosolutions.net</td>
+            <tr style="width:100%"> --}}
+                    <td colspan="4" style="text-align:center;font-size:11px;padding:10px;">
+
+                    <td>
+                </tr>
+            </table>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+        <script>
+            function exportToPDF() {
+                // Get the order_id value
+                var orderId = $(".ck_vals").val() || '';
+                $('.new_ordr').hide();
+                // Get the element to be exported
+                const element = document.getElementById('content');
+
+                // Create a Blob with the PDF data
+                html2pdf(element, {
+                    margin: 1,
+                    filename: '' + orderId + '.pdf', // Set the filename dynamically
+                    image: {
+                        type: 'jpeg',
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 2
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: 'a4',
+                        orientation: 'portrait'
+                    }
+                });
+            }
+        </script>
+
+
+</body>
+
+</html>

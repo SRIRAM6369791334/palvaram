@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Product;
+use App\Models\ProductSlot;
+use App\Models\ProductVarient;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Exports\ProductWiseReportExport;
+use App\Models\Country;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+class GiftProductwiseController extends Controller
+{
+    public function productWiseReport()
+    {
+        $filter = 'this_month';
+        $initialResults = $this->getFilteredReportDataFromDates(
+            $filter,
+            null,
+            null,
+            session('country_id')
+        );
+        $countries = Country::all();
+        return view('pages.gifts.gift_productwisereport', compact('filter', 'initialResults', 'countries'));
+    }
+
+    public function filterProductWiseReport(Request $request)
+    {
+        $results = $this->getFilteredReportData($request);
+        return response()->json($results);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $results = $this->getFilteredReportData($request);
+        return Excel::download(new ProductWiseReportExport($results), 'GiftProductWiseReport.xlsx');
+    }
+
+    public function exportPDF(Request $request)
+    {
+        $results = $this->getFilteredReportData($request);
+        $pdf = Pdf::loadView('exports.productwise', ['results' => $results]);
+        return $pdf->download('GiftProductWiseReport.pdf');
+    }
+
+    private function getFilteredReportData(Request $request)
+    {
+        $filter = $request->input('filter', 'this_month');
+        $from = $request->input('from');
+        $to = $request->input('to');
+        $countryId = $request->input('country_id') ?? session('country_id');
+
+        return $this->getFilteredReportDataFromDates($filter, $from, $to, $countryId);
+    }
+
+    private function getFilteredReportDataFromDates($filter, $from = null, $to = null, $countryId = null)
+    {
+        $now = Carbon::now();
+
+        // ── Only product_ids belonging to gift products ──
+        $giftProductIds = Product::where('is_gift', 1)->pluck('id');
+
+        $query = ProductSlot::select(
+            'product_slots.product_id',
+            'product_slots.product_name',
+            'product_slots.product_value',
+            'product_slots.product_rate',
+            'product_slots.product_varient_id',
+            'product_orders.country_id',
+            DB::raw('SUM(product_slots.quantity) as total_quantity'),
+            DB::raw('SUM(product_slots.quantity * product_slots.product_rate) as total_value'),
+            DB::raw('(SELECT name FROM countries WHERE countries.id = product_orders.country_id) as country_name')
+        )
+        ->join('product_orders', 'product_orders.order_id', '=', 'product_slots.order_id')
+        ->whereIn('product_slots.product_id', $giftProductIds)
+        ->groupBy('product_slots.product_id', 'product_slots.product_varient_id', 'product_slots.product_name', 'product_slots.product_value', 'product_slots.product_rate', 'product_orders.country_id');
+
+        if ($countryId) {
+            $query->where('product_orders.country_id', $countryId);
+        }
+
+        switch ($filter) {
+            case 'this_week':
+                $query->whereBetween('product_orders.created_at', [
+                    $now->copy()->startOfWeek(),
+                    $now->copy()->endOfWeek()->endOfDay()
+                ]);
+                break;
+
+            case 'last_month':
+                $query->whereBetween('product_orders.created_at', [
+                    $now->copy()->subMonth()->startOfMonth(),
+                    $now->copy()->subMonth()->endOfMonth()->endOfDay()
+                ]);
+                break;
+
+            case 'custom':
+                if ($from && $to) {
+                    $query->whereBetween('product_orders.created_at', [
+                        Carbon::parse($from)->startOfDay(),
+                        Carbon::parse($to)->endOfDay()
+                    ]);
+                }
+                break;
+
+            case 'this_month':
+            default:
+                $query->whereBetween('product_orders.created_at', [
+                    $now->copy()->startOfMonth(),
+                    $now->copy()->endOfMonth()->endOfDay()
+                ]);
+                break;
+        }
+
+        return $query->orderByDesc('total_quantity')->get()->map(function ($item) {
+            $variant = ProductVarient::with(['unit', 'color', 'size'])->find($item->product_varient_id);
+            if ($variant) {
+                // Gift variants use color/size rather than value+unit
+                $parts = array_filter([
+                    optional($variant->color)->color,
+                    optional($variant->size)->size,
+                ]);
+                $item->variant_label = !empty($parts) ? implode(' / ', $parts) : ($variant->value ?? $item->product_value);
+            } else {
+                $item->variant_label = $item->product_value;
+            }
+            return $item;
+        });
+    }
+}

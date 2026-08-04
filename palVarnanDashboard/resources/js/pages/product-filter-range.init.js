@@ -1,0 +1,20 @@
+/*
+Template Name: Milk Vandi - Admin & Dashboard Template
+Author: MilkVandi
+Website: https://MilkVandi.com/
+Contact: MilkVandi@gmail.com
+File: product range slider init js
+*/
+
+var slider = document.getElementById("priceslider");
+
+noUiSlider.create(slider, {
+    start: [250, 800],
+    connect: true,
+    tooltips: true,
+    range: {
+        min: 0,
+        max: 1000,
+    },
+    pips: { mode: "count", values: 5 },
+});
