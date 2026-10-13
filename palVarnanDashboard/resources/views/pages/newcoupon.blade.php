@@ -32,7 +32,7 @@
                     <input name="code" class="form-control" placeholder="Code" required>
                 </div>
                 <div class="col-md-2">
-                    <select name="type" class="form-control">
+                    <select name="type" class="form-control select2">
                         <option value="fixed">₹ Fixed</option>
                         <option value="percentage">% Percentage</option>
                     </select>
@@ -131,7 +131,7 @@
                         </div>
                         <div class="col-md-6 mb-2">
                             <label>Type</label>
-                            <select name="type" class="form-control" id="edit_type">
+                            <select name="type" class="form-control select2" id="edit_type">
                                 <option value="fixed">₹ Fixed</option>
                                 <option value="percentage">% Percentage</option>
                             </select>

@@ -73,7 +73,7 @@
                             @can('Country.selection')
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Country <span class="text-danger">*</span></label>
-                                <select class="form-control" id="add_country_id" name="country_id" required>
+                                <select class="form-control select2" id="add_country_id" name="country_id" required>
                                     <option value="">Select Country</option>
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">
@@ -143,7 +143,7 @@
                             @can('Country.selection')
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Country <span class="text-danger">*</span></label>
-                                <select class="form-control" id="edit_country_id" name="country_id" required>
+                                <select class="form-control select2" id="edit_country_id" name="country_id" required>
                                     <option value="">Select Country</option>
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">

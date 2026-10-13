@@ -109,7 +109,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_role_select">Role*</label>
-                                    <select id="add_role_select" name="role" class="form-control">
+                                    <select id="add_role_select" name="role" class="form-control select2">
                                         <option value="">Select Role</option>
                                         @foreach($roles as $role)
                                             <option value="{{ $role->name }}">{{ $role->name }}</option>
@@ -120,7 +120,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_status_select">Status*</label>
-                                    <select class="form-select" name="status" id="add_status_select">
+                                    <select class="form-select select2" name="status" id="add_status_select">
                                         <option value="" selected>Select Status</option>
 
                                         <option value="1">Active</option>
@@ -202,7 +202,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_role_select">Role*</label>
-                                    <select class="form-select" name="role" id="edit_role_select">
+                                    <select class="form-select select2" name="role" id="edit_role_select">
                                         <option value="">Select Role</option>
                                         @foreach($roles as $role)
                                             <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
@@ -213,7 +213,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_status_select">Status*</label>
-                                    <select class="form-select" name="status" id="edit_status_select">
+                                    <select class="form-select select2" name="status" id="edit_status_select">
                                         <option value="" selected>Select Status</option>
 
                                         <option value="1">Active</option>

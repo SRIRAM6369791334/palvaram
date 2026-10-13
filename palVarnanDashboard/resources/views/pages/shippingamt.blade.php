@@ -100,7 +100,7 @@
                                 <div class="row">
                                     <div class="col-md-3 mb-2">
                                         <label for="country_id" class="form-label">Country</label>
-                                        <select name="country_idss" id="country_id" class="form-control" disabled>
+                                        <select name="country_idss" id="country_id" class="form-control select2" disabled>
                                             <option value="101" selected>India</option>
                                         </select>
                                         <input type="hidden" name="country_id" value="101">

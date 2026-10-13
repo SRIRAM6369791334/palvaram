@@ -21,11 +21,23 @@ class ProductController extends Controller
 
         $countryId = session('country_id');
 
-        $categories = Category::whereRaw("FIND_IN_SET(?, country_id)", [$countryId])->get();
+        $categories = Category::whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+            ->withCount(['products' => function ($q) use ($countryId) {
+                $q->where(function ($sq) use ($countryId) {
+                    $sq->where('country_id', $countryId)->orWhereNull('country_id');
+                });
+            }])
+            ->get();
 
         $subcategories = SubCategory::whereRaw("FIND_IN_SET(?, country_id)", [$countryId])->get();
 
-        $brands = Brand::whereRaw("FIND_IN_SET(?, country_id)", [$countryId])->get();
+        $brands = Brand::whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+            ->withCount(['products' => function ($q) use ($countryId) {
+                $q->where(function ($sq) use ($countryId) {
+                    $sq->where('country_id', $countryId)->orWhereNull('country_id');
+                });
+            }])
+            ->get();
 
         $products = Product::with('variants.unit');
 
@@ -60,15 +72,39 @@ class ProductController extends Controller
         }
 
         $wishlistProductIds = [];
-if (Auth::check()) {
-    $wishlistProductIds = Wishlist::where('user_id', Auth::id())
-                            ->pluck('product_id')
-                            ->toArray();
-}
+        if (Auth::check()) {
+            $wishlistProductIds = Wishlist::where('user_id', Auth::id())
+                                    ->pluck('product_id')
+                                    ->toArray();
+        }
 
-        $products = $products->latest()->paginate(12);
+        $sort = $request->get('sort', 'latest');
+        switch ($sort) {
+            case 'price_low_high':
+                $products->orderByRaw('(SELECT MIN(offer_price) FROM product_varients WHERE product_varients.product_id = products.id) ASC');
+                break;
+            case 'price_high_low':
+                $products->orderByRaw('(SELECT MAX(offer_price) FROM product_varients WHERE product_varients.product_id = products.id) DESC');
+                break;
+            case 'name_asc':
+                $products->orderBy('product_name', 'asc');
+                break;
+            case 'name_desc':
+                $products->orderBy('product_name', 'desc');
+                break;
+            default:
+                $products->latest();
+                break;
+        }
 
-        return view('pages.products', compact('categories', 'subcategories', 'brands', 'products', 'cartProductIds', 'cartItems', 'wishlistProductIds'));
+        $perPage = (int) $request->get('per_page', 6);
+        if (!in_array($perPage, [6, 12, 24, 48])) {
+            $perPage = 6;
+        }
+
+        $products = $products->paginate($perPage);
+
+        return view('pages.products', compact('categories', 'subcategories', 'brands', 'products', 'cartProductIds', 'cartItems', 'wishlistProductIds', 'sort'));
     }
 
     public function show($slug)
@@ -79,7 +115,7 @@ if (Auth::check()) {
 
         $countryId = session('country_id');
 
-        $product = Product::with('variants.unit', 'category', 'brand')
+        $product = Product::with('variants.unit', 'category', 'brand', 'childImages')
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -93,6 +129,20 @@ if (Auth::check()) {
             ->latest()
             ->take(8)
             ->get();
+
+        if ($relatedProducts->count() < 4) {
+            $extraProducts = Product::with('variants.unit')
+                ->where('id', '!=', $product->id)
+                ->whereNotIn('id', $relatedProducts->pluck('id'))
+                ->where(function ($q) use ($countryId) {
+                    $q->where('country_id', $countryId)
+                    ->orWhereNull('country_id');
+                })
+                ->latest()
+                ->take(8 - $relatedProducts->count())
+                ->get();
+            $relatedProducts = $relatedProducts->concat($extraProducts);
+        }
 
         $cartProductIds = [];
         $cartItems = collect();

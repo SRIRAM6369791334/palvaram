@@ -40,6 +40,7 @@ class WishlistController extends Controller
     public function index()
     {
         $items = Wishlist::where('user_id', Auth::id())
+                ->whereHas('product')
                 ->with(['product.variants.unit', 'variant.unit'])
                 ->get();
 

@@ -278,7 +278,7 @@
             <div class="row mb-3 align-items-end">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Filter by Status</label>
-                    <select class="form-select" id="cancelStatusFilter">
+                    <select class="form-select select2" id="cancelStatusFilter">
                         <option value="all">All</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="pending">Pending (can cancel)</option>
@@ -428,7 +428,7 @@
                             </div>
                             <div class="col-md-5">
                                 <label class="form-label">Disposal Method</label>
-                                <select class="form-select" id="expiredDisposal">
+                                <select class="form-select select2" id="expiredDisposal">
                                     <option value="discard">Discard / Destroy</option>
                                     <option value="donate">Donate</option>
                                     <option value="return_supplier">Return to Supplier</option>
@@ -541,7 +541,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Refund Method</label>
-                    <select class="form-select" id="cancelRefundMethod">
+                    <select class="form-select select2" id="cancelRefundMethod">
                         <option value="razorpay">Refund to Original Payment (Razorpay)</option>
                         <option value="wallet">Add to Customer Wallet</option>
                         <option value="manual">Manual Refund</option>

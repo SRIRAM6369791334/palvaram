@@ -42,7 +42,7 @@
 
                                     <label class="form-label" for="select_delivery">Delivery Status*</label>
 
-                                        <select class="form-select" name="delivery_status"
+                                        <select class="form-select select2" name="delivery_status"
                                                                 id="select_delivery">
                                                                 <option value="" selected>Select Status</option>
 

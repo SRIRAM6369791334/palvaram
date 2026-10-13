@@ -44,7 +44,7 @@
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label for="filter">Filter by:</label>
-                            <select id="filter" class="form-control">
+                            <select id="filter" class="form-control select2">
                                 <option value="this_month" {{ $filter == 'this_month' ? 'selected' : '' }}>This Month
                                 </option>
                                 <option value="last_month">Last Month</option>

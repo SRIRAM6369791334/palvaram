@@ -71,7 +71,7 @@
                                         Select Status*
                                     </label>
 
-                                    <select class="form-select" name="select_status" id="add_status_select">
+                                    <select class="form-select select2" name="select_status" id="add_status_select">
                                         <option value="" selected>Select status</option>
 
                                         <option value="1">Packing</option>
@@ -169,7 +169,7 @@
                                         Select Status*
                                     </label>
 
-                                    <select class="form-select" name="select_status" id="add_status_select">
+                                    <select class="form-select select2" name="select_status" id="add_status_select">
                                         <option value="" selected>Select status</option>
 
                                         <option value="1">Packing</option>

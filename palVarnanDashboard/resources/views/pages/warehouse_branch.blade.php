@@ -62,7 +62,7 @@ Pal Varnan - Ware House Store
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label>Country</label>
-                            <select class="form-control" id="add_country_id" name="country_id">
+                            <select class="form-control select2" id="add_country_id" name="country_id">
                                 <option value="">Select Country</option>
                                 @foreach($countries as $c)
                                 <option value="{{ $c->id }}">{{ $c->name }}</option>
@@ -72,7 +72,7 @@ Pal Varnan - Ware House Store
 
                         <div class="col-md-6 mb-3">
                             <label>Warehouse</label>
-                            <select class="form-control" id="add_warehouse_id" name="warehouse_id">
+                            <select class="form-control select2" id="add_warehouse_id" name="warehouse_id">
                                 <option value="">Select Warehouse</option>
                                 @foreach($warehouses as $w)
                                 <option value="{{ $w->id }}">{{ $w->warehouse_name }}</option>
@@ -160,7 +160,7 @@ Pal Varnan - Ware House Store
 
                         <div class="col-md-6 mb-3">
                             <label>Country</label>
-                            <select class="form-control" id="edit_country_id">
+                            <select class="form-control select2" id="edit_country_id">
                                 @foreach($countries as $c)
                                     <option value="{{ $c->id }}">{{ $c->name }}</option>
                                 @endforeach
@@ -169,7 +169,7 @@ Pal Varnan - Ware House Store
 
                         <div class="col-md-6 mb-3">
                             <label>Warehouse</label>
-                            <select class="form-control" id="edit_warehouse_id">
+                            <select class="form-control select2" id="edit_warehouse_id">
                                 @foreach($warehouses as $w)
                                     <option value="{{ $w->id }}">{{ $w->warehouse_name }}</option>
                                 @endforeach

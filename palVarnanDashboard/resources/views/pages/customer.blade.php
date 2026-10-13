@@ -145,7 +145,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_guest_select">User Entry</label>
-                                    <select class="form-select" name="is_guest_user" id="add_guest_select">
+                                    <select class="form-select select2" name="is_guest_user" id="add_guest_select">
                                         <option value="" selected>Select User</option>
 
                                         <option value="2">Direct</option>
@@ -192,7 +192,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label" for="address_type_select">Select Address Type*</label>
-                                        <select class="form-select" name="address_type_id" id="address_type_select"
+                                        <select class="form-select select2" name="address_type_id" id="address_type_select"
                                             required>
                                             <option value="" disabled selected>Select Address Type</option>
                                             <option value="1">Home</option>
@@ -233,7 +233,7 @@
                                 <div class="col-md-6 others_container">
                                     <div class="mb-3">
                                         <label class="form-label" for="pin_code_type">City*</label>
-                                        <select class="form-select custid" name="area_name" id="city_input" required>
+                                        <select class="form-select custid select2" name="area_name" id="city_input" required>
 
                                             <option value="" disabled selected>Select Category</option>
 
@@ -309,7 +309,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_guest_select">User Entry</label>
-                                    <select class="form-select" name="is_guest_user" id="edit_guest_select">
+                                    <select class="form-select select2" name="is_guest_user" id="edit_guest_select">
                                         <option value="" selected>Select User</option>
 
                                         <option value="2">Direct</option>
@@ -356,7 +356,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label" for="address_type_select">Select Address Type*</label>
-                                        <select class="form-select" name="address_type_id" id="edit_address_type_select"
+                                        <select class="form-select select2" name="address_type_id" id="edit_address_type_select"
                                             required>
                                             <option value="" disabled selected>Select Address Type</option>
                                             <option value="1">Home</option>
@@ -397,7 +397,7 @@
                                 <div class="col-md-6 others_container">
                                     <div class="mb-3">
                                         <label class="form-label" for="pin_code_type">City*</label>
-                                        <select class="form-select custid" name="area_name" id="city_input1" required>
+                                        <select class="form-select custid select2" name="area_name" id="city_input1" required>
 
                                             <option value="" disabled selected>Select Area</option>
 
@@ -478,7 +478,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="address_type_select">Select Address Type*</label>
-                                    <select class="form-select" name="address_type_id" id="address_type_select" required>
+                                    <select class="form-select select2" name="address_type_id" id="address_type_select" required>
                                         <option value="" disabled selected>Select Address Type</option>
                                         <option value="1">Home</option>
                                         <option value="2">Work</option>
@@ -543,7 +543,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="form-label" for="add_category_select">Choose Product Type</label>
-                                <select class="form-select" name="product_id" id="add_category_select" required>
+                                <select class="form-select select2" name="product_id" id="add_category_select" required>
                                     <option value="" disabled selected>Select Product Type</option>
 
                                     <option value="others">Yesbe Products</option>
@@ -561,7 +561,7 @@
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label class="form-label" for="add_product_select">Choose Product*</label>
-                                        <select class="form-select" name="product_id" id="add_product_select" required>
+                                        <select class="form-select select2" name="product_id" id="add_product_select" required>
                                             <option value="" disabled selected>Select Product</option>
 
                                         </select>
@@ -571,7 +571,7 @@
                                 {{-- <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="manual_type_select">Choose Type*</label>
-                                    <select class="form-select" name="product_id" id="manual_type_select">
+                                    <select class="form-select select2" name="product_id" id="manual_type_select">
                                         <option value="" disabled selected>Select Type</option>
                                         <option value="">One Time</option>
                                         <option value="">Monthly</option>
@@ -601,7 +601,7 @@
                                 <div class="form-group">
                                     <label class="label-control">Plan Type*</label>
                                     <div>
-                                        <select class="form-select my-2 plan_select" name="plan_type" value="select"
+                                        <select class="form-select my-2 plan_select select2" name="plan_type" value="select"
                                             id="select1" required>
                                             <option value="" hidden="">Choose Plan</option>
                                             <option value="1">Monthly</option>
@@ -772,7 +772,7 @@
                                     <div class="row mt-3 product_row">
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <select class="form-select other_category_select" name="catgegory_id[]"
+                                                <select class="form-select other_category_select select2" name="catgegory_id[]"
                                                     required>
                                                     <option value="" disabled selected>Select Category</option>
                                                     @foreach ($categories as $category)
@@ -787,7 +787,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="mb-3">
-                                                <select class="form-select other_product_select" name="product_id[]"
+                                                <select class="form-select other_product_select select2" name="product_id[]"
                                                     required>
                                                     <option value="">Choose Category First</option>
                                                 </select>
@@ -795,7 +795,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="mb-3">
-                                                <select class="form-select other_product_varient" name="productvar_id[]"
+                                                <select class="form-select other_product_varient select2" name="productvar_id[]"
                                                     required>
                                                     <option value="">Choose product First</option>
                                                 </select>
@@ -837,7 +837,7 @@
 
                                 <div class="form-group  mb-3">
                                     <div class="mb-3">
-                                        <select class="form-select other_select_type" name="selecttype"
+                                        <select class="form-select other_select_type select2" name="selecttype"
                                             id="other_select_type">
                                             <option value=""> Select Type</option>
                                             <option value="2">Walk In</option>

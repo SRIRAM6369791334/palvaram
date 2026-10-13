@@ -93,17 +93,17 @@
                     <div id="section_store_transfer">
                         <h6>Sender</h6>
                         <div class="row">
-                            <div class="col-md-6 mb-2"><label>Country</label><select class="form-select" id="transfer_country"><option disabled selected>Select Country</option></select></div>
-                            <div class="col-md-6 mb-2"><label>Warehouse</label><select class="form-select" id="transfer_from_warehouse"><option disabled selected>Select Warehouse</option></select></div>
-                            <div class="col-md-6 mb-2"><label>Store</label><select class="form-select" id="transfer_from_branch"><option disabled selected>Select Store</option></select></div>
-                            <div class="col-md-6 mb-2"><label>Product</label><select class="form-select" id="transfer_product"><option disabled selected>Select Product</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Country</label><select class="form-select select2" id="transfer_country"><option disabled selected>Select Country</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Warehouse</label><select class="form-select select2" id="transfer_from_warehouse"><option disabled selected>Select Warehouse</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Store</label><select class="form-select select2" id="transfer_from_branch"><option disabled selected>Select Store</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Product</label><select class="form-select select2" id="transfer_product"><option disabled selected>Select Product</option></select></div>
                         </div>
                         <p><b>Available Stock:</b> <span id="transfer_current_stock">0</span></p>
                         <hr>
                         <h6>Receiver</h6>
                         <input type="hidden" id="transfer_to_warehouse" name="to_warehouse_id">
                         <div class="row">
-                            <div class="col-md-6 mb-2"><label>Store</label><select class="form-select" id="transfer_to_branch" name="to_branch_id"><option disabled selected>Select Store</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Store</label><select class="form-select select2" id="transfer_to_branch" name="to_branch_id"><option disabled selected>Select Store</option></select></div>
                             <div class="col-md-6 mb-2"><label>Quantity</label><input type="number" class="form-control" id="transfer_quantity" name="transfer_quantity"></div>
                             <div class="col-md-6 mb-2">
                                 <label>Current Stock in Receiver Store</label>
@@ -116,9 +116,9 @@
                     <div id="section_warehouse_transfer" style="display:none;">
                         <h6>Source</h6>
                         <div class="row">
-                            <div class="col-md-6 mb-2"><label>Country</label><select class="form-select" id="wt_country"><option disabled selected>Select Country</option></select></div>
-                            <div class="col-md-6 mb-2"><label>Source Warehouse</label><select class="form-select" id="wt_from_warehouse"><option disabled selected>Select Warehouse</option></select></div>
-                            <div class="col-md-6 mb-2"><label>Product</label><select class="form-select" id="wt_product"><option disabled selected>Select Product</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Country</label><select class="form-select select2" id="wt_country"><option disabled selected>Select Country</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Source Warehouse</label><select class="form-select select2" id="wt_from_warehouse"><option disabled selected>Select Warehouse</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Product</label><select class="form-select select2" id="wt_product"><option disabled selected>Select Product</option></select></div>
                         </div>
                         <p><b>Available Stock:</b> <span id="wt_current_stock">0</span></p>
                         <input type="hidden" id="wt_available_stock">
@@ -126,7 +126,7 @@
                         <hr>
                         <h6>Destination</h6>
                         <div class="row">
-                            <div class="col-md-6 mb-2"><label>Destination Warehouse</label><select class="form-select" id="wt_to_warehouse"><option disabled selected>Select Warehouse</option></select></div>
+                            <div class="col-md-6 mb-2"><label>Destination Warehouse</label><select class="form-select select2" id="wt_to_warehouse"><option disabled selected>Select Warehouse</option></select></div>
                             <div class="col-md-6 mb-2"><label>Quantity</label><input type="number" class="form-control" id="wt_quantity" min="1"></div>
                             <div class="col-md-6 mb-2">
                                 <label>Current Stock in Receiver Warehouse</label>

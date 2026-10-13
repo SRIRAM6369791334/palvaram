@@ -109,10 +109,14 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 </script> -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- Toastr & SweetAlert -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    window.palMainColor = (getComputedStyle(document.documentElement).getPropertyValue('--main-600') || '').trim() || '#1c799b';
+</script>
 
 @if(session('success'))
 
@@ -121,7 +125,7 @@ window.addEventListener('DOMContentLoaded', function () {
         icon: 'success',
         title: 'Success',
         text: '{{ session('success') }}',
-        confirmButtonColor: '#026966',
+        confirmButtonColor: palMainColor,
         confirmButtonText: 'OK'
     });
 </script>
@@ -238,6 +242,8 @@ function updateFloatingSubtotal(amount) {
 }
 
 </script>
+
+    @stack('scripts')
 
     </body>
 </html>

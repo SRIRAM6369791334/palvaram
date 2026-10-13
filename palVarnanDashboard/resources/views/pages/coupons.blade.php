@@ -78,7 +78,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_discount_select">Discount Unit*</label>
-                                    <select class="form-select" name="discounttype" id="add_discount_select">
+                                    <select class="form-select select2" name="discounttype" id="add_discount_select">
                                         <option value="">Select Discount</option>
 
                                         <option value="1">Rs</option>
@@ -152,7 +152,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_discount_select">Discount Unit*</label>
-                                    <select class="form-select" name="discounttype" id="edit_discount_select">
+                                    <select class="form-select select2" name="discounttype" id="edit_discount_select">
                                         <option value="">Select Discount</option>
 
                                         <<option value="1">Rs</option>

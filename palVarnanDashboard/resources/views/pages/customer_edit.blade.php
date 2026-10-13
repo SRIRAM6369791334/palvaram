@@ -122,7 +122,7 @@
                             {{-- <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="gender_select">Choose Gender*</label>
-                                    <select class="form-select" name="gender" id="gender_select" required>
+                                    <select class="form-select select2" name="gender" id="gender_select" required>
                                         <option value="" disabled selected>Select Gender</option>
                                         @foreach ($genderTypes as $genderType)
                                             <option value="{{ $genderType->id }}"
@@ -281,7 +281,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="area_select">Select Area*</label>
-                                    <select class="form-select" name="area_id" id="area_select" required>
+                                    <select class="form-select select2" name="area_id" id="area_select" required>
                                         <option value="" disabled selected>Select Area</option>
                                         @foreach ($areas as $area)
                                             <option value="{{ $area->id }}">{{ $area->area_name }}</option>
@@ -295,7 +295,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="address_type_select">Select Address Type*</label>
-                                    <select class="form-select" name="address_type_id" id="address_type_select" required>
+                                    <select class="form-select select2" name="address_type_id" id="address_type_select" required>
                                         <option value="" disabled selected>Select Address Type</option>
                                         <option value="1">Home</option>
                                         <option value="2">Work</option>

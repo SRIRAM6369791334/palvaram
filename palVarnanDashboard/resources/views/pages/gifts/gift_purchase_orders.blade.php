@@ -165,7 +165,7 @@ Gift Purchase Orders
 
                         <div class="col-md-4">
                             <label>Country</label>
-                            <select name="country_id" id="country_id" class="form-control" required>
+                            <select name="country_id" id="country_id" class="form-control select2" required>
                                 <option value="">Select Country</option>
                                 @foreach($countries as $c)
                                     <option value="{{ $c->id }}">{{ $c->name }}</option>
@@ -175,21 +175,21 @@ Gift Purchase Orders
 
                         <div class="col-md-4">
                             <label>Supplier Name</label>
-                            <select name="supplier_id" id="supplier_id" class="form-control" required disabled>
+                            <select name="supplier_id" id="supplier_id" class="form-control select2" required disabled>
                                 <option value="">Select Country First</option>
                             </select>
                         </div>
 
                         <div class="col-md-4">
                             <label>Warehouse</label>
-                            <select name="warehouse_id" id="warehouse_id" class="form-control">
+                            <select name="warehouse_id" id="warehouse_id" class="form-control select2">
                                 <option value="">Select Warehouse</option>
                             </select>
                         </div>
 
                         <!-- <div class="col-md-4">
                             <label>Store</label>
-                            <select name="branch_id" id="branch_id" class="form-control">
+                            <select name="branch_id" id="branch_id" class="form-control select2">
                                 <option value="">Select</option>
                             </select>
                         </div> -->
@@ -258,7 +258,7 @@ Gift Purchase Orders
 
                         <div class="col-md-4">
                             <label>Country</label>
-                            <select id="edit_country_id" class="form-control">
+                            <select id="edit_country_id" class="form-control select2">
                                 <option value="">Select Country</option>
                                 @foreach($countries as $c)
                                     <option value="{{ $c->id }}">{{ $c->name }}</option>
@@ -268,21 +268,21 @@ Gift Purchase Orders
 
                         <div class="col-md-4">
                             <label>Supplier Name</label>
-                            <select id="edit_supplier_id" class="form-control">
+                            <select id="edit_supplier_id" class="form-control select2">
                                 <option value="">Select Country First</option>
                             </select>
                         </div>
 
                         <div class="col-md-4">
                             <label>Warehouse</label>
-                            <select id="edit_warehouse_id" class="form-control">
+                            <select id="edit_warehouse_id" class="form-control select2">
                                 <option value="">Select Warehouse</option>
                             </select>
                         </div>
 
                         <!-- <div class="col-md-4">
                             <label>Store</label>
-                            <select id="edit_branch_id" class="form-control">
+                            <select id="edit_branch_id" class="form-control select2">
                                 <option value="">Select</option>
                             </select>
                         </div> -->

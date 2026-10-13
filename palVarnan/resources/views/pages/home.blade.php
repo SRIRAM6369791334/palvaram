@@ -233,7 +233,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                    
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +255,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                    
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -277,7 +277,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                    
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -299,7 +299,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                   
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -320,7 +320,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                  
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -342,7 +342,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                    
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -363,7 +363,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                    
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -385,7 +385,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -406,7 +406,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -428,7 +428,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -450,7 +450,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -472,7 +472,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -500,7 +500,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -522,7 +522,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -544,7 +544,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -565,7 +565,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -587,7 +587,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -609,7 +609,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -637,7 +637,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -659,7 +659,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -682,7 +682,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -704,7 +704,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -725,7 +725,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -754,7 +754,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -777,7 +777,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -800,7 +800,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -822,7 +822,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -850,7 +850,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -872,7 +872,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -895,7 +895,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -917,7 +917,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -938,7 +938,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -966,7 +966,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -988,7 +988,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1010,7 +1010,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1033,7 +1033,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1055,7 +1055,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1083,7 +1083,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1105,7 +1105,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1127,7 +1127,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1148,7 +1148,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1170,7 +1170,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1192,7 +1192,7 @@
                                         <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
                                     </div>
                                     
-                                    <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center">Add To Cart <i class="ph ph-shopping-cart"></i></a>
+                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1206,6 +1206,214 @@
 </section>
 <!-- ========================= Recommended End ================================ -->
 
+
+<style>
+/* Recommended For You Section - Uniform Cards & Add To Cart Button Style */
+.recommended .product-card {
+    height: 100% !important;
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 14px 12px !important;
+    border: 1px solid #edf2f7;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.recommended .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -6px rgba(2, 105, 102, 0.12), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+    border-color: rgba(2, 105, 102, 0.35) !important;
+}
+
+.recommended .product-card__thumb {
+    height: 150px;
+    width: 100%;
+    border-radius: 12px;
+    background: #f8fafc;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.recommended .product-card__thumb img {
+    max-height: 130px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.35s ease;
+}
+
+.recommended .product-card:hover .product-card__thumb img {
+    transform: scale(1.06);
+}
+
+.recommended .product-card > .product-card__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+    padding: 0 !important;
+}
+
+.recommended .product-card .title {
+    min-height: 42px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.35;
+    margin-top: 4px !important;
+    margin-bottom: 8px !important;
+}
+
+.recommended .product-card__price {
+    white-space: nowrap;
+    margin-bottom: 8px !important;
+}
+
+.recommended .product-card__cart {
+    background: #e6f5f4 !important;
+    color: #026966 !important;
+    border: 1px solid rgba(2, 105, 102, 0.2) !important;
+    font-weight: 600 !important;
+    font-size: 13.5px !important;
+    padding: 9px 12px !important;
+    white-space: nowrap !important;
+    border-radius: 50rem !important;
+    transition: all 0.2s ease;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin-top: auto !important;
+    text-decoration: none !important;
+}
+
+.recommended .product-card__cart:hover {
+    background: #026966 !important;
+    color: #ffffff !important;
+    border-color: #026966 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(2, 105, 102, 0.25);
+}
+
+.recommended .product-card__cart i {
+    font-size: 16px;
+}
+
+@media (max-width: 575px) {
+    .recommended .product-card__cart {
+        font-size: 12px !important;
+        padding: 8px 6px !important;
+        gap: 4px !important;
+    }
+    .recommended .product-card__cart i {
+        font-size: 14px !important;
+    }
+}
+
+/* Hot Deals Slider Card Equal Height & Bottom CTA Alignment */
+.hot-deals-slider .slick-track {
+    display: flex !important;
+}
+
+.hot-deals-slider .slick-slide {
+    height: inherit !important;
+    display: flex !important;
+}
+
+.hot-deals-slider .slick-slide > div {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.hot-deals-slider .product-card {
+    height: 100% !important;
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hot-deals-slider .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -6px rgba(2, 105, 102, 0.12), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+    border-color: rgba(2, 105, 102, 0.35) !important;
+}
+
+.hot-deals-slider .product-card__thumb {
+    height: 180px;
+    width: 100%;
+    border-radius: 12px;
+    background: #f8fafc;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.hot-deals-slider .product-card__thumb img {
+    max-height: 155px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.35s ease;
+}
+
+.hot-deals-slider .product-card:hover .product-card__thumb img {
+    transform: scale(1.06);
+}
+
+.hot-deals-slider .product-card__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.hot-deals-slider .product-card .title {
+    min-height: 44px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.hot-deals-slider .product-card__price {
+    white-space: nowrap;
+}
+
+.hot-deals-slider .product-card__cart {
+    background: #e6f5f4 !important;
+    color: #026966 !important;
+    border: 1px solid rgba(2, 105, 102, 0.2) !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.hot-deals-slider .product-card__cart:hover {
+    background: #026966 !important;
+    color: #ffffff !important;
+    border-color: #026966 !important;
+    transform: translateY(-1px);
+}
+</style>
 
     <!-- ========================= hot-deals Start ================================ -->
 <section class="hot-deals pt-80 overflow-hidden">
@@ -1259,224 +1467,245 @@
 
                     {{-- Product 1: Broccoli --}}
                     <div class="" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card px-20 pt-16 pb-40 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 position-absolute inset-block-start-0 inset-inline-end-0 me-16 mt-16">
-                                Add <i class="ph ph-shopping-cart"></i>
-                            </a>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
+                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
                                 <img src="https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=300&h=300&fit=crop&auto=format" alt="Broccoli">
+                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">44% OFF</span>
                             </a>
                             <div class="product-card__content mt-12">
-                                <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                    <span class="text-heading text-md fw-semibold">₹45.00 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                    <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">₹80.00</span>
-                                </div>
-                                <div class="flex-align gap-6">
-                                    <span class="text-xs fw-bold text-gray-600">4.8</span>
-                                    <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                    <span class="text-xs fw-bold text-gray-600">(17k)</span>
-                                </div>
-                                <h6 class="title text-lg fw-semibold mt-12 mb-20">
-                                    <a href="/products" class="link text-line-2">Fresh Broccoli Florets (500g)</a>
-                                </h6>
-                                <div class="mt-12">
-                                    <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 35%"></div>
+                                <div>
+                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
+                                        <span class="text-heading text-md fw-bold">₹45.00 <span class="text-gray-500 text-xs fw-normal">/Qty</span></span>
+                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹80.00</span>
                                     </div>
-                                    <span class="text-gray-900 text-xs fw-medium mt-8">Sold: 18/35</span>
+                                    <div class="flex-align gap-6 mb-8">
+                                        <span class="text-xs fw-bold text-gray-700">4.8</span>
+                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                        <span class="text-xs fw-medium text-gray-500">(17k)</span>
+                                    </div>
+                                    <h6 class="title text-base fw-semibold mb-12">
+                                        <a href="/products" class="link text-line-2">Fresh Broccoli Florets (500g)</a>
+                                    </h6>
+                                    <div class="mb-16">
+                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 35%"></div>
+                                        </div>
+                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 18/35</span>
+                                    </div>
                                 </div>
+                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
+                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     {{-- Product 2: Tomatoes --}}
                     <div class="" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card px-20 pt-16 pb-40 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 position-absolute inset-block-start-0 inset-inline-end-0 me-16 mt-16">
-                                Add <i class="ph ph-shopping-cart"></i>
-                            </a>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
+                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
                                 <img src="https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300&h=300&fit=crop&auto=format" alt="Tomatoes">
+                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">38% OFF</span>
                             </a>
                             <div class="product-card__content mt-12">
-                                <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                    <span class="text-heading text-md fw-semibold">₹40.00 <span class="text-gray-500 fw-normal">/Kg</span></span>
-                                    <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">₹65.00</span>
-                                </div>
-                                <div class="flex-align gap-6">
-                                    <span class="text-xs fw-bold text-gray-600">4.7</span>
-                                    <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                    <span class="text-xs fw-bold text-gray-600">(12k)</span>
-                                </div>
-                                <h6 class="title text-lg fw-semibold mt-12 mb-20">
-                                    <a href="/products" class="link text-line-2">Farm Fresh Red Tomatoes (1 Kg)</a>
-                                </h6>
-                                <div class="mt-12">
-                                    <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 60%"></div>
+                                <div>
+                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
+                                        <span class="text-heading text-md fw-bold">₹40.00 <span class="text-gray-500 text-xs fw-normal">/Kg</span></span>
+                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹65.00</span>
                                     </div>
-                                    <span class="text-gray-900 text-xs fw-medium mt-8">Sold: 24/40</span>
+                                    <div class="flex-align gap-6 mb-8">
+                                        <span class="text-xs fw-bold text-gray-700">4.7</span>
+                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                        <span class="text-xs fw-medium text-gray-500">(12k)</span>
+                                    </div>
+                                    <h6 class="title text-base fw-semibold mb-12">
+                                        <a href="/products" class="link text-line-2">Farm Fresh Red Tomatoes (1 Kg)</a>
+                                    </h6>
+                                    <div class="mb-16">
+                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 60%"></div>
+                                        </div>
+                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 24/40</span>
+                                    </div>
                                 </div>
+                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
+                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     {{-- Product 3: Eggs --}}
                     <div class="" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card px-20 pt-16 pb-40 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 position-absolute inset-block-start-0 inset-inline-end-0 me-16 mt-16">
-                                Add <i class="ph ph-shopping-cart"></i>
-                            </a>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
+                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
                                 <img src="https://images.unsplash.com/photo-1491524062933-cb0289261700?w=300&h=300&fit=crop&auto=format" alt="Eggs">
+                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">20% OFF</span>
                             </a>
                             <div class="product-card__content mt-12">
-                                <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                    <span class="text-heading text-md fw-semibold">₹72.00 <span class="text-gray-500 fw-normal">/Dozen</span></span>
-                                    <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">₹90.00</span>
-                                </div>
-                                <div class="flex-align gap-6">
-                                    <span class="text-xs fw-bold text-gray-600">4.9</span>
-                                    <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                    <span class="text-xs fw-bold text-gray-600">(20k)</span>
-                                </div>
-                                <h6 class="title text-lg fw-semibold mt-12 mb-20">
-                                    <a href="/products" class="link text-line-2">Farm Fresh White Eggs (1 Dozen)</a>
-                                </h6>
-                                <div class="mt-12">
-                                    <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 70%"></div>
+                                <div>
+                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
+                                        <span class="text-heading text-md fw-bold">₹72.00 <span class="text-gray-500 text-xs fw-normal">/Dozen</span></span>
+                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹90.00</span>
                                     </div>
-                                    <span class="text-gray-900 text-xs fw-medium mt-8">Sold: 42/60</span>
+                                    <div class="flex-align gap-6 mb-8">
+                                        <span class="text-xs fw-bold text-gray-700">4.9</span>
+                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                        <span class="text-xs fw-medium text-gray-500">(20k)</span>
+                                    </div>
+                                    <h6 class="title text-base fw-semibold mb-12">
+                                        <a href="/products" class="link text-line-2">Farm Fresh White Eggs (1 Dozen)</a>
+                                    </h6>
+                                    <div class="mb-16">
+                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 70%"></div>
+                                        </div>
+                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 42/60</span>
+                                    </div>
                                 </div>
+                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
+                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     {{-- Product 4: Milk --}}
                     <div class="" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card px-20 pt-16 pb-40 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 position-absolute inset-block-start-0 inset-inline-end-0 me-16 mt-16">
-                                Add <i class="ph ph-shopping-cart"></i>
-                            </a>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
+                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
                                 <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=300&fit=crop&auto=format" alt="Milk">
+                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">21% OFF</span>
                             </a>
                             <div class="product-card__content mt-12">
-                                <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                    <span class="text-heading text-md fw-semibold">₹55.00 <span class="text-gray-500 fw-normal">/Ltr</span></span>
-                                    <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">₹70.00</span>
-                                </div>
-                                <div class="flex-align gap-6">
-                                    <span class="text-xs fw-bold text-gray-600">4.8</span>
-                                    <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                    <span class="text-xs fw-bold text-gray-600">(15k)</span>
-                                </div>
-                                <h6 class="title text-lg fw-semibold mt-12 mb-20">
-                                    <a href="/products" class="link text-line-2">Full Cream Fresh Milk (1 Litre)</a>
-                                </h6>
-                                <div class="mt-12">
-                                    <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 50%"></div>
+                                <div>
+                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
+                                        <span class="text-heading text-md fw-bold">₹55.00 <span class="text-gray-500 text-xs fw-normal">/Ltr</span></span>
+                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹70.00</span>
                                     </div>
-                                    <span class="text-gray-900 text-xs fw-medium mt-8">Sold: 25/50</span>
+                                    <div class="flex-align gap-6 mb-8">
+                                        <span class="text-xs fw-bold text-gray-700">4.8</span>
+                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                        <span class="text-xs fw-medium text-gray-500">(15k)</span>
+                                    </div>
+                                    <h6 class="title text-base fw-semibold mb-12">
+                                        <a href="/products" class="link text-line-2">Full Cream Fresh Milk (1 Litre)</a>
+                                    </h6>
+                                    <div class="mb-16">
+                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 50%"></div>
+                                        </div>
+                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 25/50</span>
+                                    </div>
                                 </div>
+                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
+                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     {{-- Product 5: Onions --}}
                     <div class="" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card px-20 pt-16 pb-40 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 position-absolute inset-block-start-0 inset-inline-end-0 me-16 mt-16">
-                                Add <i class="ph ph-shopping-cart"></i>
-                            </a>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
+                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
                                 <img src="https://images.unsplash.com/photo-1508747703725-719777637510?w=300&h=300&fit=crop&auto=format" alt="Onions">
+                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">36% OFF</span>
                             </a>
                             <div class="product-card__content mt-12">
-                                <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                    <span class="text-heading text-md fw-semibold">₹35.00 <span class="text-gray-500 fw-normal">/Kg</span></span>
-                                    <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">₹55.00</span>
-                                </div>
-                                <div class="flex-align gap-6">
-                                    <span class="text-xs fw-bold text-gray-600">4.6</span>
-                                    <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                    <span class="text-xs fw-bold text-gray-600">(9k)</span>
-                                </div>
-                                <h6 class="title text-lg fw-semibold mt-12 mb-20">
-                                    <a href="/products" class="link text-line-2">Fresh Red Onions (1 Kg)</a>
-                                </h6>
-                                <div class="mt-12">
-                                    <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 45%"></div>
+                                <div>
+                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
+                                        <span class="text-heading text-md fw-bold">₹35.00 <span class="text-gray-500 text-xs fw-normal">/Kg</span></span>
+                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹55.00</span>
                                     </div>
-                                    <span class="text-gray-900 text-xs fw-medium mt-8">Sold: 27/60</span>
+                                    <div class="flex-align gap-6 mb-8">
+                                        <span class="text-xs fw-bold text-gray-700">4.6</span>
+                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                        <span class="text-xs fw-medium text-gray-500">(9k)</span>
+                                    </div>
+                                    <h6 class="title text-base fw-semibold mb-12">
+                                        <a href="/products" class="link text-line-2">Fresh Red Onions (1 Kg)</a>
+                                    </h6>
+                                    <div class="mb-16">
+                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 45%"></div>
+                                        </div>
+                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 27/60</span>
+                                    </div>
                                 </div>
+                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
+                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     {{-- Product 6: Cooking Oil --}}
                     <div class="" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card px-20 pt-16 pb-40 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 position-absolute inset-block-start-0 inset-inline-end-0 me-16 mt-16">
-                                Add <i class="ph ph-shopping-cart"></i>
-                            </a>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
+                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
                                 <img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&h=300&fit=crop&auto=format" alt="Cooking Oil">
+                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">24% OFF</span>
                             </a>
                             <div class="product-card__content mt-12">
-                                <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                    <span class="text-heading text-md fw-semibold">₹160.00 <span class="text-gray-500 fw-normal">/Ltr</span></span>
-                                    <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">₹210.00</span>
-                                </div>
-                                <div class="flex-align gap-6">
-                                    <span class="text-xs fw-bold text-gray-600">4.7</span>
-                                    <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                    <span class="text-xs fw-bold text-gray-600">(11k)</span>
-                                </div>
-                                <h6 class="title text-lg fw-semibold mt-12 mb-20">
-                                    <a href="/products" class="link text-line-2">Pure Sunflower Cooking Oil (1 Litre)</a>
-                                </h6>
-                                <div class="mt-12">
-                                    <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 55%"></div>
+                                <div>
+                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
+                                        <span class="text-heading text-md fw-bold">₹160.00 <span class="text-gray-500 text-xs fw-normal">/Ltr</span></span>
+                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹210.00</span>
                                     </div>
-                                    <span class="text-gray-900 text-xs fw-medium mt-8">Sold: 33/60</span>
+                                    <div class="flex-align gap-6 mb-8">
+                                        <span class="text-xs fw-bold text-gray-700">4.7</span>
+                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                        <span class="text-xs fw-medium text-gray-500">(11k)</span>
+                                    </div>
+                                    <h6 class="title text-base fw-semibold mb-12">
+                                        <a href="/products" class="link text-line-2">Pure Sunflower Cooking Oil (1 Litre)</a>
+                                    </h6>
+                                    <div class="mb-16">
+                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 55%"></div>
+                                        </div>
+                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 33/60</span>
+                                    </div>
                                 </div>
+                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
+                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     {{-- Product 7: Rice --}}
                     <div class="" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card px-20 pt-16 pb-40 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/cart" class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 position-absolute inset-block-start-0 inset-inline-end-0 me-16 mt-16">
-                                Add <i class="ph ph-shopping-cart"></i>
-                            </a>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
+                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
                                 <img src="https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=300&h=300&fit=crop&auto=format" alt="Rice">
+                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">23% OFF</span>
                             </a>
                             <div class="product-card__content mt-12">
-                                <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                    <span class="text-heading text-md fw-semibold">₹85.00 <span class="text-gray-500 fw-normal">/Kg</span></span>
-                                    <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">₹110.00</span>
-                                </div>
-                                <div class="flex-align gap-6">
-                                    <span class="text-xs fw-bold text-gray-600">4.9</span>
-                                    <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                    <span class="text-xs fw-bold text-gray-600">(22k)</span>
-                                </div>
-                                <h6 class="title text-lg fw-semibold mt-12 mb-20">
-                                    <a href="/products" class="link text-line-2">Premium Basmati Rice (1 Kg)</a>
-                                </h6>
-                                <div class="mt-12">
-                                    <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 80%"></div>
+                                <div>
+                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
+                                        <span class="text-heading text-md fw-bold">₹85.00 <span class="text-gray-500 text-xs fw-normal">/Kg</span></span>
+                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹110.00</span>
                                     </div>
-                                    <span class="text-gray-900 text-xs fw-medium mt-8">Sold: 48/60</span>
+                                    <div class="flex-align gap-6 mb-8">
+                                        <span class="text-xs fw-bold text-gray-700">4.9</span>
+                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                        <span class="text-xs fw-medium text-gray-500">(22k)</span>
+                                    </div>
+                                    <h6 class="title text-base fw-semibold mb-12">
+                                        <a href="/products" class="link text-line-2">Premium Basmati Rice (1 Kg)</a>
+                                    </h6>
+                                    <div class="mb-16">
+                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 80%"></div>
+                                        </div>
+                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 48/60</span>
+                                    </div>
                                 </div>
+                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
+                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
+                                </a>
                             </div>
                         </div>
                     </div>

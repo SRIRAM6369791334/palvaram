@@ -14,14 +14,17 @@ use App\Http\Controllers\CheckoutController;
 Route::get('/select-country', [CountryController::class, 'index']);
 Route::post('/select-country', [CountryController::class, 'store']);
 
-Route::view('/login', 'pages.login');
-Route::view('/register', 'pages.register');
-Route::view('/cart', 'pages.cart');
-Route::view('/checkout', 'pages.checkout');
-Route::view('/products', 'pages.products');
+Route::view('/login', 'pages.login')->name('login');
+Route::view('/register', 'pages.register')->name('register');
+Route::view('/about', 'pages.about')->name('about');
+Route::view('/contact', 'pages.contact')->name('contact');
 Route::view('/product', 'pages.product-detail');
-Route::view('/wishlist', 'pages.wishlist');
-Route::view('/myaccount', 'pages.myaccount');
+
+// Legal & Policy Pages
+Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy.policy');
+Route::view('/terms-conditions', 'pages.terms-conditions')->name('terms.conditions');
+Route::view('/return-refund-policy', 'pages.return-refund-policy')->name('refund.policy');
+Route::view('/shipping-policy', 'pages.shipping-policy')->name('shipping.policy');
 
 
 Route::get('/', [HomeController::class, 'index']);
@@ -67,7 +70,12 @@ Route::get('/myaccount', [ProfileController::class, 'index'])->name('account.ind
 
 Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/prepare-payment', [CheckoutController::class, 'preparePayment'])->name('checkout.preparePayment');
+    Route::post('/checkout/get-couriers', [CheckoutController::class, 'getShiprocketCouriers'])->name('checkout.getCouriers');
+    Route::post('/checkout/get-shipping-charge', [CheckoutController::class, 'getShippingCharge'])->name('checkout.getShippingCharge');
+    Route::post('/checkout/get-cities', [CheckoutController::class, 'getCitiesByState'])->name('checkout.getCities');
     Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
+    Route::get('/checkout/thankyou/{order}', [CheckoutController::class, 'thankyou'])->name('checkout.thankyou');
 
     Route::post('/checkout/address', [CheckoutController::class, 'storeAddress'])->name('address.store');
     Route::put('/checkout/address/{address}', [CheckoutController::class, 'updateAddress'])->name('address.update');

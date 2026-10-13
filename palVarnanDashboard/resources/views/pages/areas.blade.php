@@ -93,7 +93,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_areaname">Area Name*</label>
-                                    <select class="form-control" name="area_name" data-trigger name="choices-single-default"
+                                    <select class="form-control select2" name="area_name" data-trigger name="choices-single-default"
                                         id="add_areaname">
                                     </select>
 
@@ -192,7 +192,7 @@
                                 <div class="mb-3">
                                     <label class="form-label" for="add_delivery_persons_multiple">Delivery
                                         Persons*</label>
-                                    <select class="form-control" name="delivery_persons[]"
+                                    <select class="form-control select2" name="delivery_persons[]"
                                         id="add_delivery_persons_multiple" placeholder="This is a placeholder" multiple>
                                         {{-- <option value="">Choose Delivery Person</option>
                                         <option value="1">Choice 1</option>
@@ -243,7 +243,7 @@
                                 <div class="mb-3">
                                     <label class="form-label" for="delete_delivery_persons_multiple">Delivery
                                         Persons*</label>
-                                    <select class="form-control" name="delivery_persons[]"
+                                    <select class="form-control select2" name="delivery_persons[]"
                                         id="delete_delivery_persons_multiple" placeholder="This is a placeholder"
                                         multiple>
                                         {{-- <option value="">Choose Delivery Person</option>

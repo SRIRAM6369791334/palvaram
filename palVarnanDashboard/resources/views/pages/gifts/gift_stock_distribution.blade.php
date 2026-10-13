@@ -90,7 +90,7 @@
             <div class="row mb-4">
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Country</label>
-                    <select id="dist_country_id" class="form-control">
+                    <select id="dist_country_id" class="form-control select2">
                         <option value="">Select Country</option>
                         @foreach($countries as $c)
                             <option value="{{ $c->id }}">{{ $c->name }}</option>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Warehouse</label>
-                    <select id="dist_warehouse_id" class="form-control" disabled>
+                    <select id="dist_warehouse_id" class="form-control select2" disabled>
                         <option value="">Select Warehouse</option>
                     </select>
                 </div>
@@ -114,7 +114,7 @@
 
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Store</label>
-                    <select id="dist_branch_id" class="form-control" disabled>
+                    <select id="dist_branch_id" class="form-control select2" disabled>
                         <option value="">Select Store</option>
                     </select>
                 </div>
@@ -139,7 +139,7 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Product</label>
-                    <select id="dist_product_id" class="form-control" disabled>
+                    <select id="dist_product_id" class="form-control select2" disabled>
                         <option value="">Select Product</option>
                         @foreach($products as $p)
                             <option value="{{ $p->id }}">{{ $p->product_name }}</option>
@@ -148,7 +148,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Variant</label>
-                    <select id="dist_variant_id" class="form-control" disabled>
+                    <select id="dist_variant_id" class="form-control select2" disabled>
                         <option value="">-- No Variant --</option>
                     </select>
                 </div>

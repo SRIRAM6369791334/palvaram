@@ -100,7 +100,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Choose Country*</label>
-                                    <select class="form-select" name="country_id[]" id="add_country_select" multiple>
+                                    <select class="form-select select2" name="country_id[]" id="add_country_select" multiple>
                                         @foreach ($countries as $country)
                                             <option value="{{ $country->id }}">{{ $country->name }}</option>
                                         @endforeach
@@ -110,7 +110,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Choose Gift Category*</label>
-                                    <select class="form-select" name="category_id" id="add_category_select">
+                                    <select class="form-select select2" name="category_id" id="add_category_select">
                                         <option value="" disabled selected>Select Category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->category_name }}</option>
@@ -121,7 +121,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Choose Gift SubCategory</label>
-                                    <select class="form-select" name="subcategory_id" id="add_subcategory_select">
+                                    <select class="form-select select2" name="subcategory_id" id="add_subcategory_select">
                                         <option value="" disabled selected>Select Sub Category</option>
                                     </select>
                                 </div>
@@ -193,7 +193,7 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">Size</label>
-                                        <select class="form-select" name="size_id" id="add_size_select">
+                                        <select class="form-select select2" name="size_id" id="add_size_select">
                                             <option value="">Select Size</option>
                                             @foreach($sizes as $size)
                                                 <option value="{{ $size->id }}">{{ $size->size }}</option>
@@ -204,7 +204,7 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">Color</label>
-                                        <select class="form-select" name="color_id" id="add_color_select">
+                                        <select class="form-select select2" name="color_id" id="add_color_select">
                                             <option value="">Select Color</option>
                                             @foreach($colors as $color)
                                                 <option value="{{ $color->id }}">{{ $color->color }}</option>
@@ -257,7 +257,7 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">Product GST</label>
-                                        <select class="form-select" name="product_gst">
+                                        <select class="form-select select2" name="product_gst">
                                             <option value="" selected>Select GST</option>
                                             <option value="0">0 (GST Included)</option>
                                             <option value="5">5</option>
@@ -355,7 +355,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Choose Country*</label>
-                                    <select class="form-select" name="country_id[]" id="edit_country_select" multiple>
+                                    <select class="form-select select2" name="country_id[]" id="edit_country_select" multiple>
                                         @foreach ($countries as $country)
                                             <option value="{{ $country->id }}">{{ $country->name }}</option>
                                         @endforeach
@@ -365,7 +365,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Choose Gift Category*</label>
-                                    <select class="form-select" name="category_id" id="edit_category_select">
+                                    <select class="form-select select2" name="category_id" id="edit_category_select">
                                         <option value="" disabled selected>Select Category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->category_name }}</option>
@@ -376,7 +376,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Choose Gift SubCategory</label>
-                                    <select class="form-select" name="subcategory_id" id="edit_subcategory_select">
+                                    <select class="form-select select2" name="subcategory_id" id="edit_subcategory_select">
                                         <option value="" disabled selected>Select SubCategory</option>
                                     </select>
                                 </div>

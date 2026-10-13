@@ -71,7 +71,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label">Country <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="add_country_id" name="country_id" required onchange="loadCategories(this.value, 'add_categoryname')">
+                                    <select class="form-control select2" id="add_country_id" name="country_id" required onchange="loadCategories(this.value, 'add_categoryname')">
                                         <option value="">Select Country</option>
                                         @foreach($countries as $country)
                                             <option value="{{ $country->id }}">
@@ -88,7 +88,7 @@
                                         class="dark-asterisk">*</span>
                                     {{-- <input type="text" class="form-control" id="add_categoriesname" name="category_name"
                                         placeholder="Categories name" maxlength="50" required> --}}
-                                    <select name="category_name" id="add_categoryname" class="form-control">
+                                    <select name="category_name" id="add_categoryname" class="form-control select2">
                                         <option value="" disabled selected>Select Category</option>
                                         @if ($cate)
                                             @foreach ($cate as $ct)
@@ -143,7 +143,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label">Country <span class="text-danger">*</span></label>
-                                    <select class="form-control" id="edit_country_id" name="country_id" required onchange="loadCategories(this.value, 'edit_categoryname')">
+                                    <select class="form-control select2" id="edit_country_id" name="country_id" required onchange="loadCategories(this.value, 'edit_categoryname')">
                                         <option value="">Select Country</option>
                                         @foreach($countries as $country)
                                             <option value="{{ $country->id }}">
@@ -161,7 +161,7 @@
                                         class="dark-asterisk">*</span>
                                     {{-- <input type="text" class="form-control" id="add_categoriesname" name="category_name"
                                         placeholder="Categories name" maxlength="50" required> --}}
-                                    <select name="edit_category_name" id="edit_categoryname" class="form-control">
+                                    <select name="edit_category_name" id="edit_categoryname" class="form-control select2">
                                         <option value="" disabled selected>Select Category</option>
                                         @if ($cate)
                                             @foreach ($cate as $ct)

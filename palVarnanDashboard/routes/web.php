@@ -68,7 +68,9 @@ use App\Http\Controllers\SupplierDetailController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\WareHouseBranchController;
 use App\Http\Controllers\WareHouseController;
+use App\Http\Controllers\ShiprocketController;
 use App\Models\Category;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -239,6 +241,11 @@ Route::delete('/admin/coupons/{id}', [NewcouponController::class, 'destroy'])->n
     Route::post("updatestatus",[ProductController::class,"upadetstatus"]);
     Route::post("pickupstatus",[ProductController::class,"pickupstatus"]);
     Route::post("updaterefund", [ProductController::class,"updaterefund"]);
+
+    // Shiprocket Management & Sync
+    Route::get('/shiprocket/pickup-locations', [ShiprocketController::class, 'pickupLocations'])->name('shiprocket.pickup');
+    Route::get('/shiprocket/sync', [ShiprocketController::class, 'syncStatus'])->name('shiprocket.sync');
+
 
 
     // packing details

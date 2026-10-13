@@ -131,7 +131,7 @@
                     <div class="row mb-3 g-2">
                         <!-- <div class="col-md-3">
                             <label class="form-label">Country</label>
-                            <select id="filter-country" class="form-control">
+                            <select id="filter-country" class="form-control select2">
                                 <option value="">All Countries</option>
                                 @foreach($countries ?? [] as $country)
                                     <option value="{{ $country->id }}">{{ $country->name }}</option>
@@ -140,7 +140,7 @@
                         </div> -->
                         <div class="col-md-3">
                             <label class="form-label">Warehouse</label>
-                            <select id="filter-warehouse" class="form-control">
+                            <select id="filter-warehouse" class="form-control select2">
                                 <option value="">All Warehouses</option>
                                 @foreach($warehouses ?? [] as $wh)
                                     <option value="{{ $wh->id }}">{{ $wh->warehouse_name }}</option>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Branch</label>
-                            <select id="filter-branch" class="form-control">
+                            <select id="filter-branch" class="form-control select2">
                                 <option value="">All Branches</option>
                                 @foreach($branches ?? [] as $branch)
                                     <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
@@ -158,7 +158,7 @@
                         </div>
                         <div class="col-md-2">
                             <label class="form-label">Category</label>
-                            <select id="filter-category" class="form-control">
+                            <select id="filter-category" class="form-control select2">
                                 <option value="">All Categories</option>
                                 @foreach($categories ?? [] as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>

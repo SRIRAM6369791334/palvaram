@@ -4340,7 +4340,14 @@ input:focus-visible {
 }
 
 .container-lg {
-    max-width: 1680px;
+    max-width: 1320px;
+    padding-inline: 24px;
+}
+
+@media screen and (max-width: 575px) {
+    .container-lg {
+        padding-inline: 16px;
+    }
 }
 
 /* Column Extra Small Screen */
@@ -10894,4 +10901,38 @@ input:focus-visible {
 
 
 /* ============================== Vendor Two Details Css End =============================== */
+/* ==========================================================================
+   Missing Utility Helpers (referenced across templates but undefined)
+   ========================================================================== */
+.text-15 {
+    font-size: 0.9375rem !important;
+}
+
+.letter-spacing-1 {
+    letter-spacing: 0.06em !important;
+}
+
+.line-height-1-6 {
+    line-height: 1.6 !important;
+}
+
+.max-w-440 {
+    max-width: 440px !important;
+}
+
+.max-h-380 {
+    max-height: 380px !important;
+}
+
+.end-n6 {
+    inset-inline-end: -6px !important;
+}
+
+.shadow-xs {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06) !important;
+}
+
+.border-start-sm {
+    border-inline-start: 1px solid var(--neutral-100, #e5e9ef) !important;
+}
 /*# sourceMappingURL=main.css.map */

@@ -73,7 +73,7 @@
                         <div class="col-lg-12 p-0 mt-3">
                             <div class="form-group">
                                 <label class="label-control" for="delivery_par">Delivery Partner*</label>
-                                <select class="form-control deliverystatus delivery_id_input" id="delivery_par"
+                                <select class="form-control deliverystatus delivery_id_input select2" id="delivery_par"
                                     name="deliver_id" required="">
                                     <option value="" hidden="">No delivery person found!</option>
                                 </select>

@@ -53,7 +53,7 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label">Supplier</label>
-                        <select id="filter-supplier" class="form-control">
+                        <select id="filter-supplier" class="form-control select2">
                             <option value="">All Suppliers</option>
                             @foreach($suppliers as $s)
                                 <option value="{{ $s->supplier_name }}">

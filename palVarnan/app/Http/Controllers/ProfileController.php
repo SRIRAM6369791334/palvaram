@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\ProductOrder;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,16 +66,38 @@ class ProfileController extends Controller
 
     public function index()
     {
-        $wishlistItems = Wishlist::where('user_id', Auth::id())
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('info', 'Please sign in to access your account.');
+        }
+
+        $userId = Auth::id();
+
+        $wishlistItems = Wishlist::where('user_id', $userId)
+            ->whereHas('product')
             ->with(['product.variants', 'variant.unit'])
             ->get();
 
-        $cartItems = Cart::where('user_id', Auth::id())
+        $cartItems = Cart::where('user_id', $userId)
+            ->whereHas('product')
             ->with(['product', 'variant.unit'])
             ->get();
 
-        $cartSubtotal = $cartItems->sum(fn($item) => $item->variant->offer_price * $item->product_quantity);
+        $orders = ProductOrder::where('user_id', $userId)
+            ->with(['items.product', 'items.variant'])
+            ->latest()
+            ->get();
 
-        return view('pages.myaccount', compact('wishlistItems', 'cartItems', 'cartSubtotal'));
+        $addresses = \App\Models\UserAddress::where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        $states = \App\Models\State::all();
+
+        $cartSubtotal = $cartItems->sum(fn($item) => ($item->variant->offer_price ?? $item->product->product_price ?? 0) * $item->product_quantity);
+
+        return view('pages.myaccount', compact('wishlistItems', 'cartItems', 'cartSubtotal', 'orders', 'addresses', 'states'));
     }
 }
+
+
+

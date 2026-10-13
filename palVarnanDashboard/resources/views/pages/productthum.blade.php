@@ -71,7 +71,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_product_select">Choose Product*</label>
-                                    <select class="form-select" name="product_id" id="add_product_select">
+                                    <select class="form-select select2" name="product_id" id="add_product_select">
                                         <option value="" >Select Product</option>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}">
@@ -136,7 +136,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_product_select">Choose Product*</label>
-                                    <select class="form-select" name="product_id" id="edit_product_select">
+                                    <select class="form-select select2" name="product_id" id="edit_product_select">
                                         <option value="" >Select Product</option>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}">

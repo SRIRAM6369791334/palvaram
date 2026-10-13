@@ -48,7 +48,7 @@
                                 <div class="row align-items-start">
                                     <div class="col-sm" style="width: 280px">
                                         <label class="form-label" for="select_category_select">Choose Category*</label>
-                                        <select class="form-select" name="category_id" id="select_category_select">
+                                        <select class="form-select select2" name="category_id" id="select_category_select">
                                             <option value="" disabled selected>Select Category</option>
                                             @foreach ($categories as $category)
                                                 <option value="{{ $category->id }}">
@@ -115,7 +115,7 @@
                             <!-- <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_warehouse_select">Choose Warehouse*</label>
-                                    <select class="form-select" name="warehouse_id" id="add_warehouse_select">
+                                    <select class="form-select select2" name="warehouse_id" id="add_warehouse_select">
                                         <option value="" disabled selected>Select Warehouse</option>
                                     </select>
                                 </div>
@@ -124,7 +124,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_branch_select">Choose Store*</label>
-                                    <select class="form-select" name="branch_id" id="add_branch_select">
+                                    <select class="form-select select2" name="branch_id" id="add_branch_select">
                                         <option value="" disabled selected>Select Store</option>
                                     </select>
                                 </div>
@@ -132,7 +132,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_category_select">Choose Category*</label>
-                                    <select class="form-select" name="category_id" id="add_category_select">
+                                    <select class="form-select select2" name="category_id" id="add_category_select">
                                         <option value="" disabled selected>Select Category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">
@@ -145,7 +145,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_brand_select">Choose Brand</label>
-                                    <select class="form-select" name="brand_id" id="add_brand_select">
+                                    <select class="form-select select2" name="brand_id" id="add_brand_select">
                                         <option value="" selected>Select Brand</option>
                                         @foreach ($brands as $brand)
                                             <option value="{{ $brand->id }}">
@@ -158,7 +158,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_subcategory_select">Choose Sub Category*</label>
-                                    <select class="form-select" name="subcategory_id" id="add_subcategory_select">
+                                    <select class="form-select select2" name="subcategory_id" id="add_subcategory_select">
                                         <option value="" disabled selected>Select Sub Category</option>
                                     </select>
                                 </div>
@@ -321,13 +321,13 @@
                                                             <div class="stock-entry d-flex align-items-end gap-2 mb-5 mt-2">
                                                                 <div style="flex:1">
                                                                     <label class="form-label">Choose Warehouse</label>
-                                                                    <select class="form-select variant-warehouse-select" name="warehouse_id[]">
+                                                                    <select class="form-select variant-warehouse-select select2" name="warehouse_id[]">
                                                                         <option value="" disabled selected>Select Warehouse</option>
                                                                     </select>
                                                                 </div>
                                                                 <div style="flex:1">
                                                                     <label class="form-label">Choose Store </label>
-                                                                    <select class="form-select variant-branch-select" name="branch_id[]">
+                                                                    <select class="form-select variant-branch-select select2" name="branch_id[]">
                                                                         <option value="" disabled selected>Select Store</option>
                                                                     </select>
                                                                 </div>
@@ -387,7 +387,7 @@
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label class="form-label" for="add_unit_select">Product Unit*</label>
-                                                            <select class="form-select" name="unit_id[]" id="add_unit_select">
+                                                            <select class="form-select select2" name="unit_id[]" id="add_unit_select">
                                                                 <option value="" selected>Select Units</option>
                                                                 @foreach($units as $unit)
                                                                     <option value="{{ $unit->id }}">{{ $unit->unit_name }} ({{ $unit->short_name }})</option>
@@ -448,7 +448,7 @@
                                                         <div class="mb-3">
                                                             <label class="form-label" for="">Product
                                                                 GST</label>
-                                                            <select class="form-select" name="product_gst[]"
+                                                            <select class="form-select select2" name="product_gst[]"
                                                                 id="prodgst">
                                                                 <option value="" selected>Select GST</option>
                                                                 <option value="0">0 (GST Included)</option>
@@ -637,7 +637,7 @@
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label" for="bulk_category_select">Choose Category*</label>
-                                <select class="form-select" name="category_id" id="bulk_category_select" required>
+                                <select class="form-select select2" name="category_id" id="bulk_category_select" required>
                                     <option value="" disabled selected>Select Category</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">
@@ -647,13 +647,13 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label" for="bulk_subcategory_select">Choose Sub Category (Optional)</label>
-                                <select class="form-select" name="subcategory_id" id="bulk_subcategory_select">
+                                <select class="form-select select2" name="subcategory_id" id="bulk_subcategory_select">
                                     <option value="" selected>Select Sub Category</option>
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label" for="bulk_brand_select">Choose Brand (Optional)</label>
-                                <select class="form-select" name="brand_id" id="bulk_brand_select">
+                                <select class="form-select select2" name="brand_id" id="bulk_brand_select">
                                     <option value="" selected>Select Brand</option>
                                     @foreach ($brands as $brand)
                                         <option value="{{ $brand->id }}">
@@ -707,7 +707,7 @@
                             <!-- <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_warehouse_select">Choose Warehouse</label>
-                                    <select class="form-select" name="warehouse_id" id="edit_warehouse_select">
+                                    <select class="form-select select2" name="warehouse_id" id="edit_warehouse_select">
                                         <option value="" disabled selected>Select Warehouse</option>
                                     </select>
                                 </div>
@@ -716,7 +716,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_branch_select">Choose Store</label>
-                                    <select class="form-select" name="branch_id" id="edit_branch_select">
+                                    <select class="form-select select2" name="branch_id" id="edit_branch_select">
                                         <option value="" disabled selected>Select Store</option>
                                     </select>
                                 </div>
@@ -724,7 +724,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_category_select">Choose Category*</label>
-                                    <select class="form-select" name="category_id" id="edit_category_select">
+                                    <select class="form-select select2" name="category_id" id="edit_category_select">
                                         <option value="" disabled>Select Category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">
@@ -737,7 +737,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_brand_select">Choose Brand</label>
-                                    <select class="form-select" name="brand_id" id="edit_brand_select">
+                                    <select class="form-select select2" name="brand_id" id="edit_brand_select">
                                         <option value="" selected>Select Brand</option>
                                         @foreach ($brands as $brand)
                                             <option value="{{ $brand->id }}">
@@ -750,7 +750,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_subcategory_select">Choose Sub Category*</label>
-                                    <select class="form-select" name="subcategory_id" id="edit_subcategory_select">
+                                    <select class="form-select select2" name="subcategory_id" id="edit_subcategory_select">
                                         <option value="" disabled selected>Select Sub Category</option>
                                     </select>
                                 </div>
@@ -789,7 +789,7 @@
                             {{-- <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_product_unit">Product Unit*</label>
-                                    <select class="form-select" name="unit_value" id="edit_unit_select">
+                                    <select class="form-select select2" name="unit_value" id="edit_unit_select">
                                         <option value="0"  selected>Select Units</option>
 
                                             <option value="1">l</option>

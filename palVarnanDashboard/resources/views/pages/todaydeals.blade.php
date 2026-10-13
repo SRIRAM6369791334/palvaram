@@ -66,7 +66,7 @@
                                 <div class="mb-3">
                                     <label class="form-label" for="add_productname">Product Name</label><span
                                         class="dark-asterisk">*</span>
-                                    <select name="add_productname" id="add_productname" class="form-control">
+                                    <select name="add_productname" id="add_productname" class="form-control select2">
                                         <option value="" disabled selected>Select Product</option>
                                         @if ($prods)
                                             @foreach ($prods as $ct)
@@ -111,7 +111,7 @@
                                     <input type="hidden" id="edit_deals_id" />
                                     <label class="form-label" for="edit_productname">Product Name</label><span
                                         class="dark-asterisk">*</span>
-                                    <select name="edit_productname" id="edit_productname" class="form-control">
+                                    <select name="edit_productname" id="edit_productname" class="form-control select2">
                                         <option value="" disabled selected>Select Product</option>
                                         @if ($prods)
                                             @foreach ($prods as $ct)

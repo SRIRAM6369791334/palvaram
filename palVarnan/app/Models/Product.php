@@ -33,4 +33,8 @@ class Product extends Model {
     public function productvari() {
         return $this->hasMany( ProductVarient::class );
     }
+
+    public function childImages() {
+        return $this->hasMany( ProductChildImage::class, 'product_id' );
+    }
 }

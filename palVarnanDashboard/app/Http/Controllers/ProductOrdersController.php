@@ -50,10 +50,11 @@ class ProductOrdersController extends Controller {
                 'customer',
                 'country'
             )
-            ->where('status', 'pending')
+            ->whereIn('status', ['pending', 'Order Placed'])
             ->whereIn('country_id', $allowedCountryIds)
             ->latest()
             ->get();
+
 
         return view('pages.product_orders', compact('productOrders'));
     }

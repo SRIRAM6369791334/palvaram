@@ -68,7 +68,7 @@
                             <div class="col-lg-12 ">
                                 <div class="form-group">
                                     <label class="label-control" for="add_status_select">Select Status*</label>
-                                    <select class="form-select" name="select_status"
+                                    <select class="form-select select2" name="select_status"
                                     id="add_status_select2">
                                     <option value="" selected>Select status</option>
                                     <option value="3">Out for Delivery</option>

@@ -9,7 +9,7 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #026966 0%, #026966 40%, #026966 100%);
+            background: linear-gradient(135deg, #1c799b 0%, #1c799b 40%, #1c799b 100%);
             display: flex;
             align-items: center;
             justify-content: center;

@@ -191,28 +191,28 @@
             <div class="card-body pb-0">
                 <div class="hierarchy-bar">
                     <i class="bx bx-filter-alt text-secondary"></i>
-                    <select class="hierarchy-select" id="filterCountry">
+                    <select class="hierarchy-select select2" id="filterCountry">
                         <option value="">All Countries</option>
                         @foreach($countries as $c)
                             <option value="{{ $c->id }}">{{ $c->name }}</option>
                         @endforeach
                     </select>
                     <span class="hierarchy-arrow">›</span>
-                    <select class="hierarchy-select" id="filterWarehouse">
+                    <select class="hierarchy-select select2" id="filterWarehouse">
                         <option value="">All Warehouses</option>
                         @foreach($warehouses as $w)
                             <option value="{{ $w->id }}" data-country="{{ $w->country_id }}">{{ $w->warehouse_name }}</option>
                         @endforeach
                     </select>
                     <span class="hierarchy-arrow">›</span>
-                    <select class="hierarchy-select" id="filterBranch">
+                    <select class="hierarchy-select select2" id="filterBranch">
                         <option value="">All Stores</option>
                         @foreach($branches as $b)
                             <option value="{{ $b->id }}" data-warehouse="{{ $b->warehouse_id }}">{{ $b->branch_name }}</option>
                         @endforeach
                     </select>
                     <span class="hierarchy-arrow">›</span>
-                    <select class="hierarchy-select" id="filterCategory">
+                    <select class="hierarchy-select select2" id="filterCategory">
                         <option value="">All Categories</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->cate_name ?? $cat->category_name ?? $cat->id }}</option>
