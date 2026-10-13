@@ -36,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (config('app.env') === 'production' || request()->header('x-forwarded-proto') === 'https') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         View::composer("layouts.sidebar", function ($view) {
             $milkOrderPendingCount  = MilkOrder::query()->where("is_delivery_assigned", "0")->count();
             $productOrderPendingCount  = ProductOrder::query()->where("payment_status", "paid")->where("status", "processing")->count();
