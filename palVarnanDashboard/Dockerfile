@@ -51,7 +51,7 @@ COPY apache.conf /etc/apache2/sites-available/000-default.conf
 COPY composer.json composer.lock ./
 
 # Install Composer dependencies without running artisan scripts yet
-RUN composer install --no-dev --prefer-dist --no-scripts --no-autoloader --no-interaction
+RUN composer install --no-dev --prefer-dist --no-scripts --no-autoloader --no-plugins --no-interaction
 
 # Copy the rest of the application codebase
 COPY . /var/www/html
