@@ -11,6 +11,7 @@ use App\Http\Controllers\CancelProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompoStockController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\DeliveryPersonController;
 use App\Http\Controllers\HomeController;
@@ -91,6 +92,9 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, "root"])->name("pages.home")->middleware("auth");
     // Route::get('/logout',[LoginController::class,"logout"]);
+
+    // Customer Contact Inquiries
+    Route::resource("contacts", ContactController::class)->only(["index", "destroy"]);
 
     // Customer Page
     Route::resource("customers", UserController::class)->only(["index", "store"]);

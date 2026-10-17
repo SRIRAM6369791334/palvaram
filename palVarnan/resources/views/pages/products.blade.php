@@ -907,8 +907,8 @@
                         <div class="category-sidebar d-flex flex-column gap-6">
 
                             <!-- All Categories Option -->
-                            <div class="filter-item-row {{ !request('category') && !request('subcategory') ? 'active' : '' }}">
-                                <a href="{{ url('/products') }}?{{ http_build_query(request()->except(['category', 'subcategory', 'page'])) }}"
+                            <div class="filter-item-row {{ !request('category') && !request('subcategory') && !request('gift') ? 'active' : '' }}">
+                                <a href="{{ url('/products') }}?{{ http_build_query(request()->except(['category', 'subcategory', 'gift', 'page'])) }}"
                                    class="filter-item-link">
                                     <i class="ph-bold ph-squares-four text-sm text-main-600"></i>
                                     <span>All Products</span>
@@ -920,6 +920,18 @@
                                     <span class="category-toggle-spacer" aria-hidden="true"></span>
                                 </div>
                             </div>
+
+                            <!-- Gifts & Toys Option -->
+                            <div class="filter-item-row {{ request('gift') == '1' ? 'active' : '' }}">
+                                <a href="{{ url('/products') }}?gift=1" class="filter-item-link">
+                                    <i class="ph-bold ph-gift text-sm text-purple-600"></i>
+                                    <span class="fw-semibold text-purple-700">🎁 Gifts & Toys</span>
+                                </a>
+                                <div class="filter-item-meta">
+                                    <span class="category-toggle-spacer" aria-hidden="true"></span>
+                                </div>
+                            </div>
+
 
                             @foreach($categories as $category)
                                 @php
@@ -1147,11 +1159,25 @@
 
                                 @php
                                     $variant = $product->variants->first();
-                                    $variantsWithUnit = $product->variants->filter(fn($v) => !empty($v->value) && !empty($v->unit));
-                                    $discountPct = ($variant && $variant->mrp_price && $variant->offer_price && $variant->mrp_price > $variant->offer_price)
-                                        ? round((($variant->mrp_price - $variant->offer_price) / $variant->mrp_price) * 100)
+                                    if ($product->is_gift) {
+                                        $displayVariants = $product->variants->filter(fn($v) => !empty($v->size) || !empty($v->color) || !empty($v->varient_name));
+                                    } else {
+                                        $displayVariants = $product->variants->filter(fn($v) => !empty($v->value) && !empty($v->unit));
+                                    }
+                                    if ($displayVariants->isEmpty()) {
+                                        $displayVariants = $product->variants;
+                                    }
+                                    $activeVariant = $displayVariants->first() ?? $variant;
+                                    $discountPct = ($activeVariant && $activeVariant->mrp_price && $activeVariant->offer_price && $activeVariant->mrp_price > $activeVariant->offer_price)
+                                        ? round((($activeVariant->mrp_price - $activeVariant->offer_price) / $activeVariant->mrp_price) * 100)
                                         : 0;
                                 @endphp
+
+                                @if($product->is_gift)
+                                    <span class="position-absolute top-0 start-0 m-12 badge bg-purple-50 text-purple-700 border border-purple-200 rounded-pill px-8 py-3 text-xs fw-bold z-1">
+                                        <i class="ph-bold ph-gift me-1"></i>Gift
+                                    </span>
+                                @endif
 
                                 <span class="product-card__badge {{ $discountPct > 0 ? '' : 'd-none' }}" data-discount-badge>
                                     <i class="ph-bold ph-lightning text-xs me-1"></i>{{ $discountPct > 0 ? $discountPct . '% OFF' : '' }}
@@ -1162,7 +1188,7 @@
                                     <button type="button"
                                         class="wishlist-btn wishlist-btn-pill"
                                         data-product-id="{{ $product->id }}"
-                                        data-variant-id="{{ $variant->id ?? '' }}"
+                                        data-variant-id="{{ $activeVariant->id ?? ($variant->id ?? '') }}"
                                         aria-label="Toggle wishlist">
                                         <i class="ph{{ in_array($product->id, $wishlistProductIds ?? []) ? '-fill' : '' }} ph-heart text-xl {{ in_array($product->id, $wishlistProductIds ?? []) ? 'text-danger-600' : 'text-neutral-400' }}"></i>
                                     </button>
@@ -1209,27 +1235,47 @@
 
                                         <!-- Custom Variant Dropdown / Slot -->
                                         <div class="variant-slot w-100">
-                                            @if($variantsWithUnit->count() > 0)
+                                            @if($displayVariants->count() > 0)
                                                 <div class="variant-dropdown-wrap w-100">
                                                     <div class="custom-variant-select" data-product-id="{{ $product->id }}">
+                                                        @php
+                                                            $first = $displayVariants->first();
+                                                            if ($product->is_gift) {
+                                                                $firstLabelParts = [];
+                                                                if ($first->size) $firstLabelParts[] = $first->size->size;
+                                                                if ($first->color) $firstLabelParts[] = $first->color->color;
+                                                                $firstLabel = !empty($firstLabelParts) ? implode(' • ', $firstLabelParts) : ($first->varient_name ?: 'Standard');
+                                                            } else {
+                                                                $firstLabel = ($first->value ?? '') . ($first->unit->short_name ?? '');
+                                                            }
+                                                        @endphp
                                                         <div class="variant-selected-display" role="button" tabindex="0"
                                                             aria-haspopup="listbox" aria-expanded="false" aria-label="Select variant">
-                                                            @php $first = $variantsWithUnit->first(); @endphp
-                                                            <span class="variant-label">{{ $first->value }}{{ $first->unit->short_name ?? '' }}</span>
+                                                            <span class="variant-label">{{ $firstLabel }}</span>
                                                             <span class="variant-price-tag">₹{{ $first->offer_price }}</span>
                                                             <i class="ph ph-caret-down variant-arrow" aria-hidden="true"></i>
                                                         </div>
                                                         <ul class="variant-options-list" role="listbox" aria-label="Available variants">
-                                                            @foreach($variantsWithUnit as $v)
+                                                            @foreach($displayVariants as $v)
+                                                                @php
+                                                                    if ($product->is_gift) {
+                                                                        $vLabelParts = [];
+                                                                        if ($v->size) $vLabelParts[] = $v->size->size;
+                                                                        if ($v->color) $vLabelParts[] = $v->color->color;
+                                                                        $vLabel = !empty($vLabelParts) ? implode(' • ', $vLabelParts) : ($v->varient_name ?: 'Standard');
+                                                                    } else {
+                                                                        $vLabel = ($v->value ?? '') . ($v->unit->short_name ?? '');
+                                                                    }
+                                                                @endphp
                                                                 <li class="variant-option {{ $loop->first ? 'selected' : '' }}"
                                                                     role="option" tabindex="0"
                                                                     aria-selected="{{ $loop->first ? 'true' : 'false' }}"
                                                                     data-variant-id="{{ $v->id }}"
                                                                     data-offer="{{ $v->offer_price }}"
                                                                     data-mrp="{{ $v->mrp_price }}">
-                                                                    <span class="opt-size">{{ $v->value }}{{ $v->unit->short_name ?? '' }}</span>
+                                                                    <span class="opt-size">{{ $vLabel }}</span>
                                                                     <span class="opt-price">
-                                                                        @if($v->mrp_price)
+                                                                        @if($v->mrp_price && $v->mrp_price > $v->offer_price)
                                                                             <span class="opt-mrp">₹{{ $v->mrp_price }}</span>
                                                                         @endif
                                                                         <span class="opt-offer">₹{{ $v->offer_price }}</span>
@@ -1241,12 +1287,13 @@
                                                 </div>
                                             @else
                                                 <div class="variant-placeholder-pill">
-                                                    <i class="ph-bold ph-package text-main-600"></i>
-                                                    <span>Standard Pack</span>
+                                                    <i class="ph-bold {{ $product->is_gift ? 'ph-gift' : 'ph-package' }} text-main-600"></i>
+                                                    <span>{{ $product->is_gift ? 'Gift Item' : 'Standard Pack' }}</span>
                                                 </div>
                                             @endif
                                         </div>
                                     </div>
+
 
                                     <div class="w-100 text-center">
                                         <!-- Price Section -->

@@ -27,4 +27,13 @@ class ProductVarient extends Model
     public function unit() {
         return $this->belongsTo( Unit::class );
     }
+
+    public function size() {
+        return $this->belongsTo( GiftSize::class, 'size_id' );
+    }
+
+    public function color() {
+        return $this->belongsTo( GiftColor::class, 'color_id' );
+    }
 }
+

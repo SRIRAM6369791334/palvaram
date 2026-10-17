@@ -39,7 +39,7 @@
                         Have questions about our fresh farm groceries, pricing, or international export orders? Fill in the form below and our team will get back to you shortly.
                     </p>
 
-                    <form action="#" method="POST" onsubmit="event.preventDefault(); Swal.fire({ icon: 'success', title: 'Message Sent!', text: 'Thank you for reaching out to Pal Varnan. We will contact you shortly.', confirmButtonColor: palMainColor }); this.reset();">
+                    <form id="contactForm" action="{{ route('contact.store') }}" method="POST">
                         @csrf
                         <div class="row gy-4">
                             <!-- Full Name -->
@@ -113,9 +113,9 @@
 
                             <!-- Submit Button -->
                             <div class="col-12 mt-32">
-                                <button type="submit" class="btn btn-main py-16 px-40 rounded-pill d-inline-flex align-items-center gap-10 fw-bold shadow-sm">
-                                    <span>Send Message</span>
-                                    <i class="ph-bold ph-paper-plane-tilt text-lg"></i>
+                                <button type="submit" id="contactSubmitBtn" class="btn btn-main py-16 px-40 rounded-pill d-inline-flex align-items-center gap-10 fw-bold shadow-sm">
+                                    <span id="contactSubmitText">Send Message</span>
+                                    <i class="ph-bold ph-paper-plane-tilt text-lg" id="contactSubmitIcon"></i>
                                 </button>
                             </div>
                         </div>
@@ -271,10 +271,72 @@
                         <span class="text-neutral-500 text-xs">Dedicated helpline +91 8778509639</span>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </section>
 <!-- ========================= Trust Shipping Badges End ========================= -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) return;
+
+    contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('contactSubmitBtn');
+        const submitText = document.getElementById('contactSubmitText');
+        const submitIcon = document.getElementById('contactSubmitIcon');
+        const formData = new FormData(contactForm);
+
+        // Visual loading state
+        submitBtn.disabled = true;
+        submitText.textContent = 'Sending Message...';
+        submitIcon.className = 'ph-bold ph-spinner ph-spin text-lg';
+
+        fetch("{{ route('contact.store') }}", {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+        .then(async response => {
+            const data = await response.json();
+            if (!response.ok) {
+                let errorMsg = data.message || 'Something went wrong. Please check your inputs.';
+                if (data.errors) {
+                    errorMsg = Object.values(data.errors).flat().join('<br>');
+                }
+                throw new Error(errorMsg);
+            }
+            return data;
+        })
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Message Sent!',
+                html: data.message || 'Thank you for reaching out to Pal Varnan. We will contact you shortly.',
+                confirmButtonColor: window.palMainColor || '#1c799b'
+            });
+            contactForm.reset();
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Submission Failed',
+                html: error.message || 'Unable to send message right now. Please try again.',
+                confirmButtonColor: '#e02b2b'
+            });
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitText.textContent = 'Send Message';
+            submitIcon.className = 'ph-bold ph-paper-plane-tilt text-lg';
+        });
+    });
+});
+</script>
 
 @endsection

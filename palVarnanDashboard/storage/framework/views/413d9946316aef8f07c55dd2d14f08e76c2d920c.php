@@ -75,6 +75,19 @@
                     </li>
                     <?php endif; ?>
 
+                    <li>
+                        <a href="<?php echo e(route('contacts.index')); ?>">
+                            <i class="mdi mdi-email-mark-as-unread icon nav-icon"></i>
+                            <span class="menu-item" data-key="t-chat">Contact Inquiries</span>
+                            <?php
+                                $inquiryBadge = \App\Models\Contact::count();
+                            ?>
+                            <?php if($inquiryBadge > 0): ?>
+                                <span class="badge rounded-pill bg-danger float-end me-2"><?php echo e($inquiryBadge); ?></span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+
 
 
                     <?php if( auth()->user()->can('Countries.index') || auth()->user()->can('Warehouse.index') || auth()->user()->can('Warehouse Branch.index') ): ?>

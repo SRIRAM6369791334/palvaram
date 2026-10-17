@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Customer Inquiry - Pal Varnan</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f7f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #1e293b;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f7f6; padding: 40px 16px;">
+        <tr>
+            <td align="center">
+                <!-- Main Container -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 620px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+                    
+                    <!-- Header Bar -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #0c716a 0%, #15803d 100%); padding: 32px 36px; text-align: left;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">
+                                            Pal Varnan
+                                        </h1>
+                                        <p style="margin: 4px 0 0; font-size: 13px; color: #ccfbf1; font-weight: 500;">
+                                            Customer Inquiry Management Notification
+                                        </p>
+                                    </td>
+                                    <td align="right">
+                                        <span style="display: inline-block; padding: 6px 14px; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 9999px; font-size: 12px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            Inquiry #{{ $contact->id }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Body Content -->
+                    <tr>
+                        <td style="padding: 36px 36px 24px;">
+                            
+                            <!-- Alert Badge -->
+                            <div style="display: inline-block; padding: 6px 12px; background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; font-size: 13px; font-weight: 600; color: #065f46; margin-bottom: 20px;">
+                                📩 New Message from Website Storefront
+                            </div>
+
+                            <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 700; color: #0f172a; line-height: 1.3;">
+                                You have received a new customer inquiry
+                            </h2>
+                            <p style="margin: 0 0 28px; font-size: 14px; color: #64748b; line-height: 1.5;">
+                                A visitor submitted the contact form at <strong>palvarnan.com</strong>. Please find the customer and message details below:
+                            </p>
+
+                            <!-- Customer Info Card -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 24px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td width="35%" style="padding: 8px 0; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">
+                                                    Customer Name:
+                                                </td>
+                                                <td width="65%" style="padding: 8px 0; font-size: 15px; font-weight: 700; color: #0f172a;">
+                                                    {{ $contact->name }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; border-top: 1px dashed #e2e8f0;">
+                                                    Email Address:
+                                                </td>
+                                                <td style="padding: 8px 0; font-size: 14px; font-weight: 600; color: #0c716a; border-top: 1px dashed #e2e8f0;">
+                                                    <a href="mailto:{{ $contact->email }}" style="color: #0c716a; text-decoration: underline;">
+                                                        {{ $contact->email }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; border-top: 1px dashed #e2e8f0;">
+                                                    Phone Number:
+                                                </td>
+                                                <td style="padding: 8px 0; font-size: 14px; font-weight: 600; color: #0f172a; border-top: 1px dashed #e2e8f0;">
+                                                    <a href="tel:{{ $contact->phone }}" style="color: #0f172a; text-decoration: none;">
+                                                        {{ $contact->phone ?? 'Not Provided' }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; border-top: 1px dashed #e2e8f0;">
+                                                    Inquiry Topic:
+                                                </td>
+                                                <td style="padding: 8px 0; font-size: 14px; font-weight: 700; color: #0c716a; border-top: 1px dashed #e2e8f0;">
+                                                    <span style="display: inline-block; padding: 4px 10px; background: #e0f2fe; color: #0369a1; border-radius: 6px; font-size: 12px;">
+                                                        {{ $contact->subject }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; border-top: 1px dashed #e2e8f0;">
+                                                    Received At:
+                                                </td>
+                                                <td style="padding: 8px 0; font-size: 13px; color: #475569; border-top: 1px dashed #e2e8f0;">
+                                                    {{ $contact->created_at ? $contact->created_at->format('d M Y, h:i A') : date('d M Y, h:i A') }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Message Box -->
+                            <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 22px; margin-bottom: 28px; border-left: 4px solid #0c716a;">
+                                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: #0c716a; letter-spacing: 0.5px; margin-bottom: 8px;">
+                                    Customer Message
+                                </div>
+                                <div style="font-size: 14px; line-height: 1.6; color: #1e293b; white-space: pre-wrap;">{{ $contact->message }}</div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center">
+                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="border-radius: 8px; background-color: #0c716a; padding: 0 4px;">
+                                                    <a href="mailto:{{ $contact->email }}?subject=Re: {{ urlencode($contact->subject) }} - Pal Varnan" 
+                                                       style="display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 700; color: #ffffff; text-decoration: none; border-radius: 8px;">
+                                                        ✉️ Reply via Email
+                                                    </a>
+                                                </td>
+                                                @php
+                                                    $cleanPhone = preg_replace('/[^0-9]/', '', $contact->phone ?? '');
+                                                @endphp
+                                                @if($cleanPhone)
+                                                <td style="padding-left: 12px;">
+                                                    <a href="https://wa.me/{{ $cleanPhone }}?text=Hello%20{{ urlencode($contact->name) }},%20regarding%20your%20inquiry%20on%20Pal%20Varnan..." 
+                                                       style="display: inline-block; padding: 12px 20px; font-size: 14px; font-weight: 700; color: #0c716a; background-color: #f0fdf4; border: 1px solid #bbf7d0; text-decoration: none; border-radius: 8px;">
+                                                        💬 WhatsApp Customer
+                                                    </a>
+                                                </td>
+                                                @endif
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8fafc; padding: 24px 36px; border-top: 1px solid #e2e8f0; text-align: center;">
+                            <p style="margin: 0 0 6px; font-size: 12px; color: #64748b;">
+                                This is an automated notification from the <strong>Pal Varnan E-Commerce Storefront</strong>.
+                            </p>
+                            <p style="margin: 0; font-size: 12px; color: #94a3b8;">
+                                Log in to <a href="{{ url('http://127.0.0.1:8001/contacts') }}" style="color: #0c716a; text-decoration: underline;">Admin Dashboard</a> to view and manage all inquiries.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

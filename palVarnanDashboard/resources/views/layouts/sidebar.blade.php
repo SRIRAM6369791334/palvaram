@@ -81,6 +81,19 @@
                     </li>
                     @endif
 
+                    <li>
+                        <a href="{{ route('contacts.index') }}">
+                            <i class="mdi mdi-email-mark-as-unread icon nav-icon"></i>
+                            <span class="menu-item" data-key="t-chat">Contact Inquiries</span>
+                            @php
+                                $inquiryBadge = \App\Models\Contact::count();
+                            @endphp
+                            @if($inquiryBadge > 0)
+                                <span class="badge rounded-pill bg-danger float-end me-2">{{ $inquiryBadge }}</span>
+                            @endif
+                        </a>
+                    </li>
+
 
 
                     @if( auth()->user()->can('Countries.index') || auth()->user()->can('Warehouse.index') || auth()->user()->can('Warehouse Branch.index') )

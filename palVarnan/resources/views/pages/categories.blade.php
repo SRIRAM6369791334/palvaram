@@ -395,9 +395,13 @@
                             <div class="flex-grow-1 min-w-0">
                                 <h3 class="cat-card__title text-truncate">
                                     <a href="{{ url('/products?category=' . \Illuminate\Support\Str::slug($category->category_name)) }}">
+                                        @if($category->is_gift)
+                                            <span class="badge bg-purple-100 text-purple-700 border border-purple-200 me-4" style="font-size: 10px; font-weight: 700; vertical-align: middle;">🎁 GIFT</span>
+                                        @endif
                                         {{ $category->category_name }}
                                     </a>
                                 </h3>
+
                                 <span class="cat-card__badge">
                                     {{ $category->products_count ?? 0 }} {{ ($category->products_count ?? 0) === 1 ? 'item' : 'items' }}
                                 </span>

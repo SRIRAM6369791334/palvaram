@@ -82,7 +82,18 @@
                                                     <span class="text-xs fw-semibold text-main-600 bg-main-50 border border-main-200 rounded-pill px-10 py-2 d-inline-block mt-4">
                                                         {{ $item->variant->value }}{{ $item->variant->unit->short_name ?? '' }}
                                                     </span>
+                                                @elseif($item->variant && ($item->variant->size || $item->variant->color || $item->variant->varient_name))
+                                                    @php
+                                                        $giftParts = [];
+                                                        if ($item->variant->size) $giftParts[] = 'Size: ' . $item->variant->size->size;
+                                                        if ($item->variant->color) $giftParts[] = 'Color: ' . $item->variant->color->color;
+                                                        $giftLabel = !empty($giftParts) ? implode(' | ', $giftParts) : ($item->variant->varient_name ?: 'Gift Item');
+                                                    @endphp
+                                                    <span class="text-xs fw-semibold text-purple-700 bg-purple-50 border border-purple-200 rounded-pill px-10 py-2 d-inline-block mt-4">
+                                                        <i class="ph-bold ph-gift me-1"></i>{{ $giftLabel }}
+                                                    </span>
                                                 @endif
+
                                             </div>
 
                                         </div>

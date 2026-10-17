@@ -10,6 +10,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/select-country', [CountryController::class, 'index']);
@@ -18,7 +19,8 @@ Route::post('/select-country', [CountryController::class, 'store']);
 Route::view('/login', 'pages.login')->name('login');
 Route::view('/register', 'pages.register')->name('register');
 Route::view('/about', 'pages.about')->name('about');
-Route::view('/contact', 'pages.contact')->name('contact');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::view('/product', 'pages.product-detail');
 
 // Legal & Policy Pages

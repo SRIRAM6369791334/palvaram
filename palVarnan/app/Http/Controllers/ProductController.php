@@ -39,12 +39,15 @@ class ProductController extends Controller
             }])
             ->get();
 
-        $products = Product::with('variants.unit');
+        $products = Product::with(['variants.unit', 'variants.size', 'variants.color']);
 
         $products->where(function ($q) use ($countryId) {
-            $q->where('country_id', $countryId)
-              ->orWhereNull('country_id');
+            $q->whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+              ->orWhere('country_id', $countryId)
+              ->orWhereNull('country_id')
+              ->orWhere('country_id', '');
         });
+
 
         // Canonical Slug Redirect when numeric IDs are requested (e.g. category=2 -> category=savouries)
         if ($request->has('category') && is_numeric($request->category)) {
@@ -105,6 +108,11 @@ class ProductController extends Controller
             $products->where('brand_id', $request->brand);
         }
 
+        if ($request->has('gift')) {
+            $products->where('is_gift', $request->gift == '1' || $request->gift === 'true' ? 1 : 0);
+        }
+
+
         $cartProductIds = [];
         $cartItems = collect();
 
@@ -162,34 +170,39 @@ class ProductController extends Controller
 
         $countryId = session('country_id');
 
-        $product = Product::with('variants.unit', 'category', 'brand', 'childImages')
+        $product = Product::with(['variants.unit', 'variants.size', 'variants.color', 'category', 'brand', 'childImages'])
             ->where('slug', $slug)
             ->firstOrFail();
 
-        $relatedProducts = Product::with('variants.unit')
+        $relatedProducts = Product::with(['variants.unit', 'variants.size', 'variants.color'])
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where(function ($q) use ($countryId) {
-                $q->where('country_id', $countryId)
-                ->orWhereNull('country_id');
+                $q->whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+                  ->orWhere('country_id', $countryId)
+                  ->orWhereNull('country_id')
+                  ->orWhere('country_id', '');
             })
             ->latest()
             ->take(8)
             ->get();
 
         if ($relatedProducts->count() < 4) {
-            $extraProducts = Product::with('variants.unit')
+            $extraProducts = Product::with(['variants.unit', 'variants.size', 'variants.color'])
                 ->where('id', '!=', $product->id)
                 ->whereNotIn('id', $relatedProducts->pluck('id'))
                 ->where(function ($q) use ($countryId) {
-                    $q->where('country_id', $countryId)
-                    ->orWhereNull('country_id');
+                    $q->whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+                      ->orWhere('country_id', $countryId)
+                      ->orWhereNull('country_id')
+                      ->orWhere('country_id', '');
                 })
                 ->latest()
                 ->take(8 - $relatedProducts->count())
                 ->get();
             $relatedProducts = $relatedProducts->concat($extraProducts);
         }
+
 
         $cartProductIds = [];
         $cartItems = collect();

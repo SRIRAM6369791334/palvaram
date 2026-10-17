@@ -27,9 +27,13 @@ class CategoryController extends Controller
             })
             ->withCount(['products' => function ($q) use ($countryId) {
                 $q->where(function ($sq) use ($countryId) {
-                    $sq->where('country_id', $countryId)->orWhereNull('country_id');
+                    $sq->whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+                       ->orWhere('country_id', $countryId)
+                       ->orWhereNull('country_id')
+                       ->orWhere('country_id', '');
                 });
             }])
+
             ->get();
 
         // Fetch all subcategories for this country

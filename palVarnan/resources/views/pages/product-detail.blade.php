@@ -380,7 +380,14 @@
 </style>
 
 @php
-    $variantsWithUnit = $product->variants->filter(fn($v) => !empty($v->value) && !empty($v->unit));
+    if ($product->is_gift) {
+        $variantsWithUnit = $product->variants->filter(fn($v) => !empty($v->size) || !empty($v->color) || !empty($v->varient_name));
+    } else {
+        $variantsWithUnit = $product->variants->filter(fn($v) => !empty($v->value) && !empty($v->unit));
+    }
+    if ($variantsWithUnit->isEmpty()) {
+        $variantsWithUnit = $product->variants;
+    }
     $firstVariant = $variantsWithUnit->first() ?? $product->variants->first();
     
     // Calculate initial savings percentage
@@ -388,6 +395,7 @@
     if ($firstVariant && $firstVariant->mrp_price && $firstVariant->mrp_price > $firstVariant->offer_price) {
         $discountPercent = round((($firstVariant->mrp_price - $firstVariant->offer_price) / $firstVariant->mrp_price) * 100);
     }
+
 
     // Build image collection
     $galleryImages = collect();
@@ -606,16 +614,26 @@
                                 </div>
                             </div>
 
-                            <!-- Size / Weight Variant Selector -->
+                            <!-- Size / Weight / Gift Variant Selector -->
                             @if($variantsWithUnit->count() > 0)
                             <div class="mb-24">
-                                <span class="text-gray-900 d-block mb-10 fw-semibold text-sm">Select Size / Weight:</span>
+                                <span class="text-gray-900 d-block mb-10 fw-semibold text-sm">
+                                    {{ $product->is_gift ? 'Select Gift Size & Color:' : 'Select Size / Weight:' }}
+                                </span>
                                 <div class="flex-align flex-wrap gap-8" id="variant-selector">
                                     @foreach($variantsWithUnit as $v)
                                         @php
                                             $vDiscount = ($v->mrp_price && $v->mrp_price > $v->offer_price)
                                                 ? round((($v->mrp_price - $v->offer_price) / $v->mrp_price) * 100)
                                                 : 0;
+                                            if ($product->is_gift) {
+                                                $vLabelParts = [];
+                                                if ($v->size) $vLabelParts[] = $v->size->size;
+                                                if ($v->color) $vLabelParts[] = $v->color->color;
+                                                $pillText = !empty($vLabelParts) ? implode(' • ', $vLabelParts) : ($v->varient_name ?: 'Standard');
+                                            } else {
+                                                $pillText = ($v->value ?? '') . ($v->unit->short_name ?? '');
+                                            }
                                         @endphp
                                         <button type="button"
                                             class="variant-pill border rounded-pill px-16 py-8 text-sm fw-medium transition-1
@@ -626,13 +644,17 @@
                                             data-discount="{{ $vDiscount }}"
                                             data-sku="{{ $v->sku ?? 'PV-' . $product->id }}"
                                             data-img="{{ $v->varient_img ? (Str::startsWith($v->varient_img, 'http') ? $v->varient_img : env('MAIN_URL') . 'images/' . $v->varient_img) : '' }}">
-                                            <span>{{ $v->value }}{{ $v->unit->short_name ?? '' }}</span>
+                                            @if($product->is_gift)
+                                                <i class="ph-bold ph-gift text-xs me-1"></i>
+                                            @endif
+                                            <span>{{ $pillText }}</span>
                                             <span class="text-xs opacity-75 ms-4">₹{{ $v->offer_price }}</span>
                                         </button>
                                     @endforeach
                                 </div>
                             </div>
                             @endif
+
 
                             <!-- Quantity Stepper, Add to Cart & Wishlist -->
                             <span class="text-gray-900 d-block mb-8 text-sm fw-medium">Quantity:</span>
@@ -886,8 +908,15 @@
                                             </tr>
                                             @if($firstVariant)
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">Available Size / Unit</th>
-                                                <td class="text-gray-700 py-12 px-20">{{ $firstVariant->value }}{{ $firstVariant->unit->short_name ?? '' }}</td>
+                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">Available {{ $product->is_gift ? 'Size / Color' : 'Size / Unit' }}</th>
+                                                <td class="text-gray-700 py-12 px-20">
+                                                    @if($product->is_gift)
+                                                        {{ $firstVariant->size->size ?? 'Standard' }} @if($firstVariant->color) • Color: {{ $firstVariant->color->color }} @endif
+                                                    @else
+                                                        {{ $firstVariant->value }}{{ $firstVariant->unit->short_name ?? '' }}
+                                                    @endif
+                                                </td>
+
                                             </tr>
                                             <tr>
                                                 <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">SKU Code</th>
@@ -1093,7 +1122,14 @@
             @foreach($relatedProducts as $rp)
                 @php
                     $rv = $rp->variants->first();
-                    $rpVariantsWithUnit = $rp->variants->filter(fn($v) => !empty($v->value) && !empty($v->unit));
+                    if ($rp->is_gift) {
+                        $rpVariantsWithUnit = $rp->variants->filter(fn($v) => !empty($v->size) || !empty($v->color) || !empty($v->varient_name));
+                    } else {
+                        $rpVariantsWithUnit = $rp->variants->filter(fn($v) => !empty($v->value) && !empty($v->unit));
+                    }
+                    if ($rpVariantsWithUnit->isEmpty()) {
+                        $rpVariantsWithUnit = $rp->variants;
+                    }
                     $rpDiscount = 0;
                     if ($rv && $rv->mrp_price && $rv->mrp_price > $rv->offer_price) {
                         $rpDiscount = round((($rv->mrp_price - $rv->offer_price) / $rv->mrp_price) * 100);
@@ -1148,18 +1184,38 @@
                             <div class="variant-dropdown-wrap mb-12 mt-12">
                                 <div class="custom-variant-select" data-product-id="{{ $rp->id }}">
                                     <div class="variant-selected-display">
-                                        @php $rpFirst = $rpVariantsWithUnit->first(); @endphp
-                                        <span class="variant-label fw-medium">{{ $rpFirst->value }}{{ $rpFirst->unit->short_name ?? '' }}</span>
+                                        @php
+                                            $rpFirst = $rpVariantsWithUnit->first();
+                                            if ($rp->is_gift) {
+                                                $lblParts = [];
+                                                if ($rpFirst->size) $lblParts[] = $rpFirst->size->size;
+                                                if ($rpFirst->color) $lblParts[] = $rpFirst->color->color;
+                                                $rpFirstLabel = !empty($lblParts) ? implode(' • ', $lblParts) : ($rpFirst->varient_name ?: 'Standard');
+                                            } else {
+                                                $rpFirstLabel = ($rpFirst->value ?? '') . ($rpFirst->unit->short_name ?? '');
+                                            }
+                                        @endphp
+                                        <span class="variant-label fw-medium">{{ $rpFirstLabel }}</span>
                                         <span class="variant-price-tag fw-semibold text-main-600">₹{{ $rpFirst->offer_price }}</span>
                                         <i class="ph ph-caret-down variant-arrow text-gray-500"></i>
                                     </div>
                                     <ul class="variant-options-list">
                                         @foreach($rpVariantsWithUnit as $v)
+                                        @php
+                                            if ($rp->is_gift) {
+                                                $lblParts = [];
+                                                if ($v->size) $lblParts[] = $v->size->size;
+                                                if ($v->color) $lblParts[] = $v->color->color;
+                                                $vLabel = !empty($lblParts) ? implode(' • ', $lblParts) : ($v->varient_name ?: 'Standard');
+                                            } else {
+                                                $vLabel = ($v->value ?? '') . ($v->unit->short_name ?? '');
+                                            }
+                                        @endphp
                                         <li class="variant-option {{ $loop->first ? 'selected' : '' }}"
                                             data-variant-id="{{ $v->id }}"
                                             data-offer="{{ $v->offer_price }}"
                                             data-mrp="{{ $v->mrp_price }}">
-                                            <span class="opt-size">{{ $v->value }}{{ $v->unit->short_name ?? '' }}</span>
+                                            <span class="opt-size">{{ $vLabel }}</span>
                                             <span class="opt-price">
                                                 @if($v->mrp_price)
                                                     <span class="opt-mrp text-gray-400 text-decoration-line-through me-4 text-xs">₹{{ $v->mrp_price }}</span>
@@ -1171,6 +1227,7 @@
                                     </ul>
                                 </div>
                             </div>
+
                             @else
                             <div class="variant-dropdown-wrap mb-12 mt-12" style="visibility: hidden;">
                                 <div class="variant-selected-display" style="opacity: 0; pointer-events: none;">
