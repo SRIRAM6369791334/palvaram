@@ -1,0 +1,1000 @@
+{
+    "name": "palvarnan_db",
+    "children": [
+        {
+            "name": "Users & Stakeholders",
+            "children": [
+                {
+                    "name": "address_types",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 4,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2023-05-04 16:19:01\",\"max\":\"2023-05-04 16:20:05\"},\"updated_at\":{\"min\":\"2023-05-04 16:19:01\",\"max\":\"2023-05-04 16:20:05\"}}"
+                },
+                {
+                    "name": "dashboard_users",
+                    "value": 2,
+                    "rows": 2,
+                    "columns": 14,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2023-11-03 10:03:51\",\"max\":\"2026-04-07 11:38:22\"},\"updated_at\":{\"min\":\"2026-04-20 09:40:57\",\"max\":\"2026-04-27 10:31:27\"}}"
+                },
+                {
+                    "name": "delivery_people",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 11,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "gender_types",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 4,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2023-05-16 15:07:17\",\"max\":\"2023-05-16 15:07:17\"},\"updated_at\":{\"min\":\"2023-05-16 15:07:17\",\"max\":\"2023-05-16 15:07:17\"}}"
+                },
+                {
+                    "name": "mail_otps",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "otps",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2024-02-28 16:29:15\",\"max\":\"2024-02-28 16:33:36\"},\"updated_at\":{\"min\":\"2024-02-28 16:29:15\",\"max\":\"2024-02-28 16:33:36\"},\"validity_time\":{\"min\":\"2024-02-28 11:01:15\",\"max\":\"2024-02-28 11:05:36\"}}"
+                },
+                {
+                    "name": "supplier_details",
+                    "value": 4,
+                    "rows": 4,
+                    "columns": 9,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-06-26 10:20:16\",\"max\":\"2026-06-26 10:48:08\"},\"updated_at\":{\"min\":\"2026-06-26 10:20:16\",\"max\":\"2026-06-26 11:36:07\"}}"
+                },
+                {
+                    "name": "users",
+                    "value": 6,
+                    "rows": 6,
+                    "columns": 29,
+                    "pks": "id",
+                    "fks": 3,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-01-12 10:24:55\",\"max\":\"2026-08-17 04:38:01\"},\"updated_at\":{\"min\":\"2026-02-24 05:32:46\",\"max\":\"2026-10-13 08:21:21\"}}"
+                },
+                {
+                    "name": "user_addresses",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 25,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-07-20 09:33:17\",\"max\":\"2026-08-17 05:00:06\"},\"updated_at\":{\"min\":\"2026-07-20 09:33:17\",\"max\":\"2026-08-17 05:00:06\"}}"
+                }
+            ]
+        },
+        {
+            "name": "Geography & Service Areas",
+            "children": [
+                {
+                    "name": "all_india_pincodes",
+                    "value": 154797,
+                    "rows": 154797,
+                    "columns": 14,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 20905.8,
+                    "time": "None"
+                },
+                {
+                    "name": "areas",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 5,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "area_assigns",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 5,
+                    "pks": "id",
+                    "fks": 2,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "cities",
+                    "value": 7692,
+                    "rows": 7692,
+                    "columns": 3,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 320,
+                    "time": "None"
+                },
+                {
+                    "name": "city_list",
+                    "value": 899,
+                    "rows": 899,
+                    "columns": 4,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 64,
+                    "time": "None"
+                },
+                {
+                    "name": "countries",
+                    "value": 2,
+                    "rows": 2,
+                    "columns": 8,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-04-15 11:45:25\",\"max\":\"2026-04-15 11:45:50\"},\"updated_at\":{\"min\":\"2026-05-18 22:47:13\",\"max\":\"2026-05-18 22:48:08\"}}"
+                },
+                {
+                    "name": "country_tables",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 3,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "districts",
+                    "value": 38,
+                    "rows": 38,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2023-05-18 05:38:52\",\"max\":\"2023-05-18 05:38:52\"},\"updated_at\":{\"min\":\"2023-05-18 05:38:52\",\"max\":\"2023-05-18 05:38:52\"}}"
+                },
+                {
+                    "name": "states",
+                    "value": 39,
+                    "rows": 39,
+                    "columns": 7,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"updated_at\":{\"min\":\"2026-02-23 11:09:55\",\"max\":\"2026-02-23 11:09:55\"},\"created_at\":{\"min\":\"2025-07-03 11:15:25\",\"max\":\"2025-07-03 11:15:25\"}}"
+                },
+                {
+                    "name": "state_list",
+                    "value": 36,
+                    "rows": 36,
+                    "columns": 2,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                }
+            ]
+        },
+        {
+            "name": "Notifications & Alerts",
+            "children": [
+                {
+                    "name": "app_alerts",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 9,
+                    "pks": "id",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "app_notifications",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 9,
+                    "pks": "id",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "notifications",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 13,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-23 16:41:09\",\"max\":\"2026-02-23 16:41:09\"},\"updated_at\":{\"min\":\"2026-02-23 16:41:09\",\"max\":\"2026-02-23 16:41:09\"}}"
+                },
+                {
+                    "name": "user_read_notifications",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 4,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                }
+            ]
+        },
+        {
+            "name": "CMS & Marketing Banners",
+            "children": [
+                {
+                    "name": "banner_images",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 5,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "contacts",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 7,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-24 07:58:52\",\"max\":\"2026-02-24 07:58:52\"},\"updated_at\":{\"min\":\"2026-02-24 07:58:52\",\"max\":\"2026-02-24 07:58:52\"}}"
+                },
+                {
+                    "name": "contact_details",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2023-09-27 18:29:20\",\"max\":\"2023-09-27 18:29:20\"}}"
+                },
+                {
+                    "name": "home_promotions",
+                    "value": 4,
+                    "rows": 4,
+                    "columns": 11,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-20 11:47:29\",\"max\":\"2026-02-20 11:47:29\"},\"updated_at\":{\"min\":\"2026-05-26 12:18:02\",\"max\":\"2026-05-26 12:54:40\"}}"
+                },
+                {
+                    "name": "offer_images",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 5,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "scrolling_bars",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 4,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-01-25 12:04:27\",\"max\":\"2026-01-25 12:04:27\"},\"updated_at\":{\"min\":\"2026-01-25 12:04:27\",\"max\":\"2026-01-25 12:04:27\"}}"
+                },
+                {
+                    "name": "testimonials",
+                    "value": 4,
+                    "rows": 4,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2023-12-14 17:51:09\",\"max\":\"2023-12-14 17:52:03\"},\"updated_at\":{\"min\":\"2023-12-14 17:51:09\",\"max\":\"2023-12-14 17:52:03\"}}"
+                },
+                {
+                    "name": "web_images",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 4,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                }
+            ]
+        },
+        {
+            "name": "Products & Catalog",
+            "children": [
+                {
+                    "name": "brands",
+                    "value": 8,
+                    "rows": 8,
+                    "columns": 8,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-06 11:19:03\",\"max\":\"2026-02-17 11:09:23\"},\"updated_at\":{\"min\":\"2026-02-10 10:07:21\",\"max\":\"2026-05-26 15:44:07\"}}"
+                },
+                {
+                    "name": "categories",
+                    "value": 15,
+                    "rows": 15,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2025-02-11 16:33:11\",\"max\":\"2026-04-21 17:32:46\"},\"updated_at\":{\"min\":\"2025-07-01 17:19:00\",\"max\":\"2026-04-21 17:32:46\"}}"
+                },
+                {
+                    "name": "products",
+                    "value": 14,
+                    "rows": 14,
+                    "columns": 29,
+                    "pks": "id",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-04-20 17:39:38\",\"max\":\"2026-06-05 17:20:44\"},\"updated_at\":{\"min\":\"2026-04-20 18:30:58\",\"max\":\"2026-10-12 13:03:34\"},\"deleted_at\":{\"min\":\"2026-04-20 18:30:58\",\"max\":\"2026-06-05 17:19:04\"}}"
+                },
+                {
+                    "name": "productstocks",
+                    "value": 16,
+                    "rows": 16,
+                    "columns": 16,
+                    "pks": "id",
+                    "fks": 2,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-04-20 18:33:20\",\"max\":\"2026-06-27 10:50:12\"},\"updated_at\":{\"min\":\"2026-04-20 18:33:20\",\"max\":\"2026-08-17 05:18:19\"}}"
+                },
+                {
+                    "name": "product_child_images",
+                    "value": 9,
+                    "rows": 9,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2025-05-20 17:18:28\",\"max\":\"2026-02-24 11:08:26\"},\"updated_at\":{\"min\":\"2025-05-20 17:18:28\",\"max\":\"2026-02-24 11:08:26\"}}"
+                },
+                {
+                    "name": "product_orders",
+                    "value": 13,
+                    "rows": 13,
+                    "columns": 51,
+                    "pks": "id",
+                    "fks": 2,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-23 05:35:40\",\"max\":\"2026-08-17 05:18:19\"},\"updated_at\":{\"min\":\"2026-02-23 05:35:40\",\"max\":\"2026-08-17 05:18:20\"}}"
+                },
+                {
+                    "name": "product_order_items",
+                    "value": 21,
+                    "rows": 21,
+                    "columns": 14,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-21 10:08:52\",\"max\":\"2026-08-17 05:18:19\"},\"updated_at\":{\"min\":\"2026-02-21 10:08:52\",\"max\":\"2026-08-17 05:18:19\"}}"
+                },
+                {
+                    "name": "product_order_user_addresses",
+                    "value": 13,
+                    "rows": 13,
+                    "columns": 19,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-23 05:35:40\",\"max\":\"2026-08-17 05:18:19\"},\"updated_at\":{\"min\":\"2026-02-23 05:35:40\",\"max\":\"2026-08-17 05:18:19\"}}"
+                },
+                {
+                    "name": "product_refunds",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 7,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "product_slots",
+                    "value": 15,
+                    "rows": 15,
+                    "columns": 22,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-23 05:35:40\",\"max\":\"2026-08-17 05:18:19\"},\"updated_at\":{\"min\":\"2026-02-23 05:35:40\",\"max\":\"2026-08-17 05:18:19\"}}"
+                },
+                {
+                    "name": "product_stock_batches",
+                    "value": 6,
+                    "rows": 6,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-05-11 15:38:03\",\"max\":\"2026-06-27 10:50:12\"},\"updated_at\":{\"min\":\"2026-05-11 15:38:03\",\"max\":\"2026-06-27 10:50:12\"},\"manufacturing_date\":{\"min\":\"2026-05-11\",\"max\":\"2026-05-11\"},\"expiry_date\":{\"min\":\"2026-05-12\",\"max\":\"2026-07-17\"}}"
+                },
+                {
+                    "name": "product_tracking",
+                    "value": 43,
+                    "rows": 43,
+                    "columns": 15,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2025-06-04 15:02:38\",\"max\":\"2026-08-17 05:18:19\"},\"updated_at\":{\"min\":\"2025-06-04 15:02:38\",\"max\":\"2026-08-17 05:18:19\"}}"
+                },
+                {
+                    "name": "product_transaction_logs",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-08-17 05:18:19\",\"max\":\"2026-08-17 05:18:19\"},\"updated_at\":{\"min\":\"2026-08-17 05:18:19\",\"max\":\"2026-08-17 05:18:19\"},\"order_date\":{\"min\":\"2026-08-17 00:00:00\",\"max\":\"2026-08-17 00:00:00\"}}"
+                },
+                {
+                    "name": "product_varient",
+                    "value": 14,
+                    "rows": 14,
+                    "columns": 32,
+                    "pks": "id",
+                    "fks": 2,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-05-18 12:32:10\",\"max\":\"2026-08-17 10:48:19\"},\"updated_at\":{\"min\":\"2026-04-20 18:36:26\",\"max\":\"2026-08-17 05:18:19\"}}"
+                },
+                {
+                    "name": "sub_categories",
+                    "value": 11,
+                    "rows": 11,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2025-05-30 12:27:29\",\"max\":\"2026-04-28 11:03:32\"},\"updated_at\":{\"min\":\"2025-05-30 12:27:29\",\"max\":\"2026-04-28 11:03:32\"}}"
+                },
+                {
+                    "name": "today_deals",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 7,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "units",
+                    "value": 10,
+                    "rows": 10,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-02-06 11:19:03\",\"max\":\"2026-05-18 17:46:51\"},\"updated_at\":{\"min\":\"2026-02-06 11:19:03\",\"max\":\"2026-05-18 17:46:51\"}}"
+                }
+            ]
+        },
+        {
+            "name": "Shopping & Cart Operations",
+            "children": [
+                {
+                    "name": "bulkorders",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 8,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "cancel_requests",
+                    "value": 7,
+                    "rows": 7,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2024-05-22 15:11:14\",\"max\":\"2024-05-24 15:15:42\"},\"updated_at\":{\"min\":\"2024-05-22 15:11:14\",\"max\":\"2024-05-24 15:15:42\"}}"
+                },
+                {
+                    "name": "carts",
+                    "value": 20,
+                    "rows": 20,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2025-12-23 10:09:05\",\"max\":\"2026-10-17 04:59:33\"},\"updated_at\":{\"min\":\"2025-12-23 10:09:05\",\"max\":\"2026-10-17 04:59:33\"}}"
+                },
+                {
+                    "name": "coupons",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 11,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-05-12 16:53:53\",\"max\":\"2026-05-12 16:53:53\"},\"updated_at\":{\"min\":\"2026-05-12 17:03:37\",\"max\":\"2026-05-12 17:03:37\"},\"start_date\":{\"min\":\"2026-05-12\",\"max\":\"2026-05-12\"},\"end_date\":{\"min\":\"2026-05-17\",\"max\":\"2026-05-17\"}}"
+                },
+                {
+                    "name": "newcoupons",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "onetimes",
+                    "value": 136,
+                    "rows": 136,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"validity_time\":{\"min\":\"2024-02-28 11:09:17\",\"max\":\"2024-07-09 04:22:00\"}}"
+                },
+                {
+                    "name": "reviews",
+                    "value": 9,
+                    "rows": 9,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2024-03-21 11:17:09\",\"max\":\"2024-05-15 05:35:47\"},\"updated_at\":{\"min\":\"2024-03-21 11:17:09\",\"max\":\"2024-05-15 05:35:47\"}}"
+                },
+                {
+                    "name": "wishlists",
+                    "value": 9,
+                    "rows": 9,
+                    "columns": 8,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2025-07-05 04:35:00\",\"max\":\"2026-10-13 07:10:03\"},\"updated_at\":{\"min\":\"2025-07-05 04:35:00\",\"max\":\"2026-10-13 07:10:03\"}}"
+                }
+            ]
+        },
+        {
+            "name": "System & Configuration",
+            "children": [
+                {
+                    "name": "cache",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 3,
+                    "pks": "key",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "cache_locks",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 3,
+                    "pks": "key",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "delivery_charge_details",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 4,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2024-03-11 18:32:28\",\"max\":\"2024-03-11 18:32:28\"}}"
+                },
+                {
+                    "name": "failed_jobs",
+                    "value": 2,
+                    "rows": 2,
+                    "columns": 7,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 32,
+                    "time": "{\"failed_at\":{\"min\":\"2023-04-05 16:41:49\",\"max\":\"2023-04-05 18:26:35\"}}"
+                },
+                {
+                    "name": "free_shipping_settings",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2025-07-16 11:16:59\",\"max\":\"2025-07-16 11:16:59\"},\"updated_at\":{\"min\":\"2025-07-22 18:57:46\",\"max\":\"2025-07-22 18:57:46\"}}"
+                },
+                {
+                    "name": "jobs",
+                    "value": 8,
+                    "rows": 8,
+                    "columns": 7,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":1680761631,\"max\":1697175087}}"
+                },
+                {
+                    "name": "job_batches",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "migrations",
+                    "value": 132,
+                    "rows": 132,
+                    "columns": 3,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "plan_types",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 4,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2023-05-05 09:43:37\",\"max\":\"2023-05-05 09:44:41\"},\"updated_at\":{\"min\":\"2023-05-05 09:43:37\",\"max\":\"2023-05-05 09:44:41\"}}"
+                },
+                {
+                    "name": "sessions",
+                    "value": 2,
+                    "rows": 2,
+                    "columns": 6,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "tests",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 3,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                }
+            ]
+        },
+        {
+            "name": "Gift System",
+            "children": [
+                {
+                    "name": "gift_color",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 5,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-06-05 15:11:27\",\"max\":\"2026-06-05 15:11:27\"},\"updated_at\":{\"min\":\"2026-06-05 15:11:27\",\"max\":\"2026-06-05 15:11:27\"}}"
+                },
+                {
+                    "name": "gift_purchase_orders",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-06-26 15:38:10\",\"max\":\"2026-06-26 15:38:10\"},\"updated_at\":{\"min\":\"2026-06-27 10:50:12\",\"max\":\"2026-06-27 10:50:12\"}}"
+                },
+                {
+                    "name": "gift_purchase_order_items",
+                    "value": 1,
+                    "rows": 1,
+                    "columns": 17,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-06-26 15:38:10\",\"max\":\"2026-06-26 15:38:10\"},\"updated_at\":{\"min\":\"2026-06-26 15:38:10\",\"max\":\"2026-06-26 15:38:10\"}}"
+                },
+                {
+                    "name": "gift_size",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 5,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-06-05 13:24:55\",\"max\":\"2026-06-05 14:54:58\"},\"updated_at\":{\"min\":\"2026-06-05 13:24:55\",\"max\":\"2026-06-05 14:54:58\"}}"
+                }
+            ]
+        },
+        {
+            "name": "Milk Delivery System",
+            "children": [
+                {
+                    "name": "milk_orders",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 18,
+                    "pks": "id",
+                    "fks": 3,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "milk_order_user_addresses",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 14,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "milk_refunds",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 7,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "milk_slots",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "milk_transaction_logs",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                }
+            ]
+        },
+        {
+            "name": "Auth & RBAC Permissions",
+            "children": [
+                {
+                    "name": "model_has_permissions",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 3,
+                    "pks": "permission_id, model_type, model_id",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "model_has_roles",
+                    "value": 2,
+                    "rows": 2,
+                    "columns": 3,
+                    "pks": "role_id, model_type, model_id",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "password_resets",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 3,
+                    "pks": "",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "password_reset_tokens",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 3,
+                    "pks": "email",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "permissions",
+                    "value": 94,
+                    "rows": 94,
+                    "columns": 5,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-04-07 10:49:06\",\"max\":\"2026-05-18 23:18:45\"},\"updated_at\":{\"min\":\"2026-04-07 10:49:06\",\"max\":\"2026-05-18 23:18:45\"}}"
+                },
+                {
+                    "name": "personal_access_tokens",
+                    "value": 54,
+                    "rows": 54,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2023-04-03 12:53:43\",\"max\":\"2024-01-08 15:40:51\"},\"updated_at\":{\"min\":\"2023-04-03 12:53:43\",\"max\":\"2024-01-08 15:40:51\"},\"last_used_at\":{\"min\":\"2023-04-04 09:21:45\",\"max\":\"2023-04-05 10:41:12\"}}"
+                },
+                {
+                    "name": "roles",
+                    "value": 2,
+                    "rows": 2,
+                    "columns": 5,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-04-06 12:54:21\",\"max\":\"2026-04-06 12:54:23\"},\"updated_at\":{\"min\":\"2026-04-06 12:54:21\",\"max\":\"2026-04-06 12:54:23\"}}"
+                },
+                {
+                    "name": "role_has_permissions",
+                    "value": 136,
+                    "rows": 136,
+                    "columns": 2,
+                    "pks": "permission_id, role_id",
+                    "fks": 2,
+                    "size_kb": 16,
+                    "time": "None"
+                }
+            ]
+        },
+        {
+            "name": "Procurement & Purchase Orders",
+            "children": [
+                {
+                    "name": "purchase_orders",
+                    "value": 5,
+                    "rows": 5,
+                    "columns": 12,
+                    "pks": "id",
+                    "fks": 4,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-05-11 15:35:38\",\"max\":\"2026-06-25 16:18:20\"},\"updated_at\":{\"min\":\"2026-05-11 15:38:03\",\"max\":\"2026-07-31 14:46:22\"}}"
+                },
+                {
+                    "name": "purchase_order_items",
+                    "value": 7,
+                    "rows": 7,
+                    "columns": 15,
+                    "pks": "id",
+                    "fks": 3,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-05-11 15:35:38\",\"max\":\"2026-06-25 16:18:20\"},\"updated_at\":{\"min\":\"2026-05-11 15:35:38\",\"max\":\"2026-06-25 16:18:20\"}}"
+                }
+            ]
+        },
+        {
+            "name": "Warehouse & Inventory",
+            "children": [
+                {
+                    "name": "stock_distributions",
+                    "value": 2,
+                    "rows": 2,
+                    "columns": 12,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-05-12 12:13:07\",\"max\":\"2026-05-12 12:13:28\"},\"updated_at\":{\"min\":\"2026-06-08 15:28:55\",\"max\":\"2026-06-08 15:28:55\"},\"distributed_at\":{\"min\":\"2026-05-12 12:13:07\",\"max\":\"2026-05-12 12:13:28\"}}"
+                },
+                {
+                    "name": "stock_transfers",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 11,
+                    "pks": "id",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-06-08 15:18:29\",\"max\":\"2026-07-31 15:01:49\"},\"updated_at\":{\"min\":\"2026-06-08 15:28:55\",\"max\":\"2026-07-31 15:01:49\"}}"
+                },
+                {
+                    "name": "warehouse",
+                    "value": 3,
+                    "rows": 3,
+                    "columns": 10,
+                    "pks": "id",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-04-15 18:31:20\",\"max\":\"2026-04-28 14:42:47\"},\"updated_at\":{\"min\":\"2026-04-15 18:31:20\",\"max\":\"2026-04-28 14:42:47\"}}"
+                },
+                {
+                    "name": "warehouse_branch",
+                    "value": 4,
+                    "rows": 4,
+                    "columns": 11,
+                    "pks": "id",
+                    "fks": 2,
+                    "size_kb": 16,
+                    "time": "{\"created_at\":{\"min\":\"2026-04-16 10:06:11\",\"max\":\"2026-04-28 14:43:38\"},\"updated_at\":{\"min\":\"2026-04-16 10:06:11\",\"max\":\"2026-04-28 14:43:38\"}}"
+                }
+            ]
+        },
+        {
+            "name": "Laravel Telescope",
+            "children": [
+                {
+                    "name": "telescope_entries",
+                    "value": 530,
+                    "rows": 530,
+                    "columns": 8,
+                    "pks": "sequence",
+                    "fks": 0,
+                    "size_kb": 1552,
+                    "time": "{\"created_at\":{\"min\":\"2023-04-28 05:38:31\",\"max\":\"2023-04-28 06:50:25\"}}"
+                },
+                {
+                    "name": "telescope_entries_tags",
+                    "value": 127,
+                    "rows": 127,
+                    "columns": 2,
+                    "pks": "",
+                    "fks": 1,
+                    "size_kb": 16,
+                    "time": "None"
+                },
+                {
+                    "name": "telescope_monitoring",
+                    "value": 1,
+                    "rows": 0,
+                    "columns": 1,
+                    "pks": "",
+                    "fks": 0,
+                    "size_kb": 16,
+                    "time": "None"
+                }
+            ]
+        }
+    ]
+}

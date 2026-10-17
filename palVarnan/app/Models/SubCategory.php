@@ -12,4 +12,9 @@ class SubCategory extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function getSlugAttribute()
+    {
+        return \Illuminate\Support\Str::slug($this->subcategory_name);
+    }
 }

@@ -8,8 +8,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WishlistController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/select-country', [CountryController::class, 'index']);
 Route::post('/select-country', [CountryController::class, 'store']);
@@ -31,6 +32,7 @@ Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/search', [SearchController::class, 'search']);
 Route::get('/products', [ProductController::class, 'index']);
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 
 Route::post('/register-store', [AuthController::class, 'registerStore']) ->name('register.store');
 Route::post('/login-store', [AuthController::class, 'login'])->name('login.store');

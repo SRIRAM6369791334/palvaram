@@ -30,5 +30,9 @@ class Category extends Model
     {
         return $this->hasMany(SubCategory::class);
     }
-    
+
+    public function getSlugAttribute()
+    {
+        return \Illuminate\Support\Str::slug($this->category_name);
+    }
 }

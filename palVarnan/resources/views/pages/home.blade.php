@@ -79,6 +79,17 @@
     <!-- ============================ Feature Section start =============================== -->
 <div class="feature" id="featureSection">
     <div class="container container-lg">
+        <div class="d-flex align-items-center justify-content-between mb-24 flex-wrap gap-12 pt-24">
+            <div>
+                <h5 class="mb-0 fw-bold text-heading">Popular Categories</h5>
+                <span class="text-neutral-500 text-xs">Explore fresh farm selections and pantry essentials</span>
+            </div>
+            <a href="{{ url('/categories') }}" class="btn btn-sm btn-outline-main rounded-pill px-16 d-flex align-items-center gap-6 fw-semibold text-xs">
+                <span>View All Categories</span>
+                <i class="ph-bold ph-arrow-right"></i>
+            </a>
+        </div>
+
         <div class="position-relative arrow-center gradient-shadow">
             <div class="flex-align">
                 <button type="button" id="feature-item-wrapper-prev" class="slick-prev slick-arrow flex-center rounded-circle bg-white text-xl hover-bg-main-600 hover-text-white transition-1">
@@ -93,13 +104,12 @@
             @foreach($categories as $category)
                 <div class="feature-item text-center wow bounceIn" data-aos="fade-up" data-aos-duration="400">
                     <div class="feature-item__thumb rounded-circle">
-                        <a href="/products" class="w-100 h-100 flex-center">
+                        <a href="/products?category={{ \Illuminate\Support\Str::slug($category->category_name) }}" class="w-100 h-100 flex-center" title="{{ $category->category_name }}">
                             <img src="{{ env('MAIN_URL') }}images/{{ $category->category_image }}" alt="{{ $category->category_name }}">
                         </a>
                     </div>
                     <div class="feature-item__content mt-16">
-                        <h6 class="text-lg mb-8"><a href="/products" class="text-inherit">{{ $category->category_name }}</a></h6>
-                        <!-- <span class="text-sm text-gray-400">125+ Products</span> -->
+                        <h6 class="text-lg mb-8"><a href="/products?category={{ \Illuminate\Support\Str::slug($category->category_name) }}" class="text-inherit">{{ $category->category_name }}</a></h6>
                     </div>
                 </div>
             @endforeach

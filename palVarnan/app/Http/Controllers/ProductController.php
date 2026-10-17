@@ -46,12 +46,59 @@ class ProductController extends Controller
               ->orWhereNull('country_id');
         });
 
-        if ($request->category) {
-            $products->where('category_id', $request->category);
+        // Canonical Slug Redirect when numeric IDs are requested (e.g. category=2 -> category=savouries)
+        if ($request->has('category') && is_numeric($request->category)) {
+            $cat = Category::find($request->category);
+            if ($cat) {
+                $params = $request->query();
+                $params['category'] = \Illuminate\Support\Str::slug($cat->category_name);
+                if ($request->has('subcategory') && is_numeric($request->subcategory)) {
+                    $sub = SubCategory::find($request->subcategory);
+                    if ($sub) {
+                        $params['subcategory'] = \Illuminate\Support\Str::slug($sub->subcategory_name);
+                    }
+                }
+                return redirect()->to(url('/products') . '?' . http_build_query($params));
+            }
+        } elseif ($request->has('subcategory') && is_numeric($request->subcategory)) {
+            $sub = SubCategory::find($request->subcategory);
+            if ($sub) {
+                $params = $request->query();
+                $params['subcategory'] = \Illuminate\Support\Str::slug($sub->subcategory_name);
+                return redirect()->to(url('/products') . '?' . http_build_query($params));
+            }
         }
 
+        $selectedCategory = null;
+        if ($request->category) {
+            $catSlug = $request->category;
+            $selectedCategory = $categories->first(function($c) use ($catSlug) {
+                return (string)$c->id === (string)$catSlug || \Illuminate\Support\Str::slug($c->category_name) === (string)$catSlug;
+            });
+            if (!$selectedCategory) {
+                $selectedCategory = Category::whereRaw("LOWER(REPLACE(category_name, ' ', '-')) = ?", [strtolower($catSlug)])
+                    ->orWhereRaw("LOWER(category_name) = ?", [strtolower(str_replace('-', ' ', $catSlug))])
+                    ->first();
+            }
+            if ($selectedCategory) {
+                $products->where('category_id', $selectedCategory->id);
+            }
+        }
+
+        $selectedSubcategory = null;
         if ($request->subcategory) {
-            $products->where('subcategory_id', $request->subcategory);
+            $subSlug = $request->subcategory;
+            $selectedSubcategory = $subcategories->first(function($s) use ($subSlug) {
+                return (string)$s->id === (string)$subSlug || \Illuminate\Support\Str::slug($s->subcategory_name) === (string)$subSlug;
+            });
+            if (!$selectedSubcategory) {
+                $selectedSubcategory = SubCategory::whereRaw("LOWER(REPLACE(subcategory_name, ' ', '-')) = ?", [strtolower($subSlug)])
+                    ->orWhereRaw("LOWER(subcategory_name) = ?", [strtolower(str_replace('-', ' ', $subSlug))])
+                    ->first();
+            }
+            if ($selectedSubcategory) {
+                $products->where('subcategory_id', $selectedSubcategory->id);
+            }
         }
 
         if ($request->brand) {
@@ -104,7 +151,7 @@ class ProductController extends Controller
 
         $products = $products->paginate($perPage);
 
-        return view('pages.products', compact('categories', 'subcategories', 'brands', 'products', 'cartProductIds', 'cartItems', 'wishlistProductIds', 'sort'));
+        return view('pages.products', compact('categories', 'subcategories', 'brands', 'products', 'cartProductIds', 'cartItems', 'wishlistProductIds', 'sort', 'selectedCategory', 'selectedSubcategory'));
     }
 
     public function show($slug)

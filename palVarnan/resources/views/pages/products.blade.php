@@ -923,15 +923,22 @@
 
                             @foreach($categories as $category)
                                 @php
+                                    $catSlug = \Illuminate\Support\Str::slug($category->category_name);
                                     $subs = $subcategories->where('category_name', $category->id);
-                                    $isCatActive = request('category') == $category->id;
-                                    $hasActiveSub = $subs->contains('id', request('subcategory'));
+                                    $isCatActive = (isset($selectedCategory) && $selectedCategory && $selectedCategory->id == $category->id)
+                                        || request('category') == $category->id
+                                        || request('category') == $catSlug;
+                                    $hasActiveSub = $subs->contains(function($s) use ($selectedSubcategory) {
+                                        return (isset($selectedSubcategory) && $selectedSubcategory && $selectedSubcategory->id == $s->id)
+                                            || request('subcategory') == $s->id
+                                            || request('subcategory') == \Illuminate\Support\Str::slug($s->subcategory_name);
+                                    });
                                     $isOpen = $isCatActive || $hasActiveSub;
                                 @endphp
 
                                 <div class="category-item">
                                     <div class="filter-item-row {{ $isCatActive ? 'active' : '' }}">
-                                        <a href="/products?category={{ $category->id }}{{ request('sort') ? '&sort=' . request('sort') : '' }}"
+                                        <a href="/products?category={{ $catSlug }}{{ request('sort') ? '&sort=' . request('sort') : '' }}"
                                            class="filter-item-link">
                                             <i class="ph-bold ph-tag text-xs {{ $isCatActive ? 'text-main-600' : 'text-neutral-400' }}"></i>
                                             <span>{{ $category->category_name }}</span>
@@ -959,9 +966,14 @@
                                         <ul id="cat{{ $category->id }}"
                                             class="subcategory-list {{ $isOpen ? '' : 'd-none' }}">
                                             @foreach($subs as $sub)
-                                                @php $isSubActive = request('subcategory') == $sub->id; @endphp
+                                                @php
+                                                    $subSlug = \Illuminate\Support\Str::slug($sub->subcategory_name);
+                                                    $isSubActive = (isset($selectedSubcategory) && $selectedSubcategory && $selectedSubcategory->id == $sub->id)
+                                                        || request('subcategory') == $sub->id
+                                                        || request('subcategory') == $subSlug;
+                                                @endphp
                                                 <li>
-                                                    <a href="/products?category={{ $category->id }}&subcategory={{ $sub->id }}{{ request('sort') ? '&sort=' . request('sort') : '' }}"
+                                                    <a href="/products?category={{ $catSlug }}&subcategory={{ $subSlug }}{{ request('sort') ? '&sort=' . request('sort') : '' }}"
                                                        class="subcategory-link {{ $isSubActive ? 'active' : '' }}">
                                                         <i class="ph-bold ph-caret-right text-xs {{ $isSubActive ? 'text-main-600' : 'text-neutral-400' }}"></i>
                                                         <span>{{ $sub->subcategory_name }}</span>

@@ -19,6 +19,9 @@
                 <li class="nav-menu__item {{ request()->is('products*') ? 'activePage' : '' }}">
                     <a href="/products" class="nav-menu__link text-heading fw-semibold">Products</a>
                 </li>
+                <li class="nav-menu__item {{ request()->is('categories*') ? 'activePage' : '' }}">
+                    <a href="{{ url('/categories') }}" class="nav-menu__link text-heading fw-semibold">Categories</a>
+                </li>
                 <li class="nav-menu__item {{ request()->is('about') ? 'activePage' : '' }}">
                     <a href="{{ route('about') }}" class="nav-menu__link text-heading fw-semibold">About Us</a>
                 </li>
@@ -95,6 +98,11 @@
                         </a>
                     </li>
                     <li class="nav-menu__item">
+                        <a href="{{ url('/categories') }}" class="nav-menu__link text-heading text-15 fw-semibold {{ request()->is('categories*') ? 'text-main-600 active' : '' }} hover-text-main-600 transition-1 py-8 position-relative">
+                            Categories
+                        </a>
+                    </li>
+                    <li class="nav-menu__item">
                         <a href="{{ route('about') }}" class="nav-menu__link text-heading text-15 fw-semibold {{ request()->is('about') ? 'text-main-600 active' : '' }} hover-text-main-600 transition-1 py-8 position-relative">
                             About Us
                         </a>
@@ -168,7 +176,7 @@
                     <ul class="scroll-sm p-8 m-0 list-unstyled max-h-380 overflow-y-auto">
                         @forelse($headerCategories as $cat)
                             <li>
-                                <a href="{{ url('/products?category=' . $cat->id) }}" class="d-flex align-items-center gap-10 py-10 px-14 rounded-8 text-neutral-600 hover-text-main-600 hover-bg-main-50 transition-1 text-sm fw-medium text-decoration-none">
+                                <a href="{{ url('/products?category=' . \Illuminate\Support\Str::slug($cat->category_name)) }}" class="d-flex align-items-center gap-10 py-10 px-14 rounded-8 text-neutral-600 hover-text-main-600 hover-bg-main-50 transition-1 text-sm fw-medium text-decoration-none">
                                     <span class="w-24 h-24 flex-center text-main-600 text-base flex-shrink-0">
                                         <i class="ph-bold ph-tag"></i>
                                     </span>
@@ -184,9 +192,15 @@
                             </li>
                         @endforelse
                         <li class="border-top border-neutral-50 pt-6 mt-6">
-                            <a href="/products" class="d-flex align-items-center justify-content-between py-8 px-14 rounded-8 text-main-600 hover-bg-main-50 text-xs fw-bold text-decoration-none">
-                                <span>Browse All Catalog</span>
+                            <a href="{{ url('/categories') }}" class="d-flex align-items-center justify-content-between py-8 px-14 rounded-8 text-main-600 hover-bg-main-50 text-xs fw-bold text-decoration-none">
+                                <span>View All Categories</span>
                                 <i class="ph-bold ph-arrow-right"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/products" class="d-flex align-items-center justify-content-between py-8 px-14 rounded-8 text-neutral-600 hover-bg-main-50 text-xs fw-medium text-decoration-none">
+                                <span>Browse All Catalog</span>
+                                <i class="ph-bold ph-caret-right"></i>
                             </a>
                         </li>
                     </ul>
