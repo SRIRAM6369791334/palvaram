@@ -136,36 +136,56 @@ class ProductManagementController extends Controller
             $order = DB::table('product_orders')->where('order_id', $request->order_id)->first();
             if (!$order) return response()->json(['success' => false, 'message' => 'Order not found']);
 
-            if (!in_array($order->status, ['pending', 'processing'])) {
+            if (!in_array(strtolower($order->status), ['pending', 'order placed', 'processing'])) {
                 return response()->json(['success' => false, 'message' => 'Order cannot be cancelled in its current status.']);
             }
 
             // Cancel the order
             DB::table('product_orders')
-                ->where('order_id', $request->order_id)
+                ->where('id', $order->id)
                 ->update([
                     'status'     => 'cancelled',
                     'reason'     => $request->reason,
                     'updated_at' => now(),
                 ]);
 
-            // Re-stock cancelled order items
-            $items = DB::table('product_order_items')->where('order_id', $request->order_id)->get();
+            // Re-stock cancelled order items across both variant and stock pool (TC-SK03)
+            $items = DB::table('product_order_items')->where('order_id', $order->id)->get();
             foreach ($items as $item) {
-                DB::table('productstocks')
-                    ->where('productid', $item->product_id)
-                    ->increment('availablestock', $item->quantity);
-                DB::table('productstocks')
-                    ->where('productid', $item->product_id)
-                    ->update(['last_stockupdate_date' => now()->toDateString(), 'updated_at' => now()]);
+                $variantId = $item->product_variant_id ?? $item->product_varient_id ?? null;
+                // Restore in productstocks
+                if (!empty($variantId)) {
+                    DB::table('productstocks')
+                        ->where('pro_ver_id', $variantId)
+                        ->increment('availablestock', $item->quantity);
+                    DB::table('productstocks')
+                        ->where('pro_ver_id', $variantId)
+                        ->decrement('salestock', min($item->quantity, DB::table('productstocks')->where('pro_ver_id', $variantId)->value('salestock') ?? $item->quantity));
+                    DB::table('productstocks')
+                        ->where('pro_ver_id', $variantId)
+                        ->update(['last_stockupdate_date' => now()->toDateString(), 'updated_at' => now()]);
+
+                    // Sync storefront variant stock
+                    DB::table('product_varient')
+                        ->where('id', $variantId)
+                        ->increment('product_qty', $item->quantity);
+                } else {
+                    DB::table('productstocks')
+                        ->where('productid', $item->product_id)
+                        ->increment('availablestock', $item->quantity);
+                    DB::table('productstocks')
+                        ->where('productid', $item->product_id)
+                        ->update(['last_stockupdate_date' => now()->toDateString(), 'updated_at' => now()]);
+                }
             }
 
-            // Log refund (extend with actual Razorpay API call or wallet logic as needed)
+            // Log refund
             DB::table('cancel_requests')->insert([
-                'order_id'   => $request->order_id,
-                'reason'     => $request->reason,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'order_id'        => $request->order_id,
+                'user_id'         => $order->user_id ?? 1,
+                'approval_status' => 1,
+                'created_at'      => now(),
+                'updated_at'      => now(),
             ]);
 
             DB::commit();

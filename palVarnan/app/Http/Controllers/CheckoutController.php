@@ -70,6 +70,30 @@ class CheckoutController extends Controller
 
         $states = State::all();
 
+        $appliedCoupon = session('applied_coupon');
+        $couponDiscount = 0;
+        if ($appliedCoupon) {
+            $coupon = Coupon::find($appliedCoupon['id'] ?? null);
+            if ($coupon && $coupon->coupon_status == 1 && (empty($coupon->end_date) || strtotime($coupon->end_date) >= strtotime(date('Y-m-d')))) {
+                if (empty($coupon->mini_amt) || $subtotal >= $coupon->mini_amt) {
+                    if ($coupon->discounttype == 1) { // Flat
+                        $couponDiscount = min($subtotal, (float)$coupon->discount);
+                    } elseif ($coupon->discounttype == 2) { // Percentage
+                        $couponDiscount = min($subtotal, round($subtotal * ((float)$coupon->discount / 100), 2));
+                    } else {
+                        $couponDiscount = min($subtotal, (float)$coupon->discount);
+                    }
+                    session(['applied_coupon.discount' => $couponDiscount]);
+                } else {
+                    session()->forget('applied_coupon');
+                    $appliedCoupon = null;
+                }
+            } else {
+                session()->forget('applied_coupon');
+                $appliedCoupon = null;
+            }
+        }
+
         return view('pages.checkout', compact(
             'user',
             'addresses',
@@ -79,7 +103,9 @@ class CheckoutController extends Controller
             'subtotal',
             'totalGst',
             'totalWeight',
-            'states'
+            'states',
+            'appliedCoupon',
+            'couponDiscount'
         ));
     }
 
@@ -283,9 +309,11 @@ class CheckoutController extends Controller
             $gstAmount += ($price * $quantity) * ($gstRate / 100);
         }
 
-        $shipping = floatval($request->shipping_charge ?? 0);
-        $discount = floatval($request->coupon_discount ?? 0);
-        $total = ($subtotal + $gstAmount + $shipping) - $discount;
+        $shipping = max(0, floatval($request->shipping_charge ?? 0));
+        // Security check: validate discount against authenticated session coupon to prevent client-side tampering (TC-CH01 / TC-CH11)
+        $sessionDiscount = floatval(session('applied_coupon.discount', 0));
+        $discount = min($sessionDiscount, max(0, floatval($request->coupon_discount ?? 0)));
+        $total = max(0, ($subtotal + $gstAmount + $shipping) - $discount);
 
         $orderNumber = 'ORD-' . strtoupper(uniqid());
 
@@ -294,6 +322,7 @@ class CheckoutController extends Controller
             // 1. Table: product_orders (Master)
             $order = ProductOrder::create([
                 'user_id' => $userId,
+                'country_id' => session('country_id') ?? $user->country_id ?? 243,
                 'order_number' => $orderNumber,
                 'order_id' => $orderNumber, // For dashboard compatibility
                 'billing_name' => $request->shipping_name,
@@ -317,6 +346,7 @@ class CheckoutController extends Controller
                 'subtotal' => $subtotal,
                 'gst_amount' => $gstAmount,
                 'shipping_charge' => $shipping,
+                'coupon_discount' => $discount,
                 'total_amount' => $total,
                 'courier_name' => $request->selected_courier_name,
                 'status' => 'Order Placed',
@@ -417,6 +447,7 @@ class CheckoutController extends Controller
 
             // 6. Clear Cart
             Cart::where('user_id', $userId)->delete();
+            session()->forget('applied_coupon');
 
             DB::commit();
 
@@ -585,6 +616,10 @@ class CheckoutController extends Controller
             ]);
         }
 
+        if (str_contains(url()->previous(), 'myaccount')) {
+            return redirect('/myaccount#tab-addresses')->with('success', 'Address added successfully.')->with('tab', 'addresses');
+        }
+
         return redirect()->route('checkout.index', ['address_id' => $address->id])->with('success', 'Address added.');
     }
 
@@ -593,7 +628,7 @@ class CheckoutController extends Controller
      */
     public function updateAddress(Request $request, UserAddress $address)
     {
-        abort_unless($address->user_id === Auth::id(), 403);
+        abort_unless((string)$address->user_id === (string)Auth::id(), 403);
 
         $validated = $this->validateAddress($request);
 
@@ -618,6 +653,10 @@ class CheckoutController extends Controller
             ]);
         }
 
+        if (str_contains(url()->previous(), 'myaccount')) {
+            return redirect('/myaccount#tab-addresses')->with('success', 'Address updated successfully.')->with('tab', 'addresses');
+        }
+
         return redirect()->route('checkout.index', ['address_id' => $address->id])->with('success', 'Address updated.');
     }
 
@@ -626,8 +665,12 @@ class CheckoutController extends Controller
      */
     public function destroyAddress(UserAddress $address)
     {
-        abort_unless($address->user_id === Auth::id(), 403);
+        abort_unless((string)$address->user_id === (string)Auth::id(), 403);
         $address->delete();
+
+        if (str_contains(url()->previous(), 'myaccount')) {
+            return redirect('/myaccount#tab-addresses')->with('success', 'Address removed successfully.')->with('tab', 'addresses');
+        }
 
         return back()->with('success', 'Address removed.');
     }
@@ -671,17 +714,31 @@ class CheckoutController extends Controller
 
     private function validateAddress(Request $request): array
     {
+        $countryId = Auth::user()->country_id ?? session('country_id', 243);
+        $isIndia = in_array((int)$countryId, [243, 99, 101]);
+
+        $phoneRule = $isIndia 
+            ? ['required', 'regex:/^[6-9][0-9]{9}$/']
+            : ['required', 'regex:/^[0-9+ \-]{7,20}$/'];
+
+        $pincodeRule = $isIndia 
+            ? ['required', 'regex:/^[1-9][0-9]{5}$/']
+            : ['required', 'regex:/^[0-9a-zA-Z \-]{3,10}$/'];
+
         return $request->validate([
-            'first_name'               => ['required', 'string', 'max:255'],
-            'last_name'                => ['required', 'string', 'max:255'],
-            'phone_number'             => ['required', 'string', 'max:20'],
+            'first_name'               => ['required', 'string', 'max:100'],
+            'last_name'                => ['required', 'string', 'max:100'],
+            'phone_number'             => $phoneRule,
             'email'                    => ['required', 'email', 'max:255'],
             'address_line_one'         => ['required', 'string', 'max:255'],
             'address_line_two'         => ['nullable', 'string', 'max:255'],
             'landmark'                 => ['nullable', 'string', 'max:255'],
-            'city'                     => ['required', 'string', 'max:255'],
-            'state'                    => ['required', 'string', 'max:255'],
-            'pincode'                  => ['required', 'string', 'max:10'],
+            'city'                     => ['required', 'string', 'max:100'],
+            'state'                    => ['required', 'string', 'max:100'],
+            'pincode'                  => $pincodeRule,
+        ], [
+            'phone_number.regex'       => 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
+            'pincode.regex'            => 'Please enter a valid 6-digit postal pincode.',
         ]);
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -65,9 +66,37 @@ class AuthController extends Controller
 
         Auth::login($user);
 
+        // Migrate Guest Cart to Logged-in User
+        try {
+            $guestItems = Cart::where('ip_addresscart', $request->ip())
+                ->whereNull('user_id')
+                ->get();
+
+            foreach ($guestItems as $item) {
+                $userExisting = Cart::where('user_id', $user->id)
+                    ->where('product_id', $item->product_id)
+                    ->where('product_varient_id', $item->product_varient_id)
+                    ->first();
+
+                if ($userExisting) {
+                    $userExisting->product_quantity += $item->product_quantity;
+                    $userExisting->save();
+                    $item->delete();
+                } else {
+                    $item->user_id = $user->id;
+                    $item->save();
+                }
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Guest cart migration failed: ' . $e->getMessage());
+        }
+
+        $redirectUrl = $request->input('redirect', '/');
+
         return response()->json([
-            'success' => true,
-            'message' => 'Login successful'
+            'success'      => true,
+            'message'      => 'Login successful',
+            'redirect_url' => $redirectUrl
         ]);
     }
 

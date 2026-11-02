@@ -43,3 +43,22 @@
 - **Dual-Layout DOM Coexistence**: In dashboard templates (like Minia / Themesbrand), `master.blade.php` includes both `@include('layouts.topbar')`, `@include('layouts.sidebar')`, and `@include('layouts.horizontal')` simultaneously in the DOM. `assets/js/app.js` is the layout coordinator that checks `data-layout="vertical"` on `<body>`, hides `.ishorizontal-topbar`, displays `.vertical-menu`, and initializes MetisMenu accordion events.
 - **Consequence of Missing `app.js`**: When a new page blade view fails to include `<script src="{{ URL::asset('assets/js/app.js') }}"></script>` in its `@section('script')`, the default template horizontal navbar (`Dashboard | Apps | Bootstrap | Components | Pages`) remains visible across the top and the left vertical sidebar is suppressed. Always ensure `app.js` is loaded so the vertical menu and topbar render as expected.
 
+## [Unified_Variant_Table_Architecture]
+- **Unified Variant Storage (`product_varient`)**: Both grocery products (weight/volume based) and gift products (dimension/color based) share the `product_varient` table rather than separate tables.
+  - Grocery variants store `unit_id` + `value` with `size_id = null`, `color_id = null`.
+  - Gift variants store `size_id` + `color_id` with `unit_id = null`.
+  - Both types utilize the same `offer_price`, `mrp_price`, `product_qty`, and `sku` columns.
+- **Query Hygiene**: When querying storefront or cart variants, checking `$v->size_id || $v->color_id` or `$product->is_gift` cleanly delineates the two UX rendering paths without needing disparate database tables.
+
+## [Product_Table_Schema_Conventions]
+- **Slug and Deletion Columns**: The `products` table defines the slug column strictly as `slug` (not `product_slug`).
+- **Soft Deletes**: Active status is controlled via Laravel's soft-delete column `deleted_at`, not a boolean `status` flag. Queries must check `WHERE deleted_at IS NULL`.
+
+## [Order_Country_Id_Dashboard_Visibility_Rule]
+- **Dashboard Country Filtering**: In `ProductOrdersController@index`, orders are strictly filtered via `whereIn('country_id', $allowedCountryIds)`. When `CheckoutController::placeOrder` leaves `country_id = null`, the order is created in the database but silently hidden from the admin orders screen. Always explicitly populate `'country_id' => session('country_id') ?? $user->country_id ?? 243` upon order creation to ensure immediate visibility.
+
+## [Guest_Cart_Session_Migration]
+- **Preserving Guest Cart on Login**: When an unauthenticated visitor adds items to their cart (`ip_addresscart`) and is then prompted to log in to proceed to checkout (`/login?redirect=/checkout`), their guest cart items must be migrated to `user_id = $user->id` within `AuthController::login`. Incrementing quantity for duplicate variants and transferring unique variants ensures zero friction and zero lost sales.
+
+
+

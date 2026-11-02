@@ -132,6 +132,42 @@ window.addEventListener('DOMContentLoaded', function () {
 
 @endif
 
+@if(session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '{{ session('error') }}',
+        confirmButtonColor: palMainColor,
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
+
+@if(session('info'))
+<script>
+    Swal.fire({
+        icon: 'info',
+        title: 'Notice',
+        text: '{{ session('info') }}',
+        confirmButtonColor: palMainColor,
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
+
+@if($errors->any())
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: '{{ $errors->first() }}',
+        confirmButtonColor: palMainColor,
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
+
 @auth
 <!-- @if(isset($cartCount) && $cartCount > 0) -->
 <div id="floating-cart-bar" onclick="window.location.href='/cart'" style="
@@ -172,7 +208,7 @@ window.addEventListener('DOMContentLoaded', function () {
     <div style="flex-shrink:0;text-align:right;">
         <div style="font-size:11px;color:#000;line-height:1.2;">subtotal</div>
         <div id="fcb-subtotal" style="font-size:14px;font-weight:600;color:#111827;line-height:1.3;">
-            ₹{{ number_format($cartSubtotal, 0) }}
+            {{ $currencySymbol ?? '₹' }}{{ number_format($cartSubtotal, 0) }}
         </div>
     </div>
 
@@ -231,14 +267,14 @@ function refreshCartSubtotal() {
     .then(r => r.json())
     .then(data => {
         const el = document.getElementById('fcb-subtotal');
-        if (el) el.textContent = '₹' + Number(data.subtotal).toLocaleString('en-IN');
+        const curr = '{{ $currencySymbol ?? "₹" }}'; if (el) el.textContent = curr + Number(data.subtotal).toLocaleString();
     });
 }
 
 // Call this after cart.store to also update subtotal display
 function updateFloatingSubtotal(amount) {
     const el = document.getElementById('fcb-subtotal');
-    if (el) el.textContent = '₹' + amount.toLocaleString('en-IN');
+    const curr = '{{ $currencySymbol ?? "₹" }}'; if (el) el.textContent = curr + amount.toLocaleString();
 }
 
 </script>

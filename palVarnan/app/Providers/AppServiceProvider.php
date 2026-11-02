@@ -70,9 +70,16 @@ class AppServiceProvider extends ServiceProvider
                 );
             }
 
+            $countryId = session('country_id') ?? (Auth::check() ? (Auth::user()->country_id ?? 243) : 243);
+            $currencySymbol = ((int)$countryId === 244) ? '$' : '₹';
+            $currencyCode   = ((int)$countryId === 244) ? 'MXN' : 'INR';
+
             $view->with('cartCount', $cartCount);
             $view->with('wishlistCount', $wishlistCount);
             $view->with('cartSubtotal', $cartSubtotal);
+            $view->with('currencySymbol', $currencySymbol);
+            $view->with('currencyCode', $currencyCode);
+            $view->with('countryId', $countryId);
         });
     }
 }

@@ -17,6 +17,7 @@ class ProductOrder extends Model
 
     protected $fillable = [
         'user_id',
+        'country_id',
         'order_number',
         'order_id', // Dashboard compatibility
         'billing_name',
@@ -40,12 +41,14 @@ class ProductOrder extends Model
         'subtotal',
         'gst_amount',
         'shipping_charge',
+        'coupon_discount',
         'total_amount',
         'payment_status',
         'payment_method',
         'razorpay_order_id',
         'razorpay_payment_id',
         'status',
+        'delivery_status',
         'delivery_person_id',
         'is_delivery_assigned',
         'shiprocket_order_id',

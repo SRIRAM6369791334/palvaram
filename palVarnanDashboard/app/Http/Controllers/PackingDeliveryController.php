@@ -74,11 +74,16 @@ class PackingDeliveryController extends Controller
         ];
         $status = $status_map[$status_num] ?? $status_num;
 
+        $updateOrderData = [
+            "status" => $status
+        ];
+        if ($status === 'delivered') {
+            $updateOrderData['payment_status'] = 'paid';
+        }
+
         DB::table('product_orders')
             ->where('order_id', $order_id)
-            ->update([
-                "status" => $status
-            ]);
+            ->update($updateOrderData);
 
         DB::table('product_slots')
             ->where('order_id', $order_id)
@@ -147,11 +152,15 @@ class PackingDeliveryController extends Controller
                 "productDeliverys" => $productDeliverys
             ]);
         } else {
+            $updateOrderData = [
+                "status" => $status,
+            ];
+            if ($status === 'delivered') {
+                $updateOrderData['payment_status'] = 'paid';
+            }
             DB::table('product_orders')
                 ->where('order_id', $order_id)
-                ->update([
-                    "status" => $status,
-                ]);
+                ->update($updateOrderData);
 
             DB::table('product_slots')
                 ->where('order_id', $order_id)

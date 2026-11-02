@@ -322,6 +322,8 @@ class ProductOrdersController extends Controller {
 
             if ($request->select_status == 'cancel') {
 
+                $order->restoreStock();
+
                 $updateData['status'] = 'cancelled';
 
                 $updateData['reason']

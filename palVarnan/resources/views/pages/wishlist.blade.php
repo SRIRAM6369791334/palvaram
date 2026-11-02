@@ -73,6 +73,16 @@
                                                         <span class="text-xs fw-semibold text-main-600 bg-main-50 border border-main-200 rounded-pill px-10 py-2 d-inline-block mt-4">
                                                             {{ $variant->value }}{{ $variant->unit->short_name ?? '' }}
                                                         </span>
+                                                    @elseif($variant && ($variant->size || $variant->color || $variant->varient_name))
+                                                        @php
+                                                            $giftParts = [];
+                                                            if ($variant->size) $giftParts[] = 'Size: ' . $variant->size->size;
+                                                            if ($variant->color) $giftParts[] = 'Color: ' . $variant->color->color;
+                                                            $giftLabel = !empty($giftParts) ? implode(' | ', $giftParts) : ($variant->varient_name ?: 'Gift Item');
+                                                        @endphp
+                                                        <span class="text-xs fw-semibold text-purple-700 bg-purple-50 border border-purple-200 rounded-pill px-10 py-2 d-inline-block mt-4">
+                                                            <i class="ph-bold ph-gift me-1"></i>{{ $giftLabel }}
+                                                        </span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -249,13 +259,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function showLoginAlert() {
     Swal.fire({
-        icon: 'warning',
+        icon: 'info',
         title: 'Login Required',
-        text: 'Please log in to add items to your cart',
-        confirmButtonColor: '#1c799b',
-        confirmButtonText: 'Login Now'
-    }).then(r => { 
-        if (r.isConfirmed) window.location.href = "/login"; 
+        text: 'Please login to manage items in your wishlist or add them to cart.',
+        confirmButtonColor: '#0c716a',
+        confirmButtonText: 'Login Now',
+        showCancelButton: true,
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/login?redirect=/wishlist";
+        }
     });
 }
 </script>

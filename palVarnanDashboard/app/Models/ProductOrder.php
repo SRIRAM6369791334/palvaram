@@ -142,4 +142,43 @@ class ProductOrder extends Model
     {
         return $this->hasMany(ProductOrderItem::class, 'order_id', 'id');
     }
+
+    public function restoreStock()
+    {
+        if ($this->status === 'cancelled') {
+            return;
+        }
+
+        $orderItems = \App\Models\ProductOrderItem::where('order_id', $this->id)->get();
+        if ($orderItems->isNotEmpty()) {
+            foreach ($orderItems as $item) {
+                $varId = $item->product_variant_id;
+                $qty = (int)$item->quantity;
+                if ($varId && $qty > 0) {
+                    \App\Models\ProductVarient::where('id', $varId)->increment('product_qty', $qty);
+                    $stock = \App\Models\ProductStock::where('pro_ver_id', $varId)->first();
+                    if ($stock) {
+                        $stock->availablestock = $stock->availablestock + $qty;
+                        $stock->salestock = max(0, ($stock->salestock ?? 0) - $qty);
+                        $stock->save();
+                    }
+                }
+            }
+        } else {
+            $slots = \App\Models\ProductSlot::where('order_id', $this->order_id)->get();
+            foreach ($slots as $slot) {
+                $varId = $slot->product_varient_id;
+                $qty = (int)$slot->quantity;
+                if ($varId && $qty > 0) {
+                    \App\Models\ProductVarient::where('id', $varId)->increment('product_qty', $qty);
+                    $stock = \App\Models\ProductStock::where('pro_ver_id', $varId)->first();
+                    if ($stock) {
+                        $stock->availablestock = $stock->availablestock + $qty;
+                        $stock->salestock = max(0, ($stock->salestock ?? 0) - $qty);
+                        $stock->save();
+                    }
+                }
+            }
+        }
+    }
 }

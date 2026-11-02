@@ -885,9 +885,34 @@
         }
 
         // Mark active nav link
-        if (e && e.currentTarget) {
+        const navLink = document.querySelector(`.account-nav__link[data-tab="${tabName}"]`);
+        if (navLink) {
+            navLink.classList.add('active-tab');
+        } else if (e && e.currentTarget) {
             e.currentTarget.classList.add('active-tab');
         }
+
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, null, '#tab-' + tabName);
+        }
+    }
+
+    function initActiveTab() {
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#tab-')) {
+            const tabName = hash.replace('#tab-', '');
+            switchTab(null, tabName);
+        } else if ({{ $errors->any() || session('tab') === 'personal' ? 'true' : 'false' }}) {
+            switchTab(null, 'personal');
+        } else if ({{ session('tab') === 'addresses' ? 'true' : 'false' }}) {
+            switchTab(null, 'addresses');
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initActiveTab);
+    } else {
+        initActiveTab();
     }
 
     function toggleAccountAddAddress() {

@@ -231,3 +231,76 @@ Seamless customer message handling connecting the storefront inquiry form to the
 3. **Live Form Submission:** Verified in browser at `http://127.0.0.1:8000/contact` with `Kavitha Ramachandran` (`contact_dual_email_submitted.png`).
 4. **Dashboard Updated:** Verified at `http://127.0.0.1:8001/contacts` displaying the newly submitted inquiry (`dashboard_updated_with_kavitha.png`).
 
+---
+
+## 10. Comprehensive Multi-Dimensional QA Testing & CRUD Verification
+
+### A. Testing Scope & Methodology
+Executed end-to-end verification across 5 major dimensions:
+1. **Storefront Core Customer Journeys:** Verified routes `/`, `/products`, `/product/{slug}`, `/categories`, `/contact`, and `/cart`.
+2. **Dynamic Hybrid Variant Behavior:** Tested simultaneous handling of grocery variants (`unit_id`, `value`) and gift variants (`size_id`, `color_id`) across catalog, product detail, and cart.
+3. **Reactive UI State Transitions:** Checked variant pill switching, price recalculation, stock badge response, quantity stepper, and WhatsApp auto-message generation.
+4. **Admin Dashboard CRUD & Workflow Integrity:** Tested Category, Product, Variant, and Contact Inquiry operations.
+5. **Database Consistency & Schema Verification:** Verified column alignment (`categories`, `products`, `product_varient`, `contacts`) and validated state transitions directly via MySQL queries.
+
+### B. QA Verification Matrix & Evidence Receipts
+
+| Test ID | Module | Scenario / Test Case | Input / Action | Expected Result | Actual Result | Status | Proof Receipt |
+|---|---|---|---|---|---|:---:|---|
+| **TC-01** | Storefront Home | Country selection & home components load | Load `http://127.0.0.1:8000/` with session `country_id=243` | Navbar, Carousel, Category strip, Country badge render | Rendered 200 OK cleanly | **PASS** | `qa_proof_01_storefront_home.png` |
+| **TC-02** | Product Catalog | Catalog grid & filtering | Navigate to `/products` | Category filters, brand list, product cards render | Rendered with active items | **PASS** | `qa_proof_02_storefront_products.png` |
+| **TC-03** | Gift Toggle | Filter catalog for gifts only | Load `/products?gift=1` | Only gift items (toys, hampers) display | Filtered gift catalog rendered | **PASS** | `qa_proof_03_storefront_gift_products.png` |
+| **TC-04** | Product Detail | Initial variant load | Load `/product/new-test-toy-1780660244` | Default variant (Small • White ₹700) selected | ₹700 displayed with active pill | **PASS** | `qa_proof_04_product_detail_initial.png` |
+| **TC-05** | Variant Switching | Dynamic reactivity on click | Click "Medium (M) • Sky Blue ₹850" pill | Offer price changes to ₹850; active pill updates | Offer price changed to ₹850 dynamically | **PASS** | `qa_proof_05_product_variant_selected.png` |
+| **TC-06** | Add to Cart | Detail page cart interaction | Click "Add To Cart" on selected variant | Button transforms to stepper `[- 1 +]` | Stepper rendered; session updated | **PASS** | `qa_proof_06_added_to_cart.png` |
+| **TC-07** | Cart Co-existence | Grocery & Gift hybrid items | Navigate to `/cart` | Both gift variants & grocery units listed accurately | Both types co-exist without conflict | **PASS** | `qa_proof_07_cart_hybrid_variants.png` |
+| **TC-08** | Category Search | Live search filter | Type "Toy" on `/categories` | Live filter hides non-matching categories | `🎁 GIFT Soft Toy` filtered instantly | **PASS** | `qa_proof_08_categories_filter.png` |
+| **TC-09** | Contact Submit | Form validation & submission | Submit inquiry for Kavitha Priya | DB row created, SweetAlert2 success shown | Inserted ID #7, SweetAlert displayed | **PASS** | `qa_proof_09_contact_form_submitted_success.png` |
+| **TC-10** | Admin Contacts | Inquiry list verification | Login to `http://127.0.0.1:8001/contacts` | Inquiry #7 listed at top with full metadata | Row #7 displayed with General Inquiry tag | **PASS** | `qa_proof_10_dashboard_contacts_list.png` |
+| **TC-11** | Inquiry Modal | View details & action triggers | Click "View" on Row #7 | Modal displays message, WhatsApp & Mailto links | Modal rendered with accurate action links | **PASS** | `qa_proof_11_dashboard_inquiry_modal.png` |
+| **TC-12** | Category CRUD | Admin category lifecycle | Create, Read, Update, Delete Category | Database records manipulated without error | All 4 CRUD operations verified | **PASS** | `qa_proof_12_dashboard_categories.png` |
+| **TC-13** | Product & Variant CRUD | Gift product & variant lifecycle | Create product, add variant in `product_varient` | Full CRUD lifecycle & storefront query verified | Created ID #42, Variant #106, cleanup verified | **PASS** | Automated Script Log |
+
+---
+
+## 11. Complete Cart, Wishlist, and Checkout Flow Implementation
+
+### A. Architectural Upgrades & System Parity
+1. **Cart Optimization:**
+   - Eliminated hardcoded totals in [`cart.blade.php`](file:///c:/xampp/htdocs/pauls/palVarnan/resources/views/pages/cart.blade.php). Implemented dynamic calculations for Subtotal, Estimated Delivery (₹50.00), Estimated Tax (16% GST), and Grand Total.
+   - Added debounced AJAX quantity synchronization (`fetch('/cart/ajax-update')`) when pressing `+` or `-` buttons on the cart page.
+   - Enhanced guest checkout conversion: clicking "Proceed to Checkout" as a guest triggers an intuitive modal directing the user to `/login?redirect=/checkout`.
+   - Upgraded [`AuthController::login`](file:///c:/xampp/htdocs/pauls/palVarnan/app/Http/Controllers/AuthController.php) with automatic **Guest-to-User Cart Migration**, transferring any items added under `ip_addresscart` directly into the logged-in user's account and respecting the `redirect` query parameter.
+
+2. **Wishlist Flow & Hybrid Gift Variant Support:**
+   - Upgraded [`WishlistController.php`](file:///c:/xampp/htdocs/pauls/palVarnan/app/Http/Controllers/WishlistController.php) to eager-load `variant.size` and `variant.color` alongside grocery `variant.unit`.
+   - Updated [`wishlist.blade.php`](file:///c:/xampp/htdocs/pauls/palVarnan/resources/views/pages/wishlist.blade.php) with polymorphic badge rendering (purple badge for gift dimensions/colors and teal badge for grocery weights/volumes).
+   - Integrated AJAX "Add to Cart from Wishlist" with instant toast alerts and table row cleanup.
+
+3. **Checkout, Delivery & Multi-Table Order Synchronization:**
+   - Ensured `country_id` parity (`session('country_id') ?? $user->country_id ?? 243`) in [`CheckoutController::placeOrder`](file:///c:/xampp/htdocs/pauls/palVarnan/app/Http/Controllers/CheckoutController.php) so all storefront orders match the admin country filter criteria (`whereIn('country_id', $allowedCountryIds)`).
+   - Live Shiprocket courier quotes with graceful Standard Delivery fallback.
+   - Dual payment method support: Razorpay online card/UPI/netbanking and Cash on Delivery (COD).
+   - Atomic database transactions synchronizing:
+     - `product_orders` (Master order record)
+     - `product_order_items` (Customer account history line items)
+     - `product_slots` (Admin dashboard packing and dispatch table)
+     - `product_tracking` & `product_transaction_logs`
+     - Stock reduction in `productstocks` and `product_varient`
+     - Cart table cleanup for the purchasing user.
+
+4. **Dual HTML Order Email Notifications:**
+   - Built [`order_customer.blade.php`](file:///c:/xampp/htdocs/pauls/palVarnan/resources/views/emails/order_customer.blade.php) and [`order_admin.blade.php`](file:///c:/xampp/htdocs/pauls/palVarnan/resources/views/emails/order_admin.blade.php).
+   - Integrated non-blocking `isSmtpReachable()` socket probe (1.2s timeout) before dispatching confirmation emails to prevent checkout freezing on local network blocks.
+
+### B. Verification Receipts & Proof Matrix
+
+| Test ID | Module | Scenario / Flow Verified | Expected Result | Actual Result | Status | Proof Receipt |
+|---|---|---|---|---|:---:|---|
+| **TC-14** | Cart | Dynamic Subtotal, Tax, Delivery & Grand Total recalculation | Real-time calculation without hardcoding | Calculated ₹2,840 + ₹50 + ₹454.40 = ₹3,344.40 | **PASS** | `qa_proof_13_cart_dynamic_recalculated.png` |
+| **TC-15** | Checkout | Authenticated user checkout with Live Couriers | Displays addresses, Shiprocket rates (Xpressbees ₹186.24, Ekart ₹213.12) | Loaded successfully with live courier rates | **PASS** | `qa_proof_14_checkout_page_active.png` |
+| **TC-16** | Order Placement | Live browser COD order placement (`#ORD-6AE81A4E512E2`) | Inserts order, redirects to thank you page with order details | Order placed, redirected to `/checkout/thankyou/...` | **PASS** | `qa_proof_15_order_success_thankyou.png` |
+| **TC-17** | Dashboard Sync | Storefront order appears in Admin Dashboard | Order #18 visible at top of `/productOrders` list | Rendered as Row #1 under India territory | **PASS** | `qa_proof_16_dashboard_order_received.png` |
+
+
+

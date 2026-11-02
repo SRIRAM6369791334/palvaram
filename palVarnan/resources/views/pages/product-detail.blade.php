@@ -396,6 +396,15 @@
         $discountPercent = round((($firstVariant->mrp_price - $firstVariant->offer_price) / $firstVariant->mrp_price) * 100);
     }
 
+    $isFirstInStock = ($firstVariant && (int)$firstVariant->product_qty > 0);
+
+    $cartQuantities = [];
+    if (isset($cartItems)) {
+        foreach ($cartItems as $ci) {
+            $cartQuantities[$ci->product_varient_id] = (int)$ci->product_quantity;
+        }
+    }
+
 
     // Build image collection
     $galleryImages = collect();
@@ -473,9 +482,10 @@
                                 </span>
 
                                 <!-- Quick In-Stock Tag -->
-                                <span class="badge bg-success-50 text-success-600 border border-success-200 rounded-pill px-10 py-4 text-xs fw-semibold position-absolute flex-align gap-4"
-                                      style="top: 16px; right: 16px; z-index: 5;">
-                                    <i class="ph-fill ph-check-circle"></i> In Stock
+                                <span class="badge {{ $isFirstInStock ? 'bg-success-50 text-success-600 border-success-200' : 'bg-danger-50 text-danger-600 border-danger-200' }} border rounded-pill px-10 py-4 text-xs fw-semibold position-absolute flex-align gap-4"
+                                      style="top: 16px; right: 16px; z-index: 5;"
+                                      id="detail-stock-badge">
+                                    <i class="ph-fill {{ $isFirstInStock ? 'ph-check-circle' : 'ph-x-circle' }}"></i> {{ $isFirstInStock ? 'In Stock' : 'Out of Stock' }}
                                 </span>
 
                                 <!-- Main Image Slider -->
@@ -567,11 +577,11 @@
                             <div class="mt-16 mb-20 flex-align flex-wrap justify-content-between gap-16">
                                 <div class="flex-align gap-12">
                                     <h3 class="mb-0 text-heading fw-bold" id="detail-offer-price">
-                                        ₹{{ $firstVariant->offer_price ?? 0 }}
+                                        {{ $currencySymbol ?? "₹" }}{{ $firstVariant->offer_price ?? 0 }}
                                     </h3>
                                     @if($firstVariant && $firstVariant->mrp_price)
                                         <span class="text-md text-gray-400 text-decoration-line-through fw-medium" id="detail-mrp-price">
-                                            ₹{{ $firstVariant->mrp_price }}
+                                            {{ $currencySymbol ?? "₹" }}{{ $firstVariant->mrp_price }}
                                         </span>
                                     @endif
                                     <span class="badge bg-danger-50 text-danger-600 border border-danger-200 rounded-pill px-8 py-4 text-xs fw-bold {{ $discountPercent > 0 ? '' : 'd-none' }}" id="detail-discount-badge">
@@ -579,8 +589,9 @@
                                     </span>
                                 </div>
                                 
-                                <a href="https://api.whatsapp.com/send?text=Hello,%20I%20am%20interested%20in%20ordering%20{{ urlencode($product->product_name) }}%20(₹{{ $firstVariant->offer_price ?? 0 }})%20from%20Pal%20Varnan:%20{{ urlencode(url()->current()) }}"
+                                <a href="https://api.whatsapp.com/send?text=Hello,%20I%20am%20interested%20in%20ordering%20{{ urlencode($product->product_name) }}%20({{ $currencySymbol ?? "₹" }}{{ $firstVariant->offer_price ?? 0 }})%20from%20Pal%20Varnan:%20{{ urlencode(url()->current()) }}"
                                    target="_blank"
+                                   id="detail-whatsapp-link"
                                    class="btn btn-outline-main rounded-pill flex-align gap-8 py-8 px-18 text-xs fw-semibold hover-bg-main-600 hover-text-white transition-1">
                                     <i class="ph-fill ph-whatsapp-logo text-base text-success-600"></i> Order on WhatsApp
                                 </a>
@@ -635,10 +646,16 @@
                                                 $pillText = ($v->value ?? '') . ($v->unit->short_name ?? '');
                                             }
                                         @endphp
+                                        @php
+                                            $vInStock = (int)$v->product_qty > 0;
+                                        @endphp
                                         <button type="button"
                                             class="variant-pill border rounded-pill px-16 py-8 text-sm fw-medium transition-1
-                                                {{ $loop->first ? 'active bg-main-600 text-white border-main-600 shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover-border-main-600 hover-bg-main-50' }}"
+                                                {{ $loop->first ? 'active bg-main-600 text-white border-main-600 shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover-border-main-600 hover-bg-main-50' }}
+                                                {{ !$vInStock ? 'border-dashed opacity-75' : '' }}"
                                             data-variant-id="{{ $v->id }}"
+                                            data-variant-name="{{ $pillText }}"
+                                            data-stock="{{ (int)$v->product_qty }}"
                                             data-offer="{{ $v->offer_price }}"
                                             data-mrp="{{ $v->mrp_price }}"
                                             data-discount="{{ $vDiscount }}"
@@ -648,7 +665,10 @@
                                                 <i class="ph-bold ph-gift text-xs me-1"></i>
                                             @endif
                                             <span>{{ $pillText }}</span>
-                                            <span class="text-xs opacity-75 ms-4">₹{{ $v->offer_price }}</span>
+                                            <span class="text-xs opacity-75 ms-4">{{ $currencySymbol ?? "₹" }}{{ $v->offer_price }}</span>
+                                            @if(!$vInStock)
+                                                <span class="badge bg-danger-500 text-white rounded-pill px-6 py-2 text-2xs ms-4">Sold Out</span>
+                                            @endif
                                         </button>
                                     @endforeach
                                 </div>
@@ -669,7 +689,11 @@
                                         data-product-id="{{ $product->id }}"
                                         data-variant-id="{{ $firstVariant->id ?? '' }}">
 
-                                        @if($inCart)
+                                        @if(!$isFirstInStock)
+                                            <button type="button" class="btn btn-secondary rounded-pill px-44 py-12 fw-semibold opacity-75 cursor-not-allowed" disabled>
+                                                <i class="ph ph-prohibit text-lg"></i> Out of Stock
+                                            </button>
+                                        @elseif($inCart)
                                             <div class="qty-box border border-gray-200 rounded-pill py-8 px-16 flex-align bg-white shadow-xs">
                                                 <button type="button" class="quantity__minus p-4 text-gray-700 hover-text-main-600 flex-center border-0 bg-transparent"><i class="ph ph-minus"></i></button>
                                                 <input type="number" class="quantity__input border-0 text-center w-32 fw-semibold" value="{{ $cartItem->product_quantity ?? 1 }}" min="1" readonly>
@@ -1196,7 +1220,7 @@
                                             }
                                         @endphp
                                         <span class="variant-label fw-medium">{{ $rpFirstLabel }}</span>
-                                        <span class="variant-price-tag fw-semibold text-main-600">₹{{ $rpFirst->offer_price }}</span>
+                                        <span class="variant-price-tag fw-semibold text-main-600">{{ $currencySymbol ?? "₹" }}{{ $rpFirst->offer_price }}</span>
                                         <i class="ph ph-caret-down variant-arrow text-gray-500"></i>
                                     </div>
                                     <ul class="variant-options-list">
@@ -1218,9 +1242,9 @@
                                             <span class="opt-size">{{ $vLabel }}</span>
                                             <span class="opt-price">
                                                 @if($v->mrp_price)
-                                                    <span class="opt-mrp text-gray-400 text-decoration-line-through me-4 text-xs">₹{{ $v->mrp_price }}</span>
+                                                    <span class="opt-mrp text-gray-400 text-decoration-line-through me-4 text-xs">{{ $currencySymbol ?? "₹" }}{{ $v->mrp_price }}</span>
                                                 @endif
-                                                <span class="opt-offer fw-semibold text-heading">₹{{ $v->offer_price }}</span>
+                                                <span class="opt-offer fw-semibold text-heading">{{ $currencySymbol ?? "₹" }}{{ $v->offer_price }}</span>
                                             </span>
                                         </li>
                                         @endforeach
@@ -1238,9 +1262,9 @@
 
                             <!-- Price -->
                             <div class="product-card__price my-12 flex-align gap-8">
-                                <span class="text-heading text-md fw-bold">₹{{ $rv->offer_price ?? 0 }}</span>
+                                <span class="text-heading text-md fw-bold">{{ $currencySymbol ?? "₹" }}{{ $rv->offer_price ?? 0 }}</span>
                                 @if($rv && $rv->mrp_price && $rv->mrp_price > $rv->offer_price)
-                                    <span class="text-gray-400 text-xs fw-medium text-decoration-line-through">₹{{ $rv->mrp_price }}</span>
+                                    <span class="text-gray-400 text-xs fw-medium text-decoration-line-through">{{ $currencySymbol ?? "₹" }}{{ $rv->mrp_price }}</span>
                                 @endif
                             </div>
 
@@ -1338,6 +1362,8 @@ function syncCart(variantId, quantity, input) {
     });
 }
 
+const cartMap = @json($cartQuantities);
+
 // Add to cart for Detail Product
 function attachDetailAddToCart() {
     const control = document.querySelector('.detail-cart-control');
@@ -1356,6 +1382,11 @@ function attachDetailAddToCart() {
         })
         .then(r => r.json())
         .then(data => {
+            if (data.status === 'error') {
+                Swal.fire({ icon: 'error', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+                return;
+            }
+            cartMap[variantId] = 1;
             control.innerHTML = `
                 <div class="qty-box border border-gray-200 rounded-pill py-8 px-16 flex-align bg-white shadow-xs">
                     <button type="button" class="quantity__minus p-4 text-gray-700 hover-text-main-600 flex-center border-0 bg-transparent"><i class="ph ph-minus"></i></button>
@@ -1364,7 +1395,7 @@ function attachDetailAddToCart() {
                 </div>`;
             attachDetailQtyEvents();
             updateCartCount(1);
-            Swal.fire({ icon: 'success', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+            Swal.fire({ icon: 'success', title: data.message || 'Added to Cart', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true });
         });
     });
 }
@@ -1379,7 +1410,9 @@ function attachDetailQtyEvents() {
 
     if (plusBtn) {
         plusBtn.addEventListener('click', function () {
-            syncCart(variantId, parseInt(input.value) + 1, input);
+            const newQty = parseInt(input.value) + 1;
+            syncCart(variantId, newQty, input);
+            cartMap[variantId] = newQty;
         });
     }
 
@@ -1393,6 +1426,7 @@ function attachDetailQtyEvents() {
                     body: JSON.stringify({ product_varient_id: variantId })
                 }).then(r => r.json()).then(data => {
                     if (data.success) {
+                        delete cartMap[variantId];
                         control.innerHTML = `
                             <button type="button" class="add-to-cart-btn btn btn-main rounded-pill flex-align d-inline-flex gap-8 px-44 py-12 fw-semibold shadow-sm transition-1">
                                 <i class="ph ph-shopping-cart text-lg"></i> Add To Cart
@@ -1402,7 +1436,9 @@ function attachDetailQtyEvents() {
                     }
                 });
             } else {
-                syncCart(variantId, qty - 1, input);
+                const newQty = qty - 1;
+                syncCart(variantId, newQty, input);
+                cartMap[variantId] = newQty;
             }
         });
     }
@@ -1495,12 +1531,14 @@ function updateCartCount(delta) {
 // Variant Pill Click (Main Product)
 document.querySelectorAll('.variant-pill').forEach(function (pill) {
     pill.addEventListener('click', function () {
-        const variantId  = this.dataset.variantId;
-        const offerPrice = this.dataset.offer;
-        const mrpPrice   = this.dataset.mrp;
-        const discount   = this.dataset.discount;
-        const sku        = this.dataset.sku;
-        const imgUrl     = this.dataset.img;
+        const variantId   = this.dataset.variantId;
+        const variantName = this.dataset.variantName || '';
+        const stock       = parseInt(this.dataset.stock || 0);
+        const offerPrice  = this.dataset.offer;
+        const mrpPrice    = this.dataset.mrp;
+        const discount    = this.dataset.discount;
+        const sku         = this.dataset.sku;
+        const imgUrl      = this.dataset.img;
 
         document.querySelectorAll('.variant-pill').forEach(p => {
             p.classList.remove('active', 'bg-main-600', 'text-white', 'border-main-600', 'shadow-sm');
@@ -1510,9 +1548,10 @@ document.querySelectorAll('.variant-pill').forEach(function (pill) {
         this.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
 
         // Update pricing display
-        document.getElementById('detail-offer-price').textContent = '₹' + offerPrice;
+        const activeCurrency = '{{ $currencySymbol ?? "₹" }}';
+        document.getElementById('detail-offer-price').textContent = activeCurrency + offerPrice;
         const mrpEl = document.getElementById('detail-mrp-price');
-        if (mrpEl) mrpEl.textContent = mrpPrice ? '₹' + mrpPrice : '';
+        if (mrpEl) mrpEl.textContent = mrpPrice ? activeCurrency + mrpPrice : '';
 
         // Update discount badges
         const badgeEl = document.getElementById('detail-discount-badge');
@@ -1531,6 +1570,48 @@ document.querySelectorAll('.variant-pill').forEach(function (pill) {
             if (imgBadgeEl) imgBadgeEl.classList.add('d-none');
         }
 
+        // Update Stock Badge & Cart Control based on stock
+        const stockBadge = document.getElementById('detail-stock-badge');
+        const control = document.querySelector('.detail-cart-control');
+
+        if (stock <= 0) {
+            if (stockBadge) {
+                stockBadge.className = 'badge bg-danger-50 text-danger-600 border border-danger-200 rounded-pill px-10 py-4 text-xs fw-semibold position-absolute flex-align gap-4';
+                stockBadge.innerHTML = '<i class="ph-fill ph-x-circle"></i> Out of Stock';
+            }
+            if (control) {
+                control.dataset.variantId = variantId;
+                control.innerHTML = `
+                    <button type="button" class="btn btn-secondary rounded-pill px-44 py-12 fw-semibold opacity-75 cursor-not-allowed" disabled>
+                        <i class="ph ph-prohibit text-lg"></i> Out of Stock
+                    </button>`;
+            }
+        } else {
+            if (stockBadge) {
+                stockBadge.className = 'badge bg-success-50 text-success-600 border border-success-200 rounded-pill px-10 py-4 text-xs fw-semibold position-absolute flex-align gap-4';
+                stockBadge.innerHTML = '<i class="ph-fill ph-check-circle"></i> In Stock';
+            }
+            if (control) {
+                control.dataset.variantId = variantId;
+                const currentQty = cartMap[variantId];
+                if (currentQty && currentQty > 0) {
+                    control.innerHTML = `
+                        <div class="qty-box border border-gray-200 rounded-pill py-8 px-16 flex-align bg-white shadow-xs">
+                            <button type="button" class="quantity__minus p-4 text-gray-700 hover-text-main-600 flex-center border-0 bg-transparent"><i class="ph ph-minus"></i></button>
+                            <input type="number" class="quantity__input border-0 text-center w-32 fw-semibold" value="${currentQty}" min="1" readonly>
+                            <button type="button" class="quantity__plus p-4 text-gray-700 hover-text-main-600 flex-center border-0 bg-transparent"><i class="ph ph-plus"></i></button>
+                        </div>`;
+                    attachDetailQtyEvents();
+                } else {
+                    control.innerHTML = `
+                        <button type="button" class="add-to-cart-btn btn btn-main rounded-pill flex-align d-inline-flex gap-8 px-44 py-12 fw-semibold shadow-sm transition-1">
+                            <i class="ph ph-shopping-cart text-lg"></i> Add To Cart
+                        </button>`;
+                    attachDetailAddToCart();
+                }
+            }
+        }
+
         // Update SKU
         const skuEl = document.getElementById('detail-sku');
         if (skuEl && sku) skuEl.textContent = sku;
@@ -1541,17 +1622,11 @@ document.querySelectorAll('.variant-pill').forEach(function (pill) {
             if (firstThumbImg) firstThumbImg.src = imgUrl;
         }
 
-        // Update cart control
-        const control = document.querySelector('.detail-cart-control');
-        if (control) {
-            control.dataset.variantId = variantId;
-            if (control.querySelector('.qty-box')) {
-                control.innerHTML = `
-                    <button type="button" class="add-to-cart-btn btn btn-main rounded-pill flex-align d-inline-flex gap-8 px-44 py-12 fw-semibold shadow-sm transition-1">
-                        <i class="ph ph-shopping-cart text-lg"></i> Add To Cart
-                    </button>`;
-                attachDetailAddToCart();
-            }
+        // Update WhatsApp Order Link with selected variant
+        const waLink = document.getElementById('detail-whatsapp-link');
+        if (waLink) {
+            const waText = encodeURIComponent(`Hello, I am interested in ordering {{ $product->product_name }}${variantName ? ' (' + variantName + ')' : ''} (${activeCurrency}${offerPrice}) from Pal Varnan: ${window.location.href}`);
+            waLink.href = `https://api.whatsapp.com/send?text=${waText}`;
         }
 
         // Update wishlist button
@@ -1735,6 +1810,11 @@ function doWishlistToggle(btn, productId, variantId, icon) {
         } else {
             icon.classList.remove('ph-fill', 'text-danger-600');
             icon.classList.add('ph-heart', 'text-gray-400');
+        }
+
+        const badge = document.getElementById('wishlist-count-badge');
+        if (badge && typeof data.count !== 'undefined') {
+            badge.textContent = data.count;
         }
         Swal.fire({
             icon: data.status === 'added' ? 'success' : 'info',

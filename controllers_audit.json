@@ -1,0 +1,712 @@
+{
+    "BrandController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::resource(\"brands\", BrandController::class)",
+            "Route::post(\"updateBrands\/{id}\", [BrandController::class, \"update\"])",
+            "Route::post(\"destroyBrands\/{id}\", [BrandController::class, \"destroy\"])",
+            "Route::resource(\"brands\", BrandController::class)"
+        ]
+    },
+    "BulkOrderController": {
+        "methods": [
+            "index"
+        ],
+        "routes": [
+            "Route::resource('bulkenquiry',BulkOrderController::class)",
+            "Route::resource('bulkenquiry',BulkOrderController::class)"
+        ]
+    },
+    "CancelProductController": {
+        "methods": [
+            "index",
+            "cancelProductrequ"
+        ],
+        "routes": [
+            "Route::resource(\"cancelproduct\", CancelProductController::class)",
+            "Route::post(\"cancelProductrequ\", [CancelProductController::class, \"cancelProductrequ\"])",
+            "Route::resource(\"cancelproduct\", CancelProductController::class)"
+        ]
+    },
+    "CategoryController": {
+        "methods": [
+            "index",
+            "create",
+            "store",
+            "store",
+            "show",
+            "edit",
+            "update",
+            "update",
+            "destroy",
+            "validateCategoryName"
+        ],
+        "routes": [
+            "Route::resource(\"categories\", CategoryController::class)",
+            "Route::post(\"updateCategories\/{id}\", [CategoryController::class, \"update\"])",
+            "Route::post(\"destroyCategories\/{id}\", [CategoryController::class, \"destroy\"])",
+            "Route::post(\"validateCategoryName\", [CategoryController::class, \"validateCategoryName\"])",
+            "Route::resource(\"categories\", CategoryController::class)"
+        ]
+    },
+    "CompoStockController": {
+        "methods": [
+            "index",
+            "update",
+            "reduceStock1"
+        ],
+        "routes": [
+            "Route::resource(\"combostock\",CompoStockController::class)",
+            "Route::post(\"updateStack1\",[CompoStockController::class, \"update\"])",
+            "Route::post(\"reduceStock1\", [CompoStockController::class, \"reduceStock1\"])",
+            "Route::resource(\"combostock\",CompoStockController::class)"
+        ]
+    },
+    "CouponController": {
+        "methods": [
+            "index",
+            "addcoupon",
+            "update",
+            "destroy",
+            "toggleStatus"
+        ],
+        "routes": [
+            "Route::resource(\"coupons\",CouponController::class)",
+            "Route::post(\"coupons\",[CouponController::class,\"addcoupon\"])",
+            "Route::post(\"updatecoupon\/{id}\", [CouponController::class, \"update\"])",
+            "Route::post(\"destroycoupon\/{id}\", [CouponController::class, \"destroy\"])",
+            "Route::post('togglecouponstatus\/{id}', [CouponController::class, 'toggleStatus'])",
+            "Route::resource(\"coupons\",CouponController::class)"
+        ]
+    },
+    "GiftColorController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::get('\/gift-color',                   [GiftColorController::class, 'index'])",
+            "Route::post('\/gift-color',                  [GiftColorController::class, 'store'])",
+            "Route::post('\/gift-color\/update\/{id}',      [GiftColorController::class, 'update'])",
+            "Route::post('\/gift-color\/destroy\/{id}',     [GiftColorController::class, 'destroy'])"
+        ]
+    },
+    "GiftController": {
+        "methods": [
+            "categoryIndex",
+            "categoryStore",
+            "categoryUpdate",
+            "categoryDestroy",
+            "subcategoryIndex",
+            "subcategoryStore",
+            "subcategoryUpdate",
+            "subcategoryDestroy",
+            "productIndex",
+            "productStore",
+            "productUpdate",
+            "productDestroy"
+        ],
+        "routes": []
+    },
+    "GiftInventoryReportController": {
+        "methods": [
+            "index",
+            "filterData",
+            "exportExcel",
+            "__construct",
+            "array",
+            "headings",
+            "exportPdf",
+            "getWarehouses",
+            "getBranches",
+            "getCategories"
+        ],
+        "routes": [
+            "Route::get('\/gift-inventory-reports', [GiftInventoryReportController::class, 'index'])",
+            "Route::get('\/gift-inventory-reports\/filter', [GiftInventoryReportController::class, 'filterData'])",
+            "Route::get('\/gift-inventory-reports\/export-excel', [GiftInventoryReportController::class, 'exportExcel'])",
+            "Route::get('\/gift-inventory-reports\/export-pdf', [GiftInventoryReportController::class, 'exportPdf'])",
+            "Route::get('\/gift-inventory-reports\/warehouses', [GiftInventoryReportController::class, 'getWarehouses'])",
+            "Route::get('\/gift-inventory-reports\/branches', [GiftInventoryReportController::class, 'getBranches'])",
+            "Route::get('\/gift-inventory-reports\/categories', [GiftInventoryReportController::class, 'getCategories'])"
+        ]
+    },
+    "GiftOrderWiseController": {
+        "methods": [
+            "orderwisereport",
+            "filterorderWiseReport",
+            "exportExcel",
+            "exportPDF"
+        ],
+        "routes": []
+    },
+    "GiftProductwiseController": {
+        "methods": [
+            "productWiseReport",
+            "filterProductWiseReport",
+            "exportExcel",
+            "exportPDF"
+        ],
+        "routes": [
+            "Route::get('\/gift-productwisereport', [GiftProductwiseController::class, 'productWiseReport'])",
+            "Route::get('\/gift-product-wise-report\/filter', [GiftProductwiseController::class, 'filterProductWiseReport'])",
+            "Route::get('\/gift-report\/export\/excel', [GiftProductwiseController::class, 'exportExcel'])",
+            "Route::get('\/gift-report\/export\/pdf', [GiftProductwiseController::class, 'exportPDF'])"
+        ]
+    },
+    "GiftPurchaseOrderController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "receiveBatches",
+            "updateStatus",
+            "show"
+        ],
+        "routes": [
+            "Route::get('\/gift-purchase-orders',                 [GiftPurchaseOrderController::class, 'index'])",
+            "Route::post('\/gift-purchase-orders',                [GiftPurchaseOrderController::class, 'store'])",
+            "Route::post('\/gift-purchase-orders\/update',         [GiftPurchaseOrderController::class, 'update'])",
+            "Route::post('\/gift-purchase-orders\/update-status',  [GiftPurchaseOrderController::class, 'updateStatus'])",
+            "Route::post('\/gift-purchase-orders\/receive-batches',[GiftPurchaseOrderController::class, 'receiveBatches'])",
+            "Route::get('\/gift-purchase-orders\/{id}',            [GiftPurchaseOrderController::class, 'show'])"
+        ]
+    },
+    "GiftPurchaseReportController": {
+        "methods": [
+            "index",
+            "filterData"
+        ],
+        "routes": [
+            "Route::get('\/gift-purchase-reports', [GiftPurchaseReportController::class, 'index'])",
+            "Route::get('\/gift-purchase-reports\/filter', [GiftPurchaseReportController::class, 'filterData'])"
+        ]
+    },
+    "GiftSizeController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::get('\/gift-size',                   [GiftSizeController::class, 'index'])",
+            "Route::post('\/gift-size',                  [GiftSizeController::class, 'store'])",
+            "Route::post('\/gift-size\/update\/{id}',      [GiftSizeController::class, 'update'])",
+            "Route::post('\/gift-size\/destroy\/{id}',     [GiftSizeController::class, 'destroy'])"
+        ]
+    },
+    "GiftSupplierController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::get('\/gift-suppliers', [GiftSupplierController::class, 'index'])",
+            "Route::post('\/gift-suppliers', [GiftSupplierController::class, 'store'])",
+            "Route::post('\/updateGiftSupplier\/{id}', [GiftSupplierController::class, 'update'])",
+            "Route::post('\/destroyGiftSupplier\/{id}', [GiftSupplierController::class, 'destroy'])"
+        ]
+    },
+    "GiftVariantController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy",
+            "getFilteredProducts"
+        ],
+        "routes": [
+            "Route::get('\/gift-variants',                  [GiftVariantController::class, 'index'])",
+            "Route::post('\/gift-variants\/store',           [GiftVariantController::class, 'store'])",
+            "Route::post('\/gift-variants\/update\/{id}',     [GiftVariantController::class, 'update'])",
+            "Route::post('\/gift-variants\/destroy\/{id}',    [GiftVariantController::class, 'destroy'])",
+            "Route::get('\/gift-variants\/filtered-products',[GiftVariantController::class, 'getFilteredProducts'])"
+        ]
+    },
+    "InventoryReportController": {
+        "methods": [
+            "index",
+            "filter",
+            "exportExcel",
+            "__construct",
+            "array",
+            "headings",
+            "exportPdf",
+            "getWarehouses",
+            "getBranches",
+            "getCategories",
+            "filterData"
+        ],
+        "routes": [
+            "Route::get('\/',           [InventoryReportController::class, 'index'])",
+            "Route::get('\/filter',     [InventoryReportController::class, 'filter'])",
+            "Route::get('\/excel',      [InventoryReportController::class, 'exportExcel'])",
+            "Route::get('\/pdf',        [InventoryReportController::class, 'exportPdf'])",
+            "Route::get('\/warehouses', [InventoryReportController::class, 'getWarehouses'])",
+            "Route::get('\/branches',   [InventoryReportController::class, 'getBranches'])",
+            "Route::get('\/categories', [InventoryReportController::class, 'getCategories'])",
+            "Route::get('\/filter-data', [InventoryReportController::class, 'filterData'])",
+            "Route::get('\/get-warehouses', [InventoryReportController::class, 'getWarehouses'])",
+            "Route::get('\/get-branches', [InventoryReportController::class, 'getBranches'])"
+        ]
+    },
+    "MilkOrdersController": {
+        "methods": [
+            "index",
+            "getMilkSlots",
+            "cancelMilkSlot",
+            "getAreaAssignedDelvieryPerson",
+            "milkOrderDeliveryAssign"
+        ],
+        "routes": [
+            "Route::resource('milkOrders', MilkOrdersController::class)",
+            "Route::post(\"getAreaAssignedDelvieryPerson\/{areaId}\", [MilkOrdersController::class, \"getAreaAssignedDelvieryPerson\"])",
+            "Route::post(\"milkOrderDeliveryAssign\", [MilkOrdersController::class, \"milkOrderDeliveryAssign\"])",
+            "Route::resource('milkOrders', MilkOrdersController::class)"
+        ]
+    },
+    "NewcouponController": {
+        "methods": [
+            "index",
+            "store",
+            "toggle",
+            "edit",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::get('\/admin\/coupons', [NewcouponController::class, 'index'])",
+            "Route::post('\/admin\/coupons\/store', [NewcouponController::class, 'store'])",
+            "Route::post('\/admin\/coupons\/{id}\/toggle', [NewcouponController::class, 'toggle'])",
+            "Route::get('\/admin\/coupons\/{id}\/edit', [NewcouponController::class, 'edit'])",
+            "Route::put('\/admin\/coupons\/{id}\/update', [NewcouponController::class, 'update'])",
+            "Route::delete('\/admin\/coupons\/{id}', [NewcouponController::class, 'destroy'])"
+        ]
+    },
+    "OrderSummeryController": {
+        "methods": [
+            "index",
+            "getoversummery"
+        ],
+        "routes": [
+            "Route::resource(\"ordersummery\",OrderSummeryController::class)",
+            "Route::post(\"getoversummery\", [OrderSummeryController::class, \"getoversummery\"])",
+            "Route::resource(\"ordersummery\",OrderSummeryController::class)"
+        ]
+    },
+    "OrderwiseController": {
+        "methods": [
+            "orderwisereport",
+            "filterorderWiseReport",
+            "exportExcel",
+            "exportPDF"
+        ],
+        "routes": [
+            "Route::get('\/orderwisereport', [OrderwiseController::class, 'orderwisereport'])",
+            "Route::get('\/order-wise-report\/filter', [OrderwiseController::class, 'filterorderWiseReport'])",
+            "Route::get('\/oreport\/export\/excel', [OrderwiseController::class, 'exportExcel'])",
+            "Route::get('\/oreport\/export\/pdf', [OrderwiseController::class, 'exportPDF'])",
+            "Route::get('\/orderwisereport', [OrderwiseController::class, 'orderwisereport'])",
+            "Route::get('\/order-wise-report\/filter', [OrderwiseController::class, 'filterorderWiseReport'])",
+            "Route::get('\/oreport\/export\/excel', [OrderwiseController::class, 'exportExcel'])",
+            "Route::get('\/oreport\/export\/pdf', [OrderwiseController::class, 'exportPDF'])"
+        ]
+    },
+    "PackingOrderController": {
+        "methods": [
+            "index",
+            "updatepacking",
+            "updaterefund1"
+        ],
+        "routes": [
+            "Route::resource(\"productpacking\",PackingOrderController::class)",
+            "Route::post(\"updatestatupacking\",[PackingOrderController::class,\"updatepacking\"])",
+            "Route::post(\"updaterefund1\", [PackingOrderController::class,\"updaterefund1\"])",
+            "Route::resource(\"productpacking\",PackingOrderController::class)"
+        ]
+    },
+    "ProductController": {
+        "methods": [
+            "index",
+            "destroyVarientThumpImages",
+            "create",
+            "store",
+            "show",
+            "edit",
+            "update",
+            "destroy",
+            "productImageUpload",
+            "getProductDetail",
+            "createMilkSubscription",
+            "addMilkOrderDeliveryAddress",
+            "addProductOrderDeliveryAddress",
+            "assignDeliverPersonMilkOrder",
+            "createProductSubscription",
+            "assignDeliverProductOrder",
+            "createMilkSlot",
+            "createProductSlot",
+            "viewProductInvoice",
+            "upadetstatus",
+            "pickupstatus",
+            "getproductfilter",
+            "updaterefund",
+            "Getsubproo",
+            "getProductsByCategory",
+            "getthump",
+            "downloadTemplate",
+            "bulkUpload"
+        ],
+        "routes": [
+            "Route::resource('products', ProductController::class)",
+            "Route::post(\"updateProducts\/{id}\", [ProductController::class, \"update\"])",
+            "Route::post(\"destroyProducts\/{id}\", [ProductController::class, \"destroy\"])",
+            "Route::post(\"productImageUpload\", [ProductController::class, \"productImageUpload\"])",
+            "Route::post(\"getProductDetail\", [ProductController::class, \"getProductDetail\"])",
+            "Route::post(\"getproductfilter\",[ProductController::class, \"getproductfilter\"])",
+            "Route::get(\"downloadProductTemplate\", [ProductController::class, \"downloadTemplate\"])",
+            "Route::post(\"bulkUploadProducts\", [ProductController::class, \"bulkUpload\"])",
+            "Route::post('destroyVarientThumpImages\/{id}',[ProductController::class,\"destroyVarientThumpImages\"])",
+            "Route::get('\/getthump\/{productid}',[ProductController::class,'getthump'])",
+            "Route::post(\"createMilkSubscription\", [ProductController::class, \"createMilkSubscription\"])",
+            "Route::post(\"createMilkSlot\", [ProductController::class, \"createMilkSlot\"])",
+            "Route::post(\"createProductSubscription\", [ProductController::class, \"createProductSubscription\"])",
+            "Route::post(\"createProductSlot\", [ProductController::class, \"createProductSlot\"])",
+            "Route::get(\"viewProductdetail\/{orderId?}\", [ProductController::class, \"viewProductInvoice\"])",
+            "Route::post(\"updatestatus\",[ProductController::class,\"upadetstatus\"])",
+            "Route::post(\"pickupstatus\",[ProductController::class,\"pickupstatus\"])",
+            "Route::post(\"updaterefund\", [ProductController::class,\"updaterefund\"])",
+            "Route::resource('products', ProductController::class)"
+        ]
+    },
+    "ProductManagementController": {
+        "methods": [
+            "index",
+            "resolveReturn",
+            "cancelOrder",
+            "logDamaged",
+            "writeOffExpired"
+        ],
+        "routes": [
+            "Route::get('product-management', [ProductManagementController::class, 'index'])",
+            "Route::post('product-management\/return\/resolve', [ProductManagementController::class, 'resolveReturn'])",
+            "Route::post('product-management\/cancel', [ProductManagementController::class, 'cancelOrder'])",
+            "Route::post('product-management\/damaged\/log', [ProductManagementController::class, 'logDamaged'])",
+            "Route::post('product-management\/expired\/writeoff', [ProductManagementController::class, 'writeOffExpired'])"
+        ]
+    },
+    "ProductOrdersController": {
+        "methods": [
+            "index",
+            "allOrders",
+            "orderStat",
+            "create",
+            "store",
+            "show",
+            "edit",
+            "update",
+            "destroy",
+            "productOrderDeliveryAssign",
+            "updatestatus",
+            "specialOrders"
+        ],
+        "routes": [
+            "Route::resource('productOrders', ProductOrdersController::class)",
+            "Route::post(\"productOrderDeliveryAssign\", [ProductOrdersController::class, \"productOrderDeliveryAssign\"])",
+            "Route::get(\"viewProducts\", [ProductOrdersController::class, \"orderStat\"])",
+            "Route::get('\/all-orders', [ProductOrdersController::class, 'allOrders'])",
+            "Route::post('\/updatestatus', [ProductOrdersController::class, 'updatestatus'])",
+            "Route::get('\/other-orders', [ProductOrdersController::class, 'specialOrders'])",
+            "Route::resource('productOrders', ProductOrdersController::class)"
+        ]
+    },
+    "ProductRefundController": {
+        "methods": [
+            "index",
+            "getRefundDatas",
+            "refundProductSlot"
+        ],
+        "routes": [
+            "Route::resource(\"productRefunds\", ProductRefundController::class)",
+            "Route::post(\"getProductRefundDatas\", [ProductRefundController::class, \"getRefundDatas\"])",
+            "Route::post(\"refundProductSlot\", [ProductRefundController::class, \"refundProductSlot\"])",
+            "Route::resource(\"productRefunds\", ProductRefundController::class)"
+        ]
+    },
+    "ProductReturnController": {
+        "methods": [
+            "index",
+            "update",
+            "updateed"
+        ],
+        "routes": [
+            "Route::resource('productreturn',ProductReturnController::class)",
+            "Route::post(\"updatereturnpro\",[ProductReturnController::class,\"update\"])",
+            "Route::post(\"collectreturn\",[ProductReturnController::class,\"updateed\"])",
+            "Route::resource('productreturn',ProductReturnController::class)"
+        ]
+    },
+    "ProductSlotController": {
+        "methods": [
+            "getProductSlots",
+            "getProductSlotss",
+            "cancelProductSlot",
+            "cancelrequests",
+            "approverequest",
+            "returnrequests",
+            "approveReturnRequest",
+            "rejectReturnRequests"
+        ],
+        "routes": [
+            "Route::get('productOrders\/{orderId}', [ProductSlotController::class, \"getProductSlots\"])",
+            "Route::get('ordersummerys\/{orderId}', [ProductSlotController::class, \"getProductSlotss\"])",
+            "Route::post(\"cancelProductSlot\", [ProductSlotController::class, \"cancelProductSlot\"])",
+            "Route::get('cancelrequests',[ProductSlotController::class,'cancelrequests'])",
+            "Route::post('\/approverequest',[ProductSlotController::class,'approverequest'])",
+            "Route::get('returnrequests',[ProductSlotController::class,'returnrequests'])",
+            "Route::post('\/reject-return-request',[ProductSlotController::class,'rejectReturnRequests'])"
+        ]
+    },
+    "ProductThumController": {
+        "methods": [
+            "index",
+            "ThumImages",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::resource('productthump',ProductThumController::class)",
+            "Route::post('ThumImages',[ProductThumController::class,\"ThumImages\"])",
+            "Route::post('updatethumImages\/{id}',[ProductThumController::class,\"update\"])",
+            "Route::post(\"destroyThumpImages\/{id}\",[ProductThumController::class,\"destroy\"])",
+            "Route::resource('productthump',ProductThumController::class)"
+        ]
+    },
+    "ProductVarientControllet": {
+        "methods": [
+            "index",
+            "addproductvarient",
+            "update",
+            "destroy",
+            "Getsubcategory",
+            "Getproduct",
+            "getproductverfilter",
+            "getVariantStocks"
+        ],
+        "routes": [
+            "Route::resource('productvarient',ProductVarientControllet::class)",
+            "Route::post('addproductvarient',[ProductVarientControllet::class,\"addproductvarient\"])",
+            "Route::post('updateProductsvarient\/{id}',[ProductVarientControllet::class,'update'])",
+            "Route::post('destroyvarient\/{id}',[ProductVarientControllet::class,\"destroy\"])",
+            "Route::get('Getproduct\/{custid}',[ProductVarientControllet::class,\"Getproduct\"])",
+            "Route::get('Getsubcategory\/{custid}',[ProductVarientControllet::class,\"Getsubcategory\"])",
+            "Route::post(\"getproductverfilter\",[ProductVarientControllet::class,\"getproductverfilter\"])",
+            "Route::get('\/getVariantStocks\/{id}', [ProductVarientControllet::class, 'getVariantStocks'])",
+            "Route::resource('productvarient',ProductVarientControllet::class)"
+        ]
+    },
+    "ProductwiseController": {
+        "methods": [
+            "productWiseReport",
+            "filterProductWiseReport",
+            "exportExcel",
+            "exportPDF"
+        ],
+        "routes": [
+            "Route::resource('productwisereport',ProductwiseController::class)",
+            "Route::get('\/productwisereport', [ProductwiseController::class, 'productWiseReport'])",
+            "Route::get('\/product-wise-report\/filter', [ProductwiseController::class, 'filterProductWiseReport'])",
+            "Route::get('\/report\/export\/excel', [ProductwiseController::class, 'exportExcel'])",
+            "Route::get('\/report\/export\/pdf', [ProductwiseController::class, 'exportPDF'])",
+            "Route::resource('productwisereport',ProductwiseController::class)"
+        ]
+    },
+    "PurchaseOrderController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "receiveBatches",
+            "getVariants",
+            "show",
+            "updateStatus"
+        ],
+        "routes": [
+            "Route::get('\/purchase-orders', [PurchaseOrderController::class, 'index'])",
+            "Route::post('\/purchase-orders', [PurchaseOrderController::class, 'store'])",
+            "Route::post('\/purchase-orders\/update-status', [PurchaseOrderController::class, 'updateStatus'])",
+            "Route::post('\/purchase-orders\/update', [PurchaseOrderController::class, 'update'])",
+            "Route::post('\/purchase-orders\/receive-batches', [PurchaseOrderController::class, 'receiveBatches'])",
+            "Route::get('\/get-variants', [PurchaseOrderController::class, 'getVariants'])",
+            "Route::get('\/purchase-orders\/{id}', [PurchaseOrderController::class, 'show'])",
+            "Route::post('\/purchase-orders\/update-status',    [PurchaseOrderController::class, 'updateStatus'])"
+        ]
+    },
+    "PurchaseReportController": {
+        "methods": [
+            "index",
+            "filterData"
+        ],
+        "routes": [
+            "Route::get('\/', [PurchaseReportController::class, 'index'])",
+            "Route::get('\/filter-data', [PurchaseReportController::class, 'filterData'])"
+        ]
+    },
+    "ReportsController": {
+        "methods": [
+            "incomeReports",
+            "getIncomeReports",
+            "index"
+        ],
+        "routes": [
+            "Route::get(\"incomeReports\", [ReportsController::class, \"incomeReports\"])",
+            "Route::post(\"getIncomeReports\", [ReportsController::class, \"getIncomeReports\"])",
+            "Route::get('\/reports', [ReportsController::class, 'index'])"
+        ]
+    },
+    "StockController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "reduceStock",
+            "reduceStock",
+            "lowstock",
+            "update1",
+            "update1",
+            "highselling",
+            "transferIndex",
+            "transferStock",
+            "warehouseTransfer",
+            "acceptTransfer",
+            "cancelTransfer",
+            "giftIndex",
+            "giftTransferIndex"
+        ],
+        "routes": [
+            "Route::resource(\"stocks\",StockController::class)",
+            "Route::post(\"updateStack\", [StockController::class, \"update\"])",
+            "Route::post(\"reduceStock\", [StockController::class, \"reduceStock\"])",
+            "Route::get('lowstock',[StockController::class,\"lowstock\"])",
+            "Route::post(\"updateStacklow\", [StockController::class, \"update1\"])",
+            "Route::get(\"highselling\",[StockController::class, \"highselling\"])",
+            "Route::get('transfer-stock', [StockController::class, 'transferIndex'])",
+            "Route::post('transferStock', [StockController::class, 'transferStock'])",
+            "Route::post('storeStock', [StockController::class, 'store'])",
+            "Route::get('\/gift-stock', [StockController::class, 'giftIndex'])",
+            "Route::post('warehouseTransfer', [StockController::class, 'warehouseTransfer'])",
+            "Route::post('\/stock-transfers\/{id}\/accept', [StockController::class, 'acceptTransfer'])",
+            "Route::post('\/stock-transfers\/{id}\/cancel', [StockController::class, 'cancelTransfer'])",
+            "Route::get('\/gift-transfer-stock', [StockController::class, 'giftTransferIndex'])",
+            "Route::resource(\"stocks\",StockController::class)"
+        ]
+    },
+    "StockDistributionController": {
+        "methods": [
+            "index",
+            "giftIndex",
+            "getVariants",
+            "getWarehouses",
+            "getBranches",
+            "getStocks",
+            "store",
+            "getStoreStock",
+            "acceptDistribution",
+            "cancelDistribution"
+        ],
+        "routes": [
+            "Route::get('\/stock-distribution',        [StockDistributionController::class, 'index'])",
+            "Route::post('\/stock-distribution\/store', [StockDistributionController::class, 'store'])",
+            "Route::get('\/get-warehouses', [StockDistributionController::class, 'getWarehouses'])",
+            "Route::get('\/get-branches',   [StockDistributionController::class, 'getBranches'])",
+            "Route::get('\/get-product-variants', [StockDistributionController::class, 'getVariants'])",
+            "Route::get('\/get-stocks',     [StockDistributionController::class, 'getStocks'])",
+            "Route::get('\/get-store-stocks', [StockDistributionController::class, 'getStoreStock'])",
+            "Route::post('\/stock-distributions\/{id}\/accept', [StockDistributionController::class, 'acceptDistribution'])",
+            "Route::post('\/stock-distributions\/{id}\/cancel', [StockDistributionController::class, 'cancelDistribution'])",
+            "Route::get('\/gift-stock-distribution', [StockDistributionController::class, 'giftIndex'])"
+        ]
+    },
+    "StockTrackingController": {
+        "methods": [
+            "index",
+            "giftIndex",
+            "setOfferPrice"
+        ],
+        "routes": [
+            "Route::get('stock-tracking', [StockTrackingController::class, 'index'])",
+            "Route::get('\/gift-stock-tracking', [StockTrackingController::class, 'giftIndex'])",
+            "Route::post('\/stock\/batches\/{batch}\/offer-price', [StockTrackingController::class, 'setOfferPrice'])"
+        ]
+    },
+    "SubCategoryController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::resource(\"subcategories\", SubCategoryController::class)",
+            "Route::post(\"updateSubCategories\/{id}\", [SubCategoryController::class, \"update\"])",
+            "Route::post(\"destroySubCategories\/{id}\", [SubCategoryController::class, \"destroy\"])",
+            "Route::post(\"validateSubCategoryName\", [SubCategoryController::class, \"validateSubCategoryName\"])",
+            "Route::post(\"validateSubCategoryName\", [SubCategoryController::class, \"validateSubCategoryName\"])",
+            "Route::resource(\"subcategories\", SubCategoryController::class)"
+        ]
+    },
+    "SupplierDetailController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy",
+            "validateSupplierName",
+            "getByCountry"
+        ],
+        "routes": [
+            "Route::get('\/supplier', [SupplierDetailController::class, 'index'])",
+            "Route::post('\/supplier', [SupplierDetailController::class, 'store'])",
+            "Route::post('\/updateSupplier\/{id}', [SupplierDetailController::class, 'update'])",
+            "Route::post('\/destroySupplier\/{id}', [SupplierDetailController::class, 'destroy'])",
+            "Route::post('\/validateSupplierName', [SupplierDetailController::class, 'validateSupplierName'])"
+        ]
+    },
+    "TodayDealsController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::resource(\"todaydeals\", TodayDealsController::class)",
+            "Route::post(\"updatetodaydeals\/{id}\", [TodayDealsController::class, \"update\"])",
+            "Route::post(\"destroytodaydeals\/{id}\", [TodayDealsController::class, \"destroy\"])",
+            "Route::resource(\"todaydeals\", TodayDealsController::class)"
+        ]
+    },
+    "UnitController": {
+        "methods": [
+            "index",
+            "store",
+            "update",
+            "destroy"
+        ],
+        "routes": [
+            "Route::get('\/units',                   [UnitController::class, 'index'])",
+            "Route::post('\/units',                  [UnitController::class, 'store'])",
+            "Route::post('\/units\/update\/{id}',      [UnitController::class, 'update'])",
+            "Route::post('\/units\/destroy\/{id}',     [UnitController::class, 'destroy'])"
+        ]
+    }
+}

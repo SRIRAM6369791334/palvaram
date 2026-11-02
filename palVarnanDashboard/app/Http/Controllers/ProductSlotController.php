@@ -168,6 +168,10 @@ class ProductSlotController extends Controller
 
         curl_close($curl);
 
+        $orderObj = ProductOrder::where('order_id', $order_id)->first();
+        if ($orderObj) {
+            $orderObj->restoreStock();
+        }
         DB::table('product_orders')->where('order_id',$order_id)->update(['status'=> 'cancelled']);
         DB::table('product_tracking')->where('order_id',$order_id)->update(['tracking_url'=> 0]);
 

@@ -12,23 +12,25 @@ class SearchController extends Controller
 {
     public function search(Request $request)
     {
-        $q = trim($request->q);
+        $q = trim($request->q ?? $request->search ?? '');
+
+        // If accessed directly from browser address bar or traditional form submit, redirect to products catalog
+        if (!$request->ajax() && !$request->wantsJson()) {
+            return redirect()->to(url('/products') . '?search=' . urlencode($q));
+        }
 
         if (!$q) {
             return response()->json([]);
         }
 
         $results = [];
-
         $baseImageUrl = rtrim(env('MAIN_URL'), '/') . '/images/';
 
-        
         $products = Product::where('product_name', 'LIKE', "%{$q}%")
             ->limit(5)
             ->get();
 
         foreach ($products as $item) {
-
             $results[] = [
                 'name'  => $item->product_name,
                 'type'  => 'Product',
@@ -37,14 +39,12 @@ class SearchController extends Controller
             ];
         }
 
-      
         $variants = ProductVarient::with('product')
             ->where('varient', 'LIKE', "%{$q}%")
             ->limit(5)
             ->get();
 
         foreach ($variants as $item) {
-
             $results[] = [
                 'name'  => ($item->product->product_name ?? '') . ' - ' . $item->varient,
                 'type'  => 'Variant',
@@ -57,13 +57,11 @@ class SearchController extends Controller
             ];
         }
 
-        
         $brands = Brand::where('brand_name', 'LIKE', "%{$q}%")
             ->limit(5)
             ->get();
 
         foreach ($brands as $item) {
-
             $results[] = [
                 'name'  => $item->brand_name,
                 'type'  => 'Brand',
@@ -72,13 +70,11 @@ class SearchController extends Controller
             ];
         }
 
-       
         $categories = Category::where('category_name', 'LIKE', "%{$q}%")
             ->limit(5)
             ->get();
 
         foreach ($categories as $item) {
-
             $results[] = [
                 'name'  => $item->category_name,
                 'type'  => 'Category',

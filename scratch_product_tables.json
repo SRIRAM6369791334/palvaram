@@ -1,0 +1,618 @@
+{
+    "brands": {
+        "name": "brands",
+        "rows": 8,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "country_id": " ()",
+            "brand_name": " ()",
+            "brand_slug": " ()",
+            "brand_image": " ()",
+            "status": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "categories": {
+        "name": "categories",
+        "rows": 15,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "country_id": " ()",
+            "category_name": " ()",
+            "category_banner": " ()",
+            "category_image": " ()",
+            "category_icon": " ()",
+            "status": " ()",
+            "is_gift": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "gift_color": {
+        "name": "gift_color",
+        "rows": 1,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "country_id": " ()",
+            "color": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "gift_purchase_order_items": {
+        "name": "gift_purchase_order_items",
+        "rows": 1,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "gift_purchase_order_id": " ()",
+            "product_id": " ()",
+            "variant_id": " ()",
+            "barcode": " ()",
+            "item_code": " ()",
+            "value": " ()",
+            "category_id": " ()",
+            "subcategory_id": " ()",
+            "unit_id": " ()",
+            "color_id": " ()",
+            "size_id": " ()",
+            "quantity": " ()",
+            "price": " ()",
+            "total": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "gift_size": {
+        "name": "gift_size",
+        "rows": 3,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "country_id": " ()",
+            "size": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "products": {
+        "name": "products",
+        "rows": 14,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "category_id": " ()",
+            "brand_id": " ()",
+            "country_id": " ()",
+            "warehouse_id": " ()",
+            "branch_id": " ()",
+            "subcategory_id": " ()",
+            "product_name": " ()",
+            "slug": " ()",
+            "product_quantity": " ()",
+            "product_mrp_price": " ()",
+            "product_regular_price": " ()",
+            "product_description": " ()",
+            "product_image": " ()",
+            "product_specification": " ()",
+            "product_specfication": " ()",
+            "brand_name": " ()",
+            "brand_material": " ()",
+            "brand_type": " ()",
+            "approval_days": " ()",
+            "is_gift": " ()",
+            "created_at": " ()",
+            "updated_at": " ()",
+            "unit_value": " ()",
+            "product_value": " ()",
+            "cate_name": " ()",
+            "subcate_name": " ()",
+            "size_value": " ()",
+            "deleted_at": " ()"
+        },
+        "foreign_keys": [
+            {
+                "column": "warehouse_id",
+                "constraint": "products_warehouse_id_foreign",
+                "references_table": "warehouse",
+                "references_column": "id"
+            }
+        ]
+    },
+    "productstocks": {
+        "name": "productstocks",
+        "rows": 16,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "productid": " ()",
+            "category_id": " ()",
+            "subcategory_id": " ()",
+            "country_id": " ()",
+            "warehouse_id": " ()",
+            "branch_id": " ()",
+            "pro_ver_id": " ()",
+            "productname": " ()",
+            "overallstock": " ()",
+            "availablestock": " ()",
+            "salestock": " ()",
+            "low_stocks": " ()",
+            "last_stockupdate_date": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": [
+            {
+                "column": "branch_id",
+                "constraint": "productstocks_branch_id_foreign",
+                "references_table": "warehouse_branch",
+                "references_column": "id"
+            },
+            {
+                "column": "warehouse_id",
+                "constraint": "productstocks_warehouse_id_foreign",
+                "references_table": "warehouse",
+                "references_column": "id"
+            }
+        ]
+    },
+    "product_child_images": {
+        "name": "product_child_images",
+        "rows": 9,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "product_id": " ()",
+            "variant_id": " ()",
+            "product_child_image": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "product_orders": {
+        "name": "product_orders",
+        "rows": 13,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "country_id": " ()",
+            "user_id": " ()",
+            "order_number": " ()",
+            "order_id": " ()",
+            "delivery_person_id": " ()",
+            "delivery_person_name": " ()",
+            "delivery_person_phone": " ()",
+            "is_delivery_assigned": " ()",
+            "billing_name": " ()",
+            "billing_email": " ()",
+            "billing_phone": " ()",
+            "billing_door_no": " ()",
+            "billing_street": " ()",
+            "billing_area": " ()",
+            "billing_city": " ()",
+            "billing_state": " ()",
+            "billing_pincode": " ()",
+            "shipping_name": " ()",
+            "shipping_email": " ()",
+            "shipping_phone": " ()",
+            "shipping_door_no": " ()",
+            "shipping_street": " ()",
+            "shipping_area": " ()",
+            "shipping_city": " ()",
+            "shipping_state": " ()",
+            "shipping_pincode": " ()",
+            "subtotal": " ()",
+            "gst_amount": " ()",
+            "shipping_charge": " ()",
+            "total_amount": " ()",
+            "payment_status": " ()",
+            "payment_method": " ()",
+            "razorpay_order_id": " ()",
+            "razorpay_payment_id": " ()",
+            "shiprocket_order_id": " ()",
+            "shiprocket_shipment_id": " ()",
+            "awb_code": " ()",
+            "courier_name": " ()",
+            "pickup_scheduled": " ()",
+            "manifest_url": " ()",
+            "label_url": " ()",
+            "invoice_url": " ()",
+            "shiprocket_status": " ()",
+            "cancellation_reason": " ()",
+            "status": " ()",
+            "created_at": " ()",
+            "updated_at": " ()",
+            "reason": " ()",
+            "unavailable_amount": " ()",
+            "unavailable_count": " ()"
+        },
+        "foreign_keys": [
+            {
+                "column": "country_id",
+                "constraint": "fk_product_orders_country",
+                "references_table": "countries",
+                "references_column": "id"
+            },
+            {
+                "column": "user_id",
+                "constraint": "product_orders_user_id_foreign",
+                "references_table": "users",
+                "references_column": "id"
+            }
+        ]
+    },
+    "product_order_items": {
+        "name": "product_order_items",
+        "rows": 21,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "order_id": " ()",
+            "product_id": " ()",
+            "product_variant_id": " ()",
+            "product_name": " ()",
+            "product_image": " ()",
+            "variant_name": " ()",
+            "quantity": " ()",
+            "price": " ()",
+            "gst_rate": " ()",
+            "gst_amount": " ()",
+            "total": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "product_order_user_addresses": {
+        "name": "product_order_user_addresses",
+        "rows": 13,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "user_id": " ()",
+            "order_id": " ()",
+            "firstname": " ()",
+            "secondname": " ()",
+            "address_line_one": " ()",
+            "address_line_two": " ()",
+            "landmark": " ()",
+            "area_id": " ()",
+            "city": " ()",
+            "state": " ()",
+            "pincode": " ()",
+            "phonecode": " ()",
+            "address_phone_number": " ()",
+            "address_type_id": " ()",
+            "address_type_name": " ()",
+            "address_type_others_name": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "product_refunds": {
+        "name": "product_refunds",
+        "rows": 0,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "order_id": " ()",
+            "slot_id": " ()",
+            "cancelled_by": " ()",
+            "refund_status": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "product_slots": {
+        "name": "product_slots",
+        "rows": 15,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "delivery_date": " ()",
+            "order_id": " ()",
+            "product_id": " ()",
+            "product_varient_id": " ()",
+            "product_name": " ()",
+            "product_rate": " ()",
+            "gst_amt": " ()",
+            "gst_per": " ()",
+            "product_value": " ()",
+            "quantity": " ()",
+            "product_total": " ()",
+            "delivery_status": " ()",
+            "preorder": " ()",
+            "dispatch_date": " ()",
+            "order_delivered_time": " ()",
+            "deliver_person_id": " ()",
+            "is_cancelled": " ()",
+            "cancel_reason": " ()",
+            "approve_staus": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "product_stock_batches": {
+        "name": "product_stock_batches",
+        "rows": 6,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "product_stock_id": " ()",
+            "batch_no": " ()",
+            "manufacturing_date": " ()",
+            "expiry_date": " ()",
+            "offer_price": " ()",
+            "quantity": " ()",
+            "remaining_qty": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "product_tracking": {
+        "name": "product_tracking",
+        "rows": 43,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "user_id": " ()",
+            "order_id": " ()",
+            "delivery_status": " ()",
+            "status": " ()",
+            "channel_id": " ()",
+            "shiprocket_order_id": " ()",
+            "shiprocket_shipment_id": " ()",
+            "awb_code": " ()",
+            "tracking_url": " ()",
+            "delivered_date": " ()",
+            "return_requested": " ()",
+            "return_approval_date": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "product_transaction_logs": {
+        "name": "product_transaction_logs",
+        "rows": 1,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "order_id": " ()",
+            "slot_id": " ()",
+            "order_date": " ()",
+            "order_amount": " ()",
+            "amount_credited": " ()",
+            "amount_debited": " ()",
+            "user_id": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "product_varient": {
+        "name": "product_varient",
+        "rows": 14,
+        "has_product_in_name": true,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "categoryid": " ()",
+            "subcategoryid": " ()",
+            "country_id": " ()",
+            "warehouse_id": " ()",
+            "branch_id": " ()",
+            "product_id": " ()",
+            "sku": " ()",
+            "barcode": " ()",
+            "varient": " ()",
+            "unit_id": " ()",
+            "size_id": " ()",
+            "color_id": " ()",
+            "varient_img": " ()",
+            "varient_name": " ()",
+            "value": " ()",
+            "offer_price": " ()",
+            "mrp_price": " ()",
+            "product_qty": " ()",
+            "low_stock": " ()",
+            "hot_deals": " ()",
+            "Popular_products": " ()",
+            "pre_order": " ()",
+            "pre_note": " ()",
+            "product_gst": " ()",
+            "subcatename": " ()",
+            "size_value": " ()",
+            "created_at": " ()",
+            "updated_at": " ()",
+            "flash_sale": " ()",
+            "flash_sale_date": " ()",
+            "item_code": " ()"
+        },
+        "foreign_keys": [
+            {
+                "column": "branch_id",
+                "constraint": "product_varient_branch_id_foreign",
+                "references_table": "warehouse_branch",
+                "references_column": "id"
+            },
+            {
+                "column": "warehouse_id",
+                "constraint": "product_varient_warehouse_id_foreign",
+                "references_table": "warehouse",
+                "references_column": "id"
+            }
+        ]
+    },
+    "purchase_order_items": {
+        "name": "purchase_order_items",
+        "rows": 7,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "purchase_order_id": " ()",
+            "product_id": " ()",
+            "barcode": " ()",
+            "item_code": " ()",
+            "value": " ()",
+            "variant_id": " ()",
+            "category_id": " ()",
+            "subcategory_id": " ()",
+            "unit_id": " ()",
+            "quantity": " ()",
+            "price": " ()",
+            "total": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": [
+            {
+                "column": "product_id",
+                "constraint": "purchase_order_items_product_id_foreign",
+                "references_table": "products",
+                "references_column": "id"
+            },
+            {
+                "column": "purchase_order_id",
+                "constraint": "purchase_order_items_purchase_order_id_foreign",
+                "references_table": "purchase_orders",
+                "references_column": "id"
+            },
+            {
+                "column": "unit_id",
+                "constraint": "purchase_order_items_unit_id_foreign",
+                "references_table": "units",
+                "references_column": "id"
+            }
+        ]
+    },
+    "stock_distributions": {
+        "name": "stock_distributions",
+        "rows": 2,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "product_id": " ()",
+            "variant_id": " ()",
+            "warehouse_id": " ()",
+            "branch_id": " ()",
+            "quantity": " ()",
+            "distributed_by": " ()",
+            "distributed_at": " ()",
+            "created_at": " ()",
+            "updated_at": " ()",
+            "status": " ()",
+            "received_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "stock_transfers": {
+        "name": "stock_transfers",
+        "rows": 3,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "product_stock_id": " ()",
+            "from_warehouse_id": " ()",
+            "from_branch_id": " ()",
+            "to_warehouse_id": " ()",
+            "to_branch_id": " ()",
+            "quantity": " ()",
+            "transfer_code": " ()",
+            "status": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "sub_categories": {
+        "name": "sub_categories",
+        "rows": 11,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "country_id": " ()",
+            "subcategory_name": " ()",
+            "subcategory_image": " ()",
+            "category_name": " ()",
+            "category_display": " ()",
+            "status": " ()",
+            "is_gift": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": [
+            {
+                "column": "country_id",
+                "constraint": "sub_categories_country_id_foreign",
+                "references_table": "countries",
+                "references_column": "id"
+            }
+        ]
+    },
+    "today_deals": {
+        "name": "today_deals",
+        "rows": 0,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "product_id": " ()",
+            "variant_id": " ()",
+            "product_name": " ()",
+            "offer_value": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    },
+    "units": {
+        "name": "units",
+        "rows": 10,
+        "has_product_in_name": false,
+        "product_columns": [],
+        "all_columns": {
+            "id": " ()",
+            "country_id": " ()",
+            "unit_name": " ()",
+            "short_name": " ()",
+            "created_at": " ()",
+            "updated_at": " ()"
+        },
+        "foreign_keys": []
+    }
+}

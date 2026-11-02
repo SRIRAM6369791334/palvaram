@@ -37,7 +37,7 @@ class ProfileController extends Controller
             ]);
 
             if (!Hash::check($request->current_password, $user->password)) {
-                return back()->with('error', 'Current password is wrong');
+                return back()->with('error', 'Current password is wrong')->with('tab', 'personal');
             }
 
             $user->update([
@@ -45,7 +45,7 @@ class ProfileController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Profile updated successfully');
+        return back()->with('success', 'Profile updated successfully')->with('tab', 'personal');
     }
 
     public function logout(Request $request)

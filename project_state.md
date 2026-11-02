@@ -37,3 +37,19 @@
    - Configured `ADMIN_EMAIL=sriramsri1234321@gmail.com` in `.env` files.
    - Created beautiful responsive email templates: `emails.contact_admin` and `emails.contact_customer`.
    - Upgraded ContactController with dual email dispatch and non-blocking SMTP probe for seamless UX.
+9. **Comprehensive QA Testing & CRUD Verification Suite:**
+   - Acted as Senior QA / Tester conducting full multi-perspective audit across Storefront and Dashboard.
+   - Verified Storefront pages: Home (`/`), Catalog (`/products`), Gift Filter (`/products?gift=1`), Product Detail (`/product/new-test-toy-1780660244`), Categories (`/categories`), Contact (`/contact`), and Cart (`/cart`).
+   - Verified Variant Reactivity: Pill selection, price dynamic update (₹700 -> ₹850), stock updates, Add-to-Cart state transformations, and WhatsApp buy links.
+   - Verified Dashboard CRUD: Category lifecycle (Create, Read, Update, Delete), Product and Variant lifecycles in `product_varient`, and Inquiry Modal interactions.
+   - Captured and persisted 12 verified visual receipts (`qa_proof_01` to `qa_proof_12`).
+
+10. **Cart, Wishlist, and Checkout Flow Implementation & Verification:**
+   - Dynamic Cart Sidebar recalculation replacing hardcoded values (`₹479.2` -> exact live subtotal, GST, and shipping).
+   - Live debounced AJAX quantity synchronization and removal handling.
+   - Guest-to-user cart migration upon authentication with smart redirect back to `/checkout`.
+   - Polymorphic Wishlist support for both groceries (`unit`) and gifts (`size` + `color`).
+   - Checkout integration with live Shiprocket couriers (Xpressbees, Ekart) and fallback to standard delivery.
+   - Multi-table order placement: `product_orders`, `product_order_items`, `product_slots`, and stock decrements.
+   - Dual HTML order notification templates (`emails.order_customer` and `emails.order_admin`) with resilient non-blocking socket probes.
+   - Verified live browser COD order placement (`#ORD-6AE81A4E512E2`) and real-time reflection in Admin Dashboard (`/productOrders`).

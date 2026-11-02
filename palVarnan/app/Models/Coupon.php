@@ -18,6 +18,8 @@ class Coupon extends Model
         'discount',
         'mini_amt',
         'start_date',
-        'end_date'
+        'end_date',
+        'coupon_status',
+        'default_id'
     ];
 }

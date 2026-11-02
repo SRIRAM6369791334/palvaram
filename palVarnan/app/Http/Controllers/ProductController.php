@@ -112,6 +112,20 @@ class ProductController extends Controller
             $products->where('is_gift', $request->gift == '1' || $request->gift === 'true' ? 1 : 0);
         }
 
+        $search = trim($request->get('search', $request->get('q', '')));
+        if ($search !== '') {
+            $products->where(function ($q) use ($search) {
+                $q->where('product_name', 'LIKE', "%{$search}%")
+                  ->orWhere('product_description', 'LIKE', "%{$search}%")
+                  ->orWhereHas('category', function ($cq) use ($search) {
+                      $cq->where('category_name', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('variants', function ($vq) use ($search) {
+                      $vq->where('varient', 'LIKE', "%{$search}%");
+                  });
+            });
+        }
+
 
         $cartProductIds = [];
         $cartItems = collect();
@@ -136,10 +150,10 @@ class ProductController extends Controller
         $sort = $request->get('sort', 'latest');
         switch ($sort) {
             case 'price_low_high':
-                $products->orderByRaw('(SELECT MIN(offer_price) FROM product_varients WHERE product_varients.product_id = products.id) ASC');
+                $products->orderByRaw('(SELECT MIN(offer_price) FROM product_varient WHERE product_varient.product_id = products.id) ASC');
                 break;
             case 'price_high_low':
-                $products->orderByRaw('(SELECT MAX(offer_price) FROM product_varients WHERE product_varients.product_id = products.id) DESC');
+                $products->orderByRaw('(SELECT MAX(offer_price) FROM product_varient WHERE product_varient.product_id = products.id) DESC');
                 break;
             case 'name_asc':
                 $products->orderBy('product_name', 'asc');
@@ -159,7 +173,7 @@ class ProductController extends Controller
 
         $products = $products->paginate($perPage);
 
-        return view('pages.products', compact('categories', 'subcategories', 'brands', 'products', 'cartProductIds', 'cartItems', 'wishlistProductIds', 'sort', 'selectedCategory', 'selectedSubcategory'));
+        return view('pages.products', compact('categories', 'subcategories', 'brands', 'products', 'cartProductIds', 'cartItems', 'wishlistProductIds', 'sort', 'selectedCategory', 'selectedSubcategory', 'search'));
     }
 
     public function show($slug)

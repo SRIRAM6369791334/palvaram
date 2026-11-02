@@ -252,13 +252,20 @@ document.addEventListener("DOMContentLoaded", function () {
         loginBtn.disabled = true;
         loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-8" role="status"></span> Signing In...';
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectParam = urlParams.get('redirect');
+        const loginData = new FormData(loginForm);
+        if (redirectParam) {
+            loginData.append('redirect', redirectParam);
+        }
+
         fetch("{{ route('login.store') }}", {
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN": "{{ csrf_token() }}",
                 "Accept": "application/json"
             },
-            body: new FormData(loginForm)
+            body: loginData
         })
         .then(res => res.json().then(data => ({ status: res.status, body: data })))
         .then(res => {
@@ -277,13 +284,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            loginSuccessMsg.textContent = "Login successful! Redirecting to dashboard...";
+            const targetUrl = redirectParam || res.body.redirect_url || "/";
+            loginSuccessMsg.textContent = "Login successful! Redirecting...";
             loginSuccessAlert.style.display = "flex";
             loginBtn.innerHTML = '<i class="ph-bold ph-check me-8"></i> Success';
 
             setTimeout(() => {
-                window.location.href = "/";
-            }, 1000);
+                window.location.href = targetUrl;
+            }, 800);
         })
         .catch(() => {
             loginAlertMsg.textContent = "An unexpected error occurred. Please try again.";

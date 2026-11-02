@@ -91,7 +91,11 @@
 <section class="checkout py-80 addr-premium">
     <div class="container container-lg">
         <div class="border border-gray-100 rounded-8 px-30 py-20 mb-40">
-            <span>Have a coupon? <a href="/cart" class="fw-semibold text-gray-900 hover-text-decoration-underline hover-text-main-600">Click here to enter your code</a></span>
+            @if(!empty($appliedCoupon))
+                <span>Coupon applied: <strong class="text-success-600">{{ $appliedCoupon['code'] }}</strong> (Discount: {{ $currencySymbol ?? '₹' }}{{ number_format($couponDiscount, 2) }}) <a href="/cart" class="text-xs text-neutral-500 hover-text-main-600 ms-2">Change coupon</a></span>
+            @else
+                <span>Have a coupon? <a href="/cart" class="fw-semibold text-gray-900 hover-text-decoration-underline hover-text-main-600">Click here to enter your code</a></span>
+            @endif
         </div>
 
         <div class="row">
@@ -428,7 +432,7 @@
                                     <span class="text-gray-500 text-xs fw-semibold">× {{ $item->product_quantity }}</span>
                                 </div>
                                 <span class="text-gray-900 fw-bold text-sm font-heading-two">
-                                    ₹{{ number_format(($item->variant->offer_price ?? $item->product->product_price ?? 0) * $item->product_quantity, 2) }}
+                                    {{ $currencySymbol ?? '₹' }}{{ number_format(($item->variant->offer_price ?? $item->product->product_price ?? 0) * $item->product_quantity, 2) }}
                                 </span>
                             </div>
                         @empty
@@ -438,22 +442,28 @@
                         <div class="border-top border-gray-100 pt-20 mt-20">
                             <div class="mb-12 flex-between gap-8">
                                 <span class="text-gray-900 fw-semibold text-md font-heading-two">Subtotal</span>
-                                <span class="text-gray-900 font-heading-two text-md fw-bold">₹{{ number_format($subtotal, 2) }}</span>
+                                <span class="text-gray-900 font-heading-two text-md fw-bold">{{ $currencySymbol ?? '₹' }}{{ number_format($subtotal, 2) }}</span>
                             </div>
                             @if($totalGst > 0)
                             <div class="mb-12 flex-between gap-8">
                                 <span class="text-gray-600 text-sm">Estimated GST</span>
-                                <span class="text-gray-900 font-heading-two text-sm fw-bold">₹{{ number_format($totalGst, 2) }}</span>
+                                <span class="text-gray-900 font-heading-two text-sm fw-bold">{{ $currencySymbol ?? '₹' }}{{ number_format($totalGst, 2) }}</span>
                             </div>
                             @endif
                             <div class="mb-12 flex-between gap-8">
                                 <span class="text-gray-600 text-sm">Shipping Charge</span>
-                                <span class="text-gray-900 font-heading-two text-sm fw-bold" id="display-shipping-charge">₹0.00</span>
+                                <span class="text-gray-900 font-heading-two text-sm fw-bold" id="display-shipping-charge">{{ $currencySymbol ?? "₹" }}0.00</span>
                             </div>
+                            @if(!empty($appliedCoupon) && $couponDiscount > 0)
+                            <div class="mb-12 flex-between gap-8 text-success-600" id="checkout-coupon-discount-row">
+                                <span class="text-success-600 font-heading-two text-sm fw-semibold">Coupon ({{ $appliedCoupon['code'] }})</span>
+                                <span class="text-success-600 font-heading-two text-sm fw-bold">-{{ $currencySymbol ?? '₹' }}{{ number_format($couponDiscount, 2) }}</span>
+                            </div>
+                            @endif
                             <div class="mb-0 pt-16 border-top border-gray-100 flex-between gap-8">
                                 <span class="text-gray-900 font-heading-two text-lg fw-bold">Total</span>
                                 <span class="text-gray-900 font-heading-two text-xl fw-bold" id="display-grand-total">
-                                    ₹{{ number_format($subtotal + $totalGst, 2) }}
+                                    {{ $currencySymbol ?? '₹' }}{{ number_format(max(0, $subtotal + $totalGst - ($couponDiscount ?? 0)), 2) }}
                                 </span>
                             </div>
                         </div>
@@ -470,7 +480,7 @@
                         <input type="hidden" name="selected_courier_id" id="hidden_courier_id" value="">
                         <input type="hidden" name="selected_courier_name" id="hidden_courier_name" value="">
                         <input type="hidden" name="shipping_charge" id="hidden_shipping_charge" value="0">
-                        <input type="hidden" name="coupon_discount" id="hidden_coupon_discount" value="0">
+                        <input type="hidden" name="coupon_discount" id="hidden_coupon_discount" value="{{ $couponDiscount ?? 0 }}">
 
                         {{-- Snapshot address fields --}}
                         <input type="hidden" name="shipping_name" id="snap_name" value="{{ $selectedAddress ? ($selectedAddress->address_first_name . ' ' . $selectedAddress->address_last_name) : ($user->name ?? '') }}">
@@ -662,14 +672,14 @@ document.addEventListener('submit', function (e) {
 // ─── Razorpay & Shiprocket Checkout Integration ───
 const baseSubtotalWithGst = {{ $subtotal + $totalGst }};
 let currentShippingCharge = 0;
-let currentDiscount = 0;
+let currentDiscount = {{ (float)($couponDiscount ?? 0) }};
 let activePaymentMethod = 'Online Payment';
 const selectedPincode = "{{ $selectedAddress->pincode ?? '' }}";
 
 function updateTotals() {
     const grandTotal = Math.max((baseSubtotalWithGst + currentShippingCharge) - currentDiscount, 0);
-    document.getElementById('display-shipping-charge').innerText = '₹' + currentShippingCharge.toFixed(2);
-    document.getElementById('display-grand-total').innerText = '₹' + grandTotal.toFixed(2);
+    const currSymbol = '{{ $currencySymbol ?? "₹" }}'; document.getElementById('display-shipping-charge').innerText = currSymbol + currentShippingCharge.toFixed(2);
+    document.getElementById('display-grand-total').innerText = (typeof currSymbol !== 'undefined' ? currSymbol : '{{ $currencySymbol ?? "₹" }}') + grandTotal.toFixed(2);
     document.getElementById('hidden_shipping_charge').value = currentShippingCharge;
 }
 
@@ -736,7 +746,7 @@ async function fetchCouriers(pincode, paymentMethod) {
                                 <span class="text-xs text-gray-500"><i class="ph ph-clock me-2"></i> ETD: ${courier.etd}</span>
                             </div>
                         </div>
-                        <span class="fw-bold text-main-600 text-sm">₹${parseFloat(courier.rate).toFixed(2)}</span>
+                        <span class="fw-bold text-main-600 text-sm">${currSymbol}${parseFloat(courier.rate).toFixed(2)}</span>
                     </label>
                 `;
                 listEl.appendChild(col);
@@ -913,4 +923,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-@endsection
+@endsection

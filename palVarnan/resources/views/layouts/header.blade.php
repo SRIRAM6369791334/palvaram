@@ -209,9 +209,9 @@
             <!-- Category Dropdown End -->
 
             <!-- Search Start -->
-            <form action="/search" method="GET" class="position-relative flex-grow-1 d-md-block d-none m-0 js-search">
+            <form action="/products" method="GET" class="position-relative flex-grow-1 d-md-block d-none m-0 js-search">
                 <div class="position-relative">
-                    <input type="text" id="globalSearch" name="q" 
+                    <input type="text" id="globalSearch" name="search" value="{{ request('search') }}" 
                         class="form-control fw-medium bg-neutral-30 border border-neutral-100 rounded-pill py-14 ps-24 pe-56 text-sm text-heading shadow-none js-search-input" 
                         placeholder="Search products..." 
                         autocomplete="off"
@@ -320,9 +320,9 @@
 <!-- ==================== Mobile Search (visible below md) ==================== -->
 <div class="d-md-none bg-white border-bottom border-neutral-40">
     <div class="container container-lg py-10">
-        <form action="/search" method="GET" class="position-relative m-0 js-search">
+        <form action="/products" method="GET" class="position-relative m-0 js-search">
             <div class="position-relative">
-                <input type="text" name="q"
+                <input type="text" name="search" value="{{ request('search') }}"
                     class="form-control fw-medium bg-neutral-30 border border-neutral-100 rounded-pill py-12 ps-20 pe-52 text-sm text-heading shadow-none js-search-input"
                     placeholder="Search products..."
                     autocomplete="off">
