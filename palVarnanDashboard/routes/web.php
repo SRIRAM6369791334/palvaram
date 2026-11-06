@@ -446,6 +446,7 @@ Route::post('roles/{role}/permissions', [RoleController::class, 'updatePermissio
 
 
 Route::get('/warehouse', [WareHouseController::class, 'index'])->name('warehouse.index');
+Route::get('/warehouse/lookup-pincode', [WareHouseController::class, 'lookupPincode'])->name('warehouse.lookupPincode');
 Route::post('/warehouse/store', [WarehouseController::class, 'store'])->name('warehouse.store');
 Route::post('/warehouse/update/{id}', [WarehouseController::class, 'update'])->name('warehouse.update');
 Route::post('/warehouse/delete/{id}', [WarehouseController::class, 'destroy'])->name('warehouse.delete');
