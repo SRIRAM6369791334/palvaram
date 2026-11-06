@@ -1,188 +1,34 @@
+// ==============================================================================
+// Pal Varnan Dashboard - Banner Images Management Script
+// Handles Web Banners (1920x600) & Offer Banners (1510x300)
+// Prevents Multi-click / Spam submits, Isolates Previews, and Auto-cleans on close
+// ==============================================================================
+
+// Submitting lock flags to prevent double/multiple clicks
+let isAddWebSubmitting = false;
+let isEditWebSubmitting = false;
+let isAddBannerSubmitting = false;
+let isEditBannerSubmitting = false;
+
+// Initialize JustValidate instances
 const addValidator = new JustValidate("#addBannerImagesForm", {
     validateBeforeSubmitting: true,
 });
 const editValidator = new JustValidate("#editBannerImagesForm", {
     validateBeforeSubmitting: true,
 });
-
 const addValidator1 = new JustValidate("#addWebImagesForm", {
     validateBeforeSubmitting: true,
 });
-
-
 const editValidator1 = new JustValidate("#editWebImagesForm", {
     validateBeforeSubmitting: true,
 });
-// web banner
-$("#add_webImageImage").on("change", function () {
-    const fileInput = this;
-    const file = fileInput.files[0];
 
-    if (file && file.type.startsWith("image/")) {
-        const img = new Image();
+// ------------------------------------------------------------------------------
+// Web Banner Validation & Submissions (1920 x 600 px)
+// ------------------------------------------------------------------------------
 
-        img.onload = () => {
-            if (img.width !== 1920 || img.height !== 600) {
-                // Show SweetAlert
-                Swal.fire({
-                    icon: "error",
-                    title: "Invalid Image Size",
-                    text: "Image must be exactly 1920 x 600 pixels.",
-                });
-
-                // Clear the file input
-                $(fileInput).val("");
-            }
-        };
-
-        img.onerror = () => {
-            Swal.fire({
-                icon: "error",
-                title: "Invalid Image",
-                text: "Could not load the image. Please upload a valid image file.",
-            });
-            $(fileInput).val("");
-        };
-
-        img.src = URL.createObjectURL(file);
-    }
-});
-
-$("#edit_webImageImage").on("change", function () {
-    const fileInput = this;
-    const file = fileInput.files[0];
-
-    if (file && file.type.startsWith("image/")) {
-        const img = new Image();
-
-        img.onload = () => {
-            if (img.width !== 1920 || img.height !== 600) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Invalid Image Size",
-                    text: "Banner image must be exactly 1920 x 600 pixels.",
-                });
-
-                // Clear the input field
-                $(fileInput).val("");
-            }
-        };
-
-        img.onerror = () => {
-            Swal.fire({
-                icon: "error",
-                title: "Invalid Image File",
-                text: "Unable to load the image. Please upload a valid image file.",
-            });
-
-            // Clear the input field
-            $(fileInput).val("");
-        };
-
-        img.src = URL.createObjectURL(file);
-    }
-});
-
-// $("#edit_webImageImage").on("change", function () {
-//     const file = this.files[0];
-//     if (file && file.type.startsWith("image/")) {
-//         const img = new Image();
-//         img.src = URL.createObjectURL(file);
-//         img.onload = () => {
-//             if (!(img.width === 1920 && img.height === 600)) {
-//                 $(".edit_product_remove_btn").trigger("click"); // optional
-//                 editValidator1.showErrors({
-//                     "#edit_webImageImage":
-//                         "*Image size must be exactly 1920px × 600px",
-//                 });
-//             }
-//         };
-//     }
-// });
-editValidator1
-    .addField("#edit_webImageImage", [
-        {
-            rule: "files",
-            value: {
-                files: {
-                    extensions: ["jpeg", "jpg", "png"],
-                    maxSize: 1000000,
-                },
-            },
-            errorMessage: "*Unsupported format or file too large",
-        },
-        {
-            validator: (value, fields) => {
-                return new Promise((resolve) => {
-                    const fileInput = fields["#edit_webImageImage"].elem;
-                    const file = fileInput?.files?.[0];
-
-                    // ✅ No new image uploaded? Allow submit (existing image retained)
-                    if (!file || !file.type.startsWith("image/")) return resolve(true);
-
-                    const img = new Image();
-                    img.onload = () => {
-                        const isValidSize = img.width === 1920 && img.height === 600;
-                        resolve(isValidSize);
-                    };
-                    img.onerror = () => resolve(false);
-                    img.src = URL.createObjectURL(file);
-                });
-            },
-            errorMessage: "*Image size must be exactly 1920px × 600px",
-        },
-    ])
-    .onSuccess((event) => {
-        $(".editweb_submit_btn").attr("disabled", true).html("Uploading.....");
-        editWebImagesFormSubmit(event); // ✅ Will only run if validation passes
-    });
-// editValidator1
-//     .addField("#edit_webImageImage", [
-//         {
-//             rule: "files",
-//             value: {
-//                 files: {
-//                     extensions: ["jpeg", "jpg", "png", "webp"],
-//                     maxSize: 1000000, // 1MB max
-//                 },
-//             },
-//             errorMessage: "*Unsupported format or file too large",
-//         },
-//         {
-//             validator: (value, fields) => {
-//                 return new Promise((resolve) => {
-//                     const fileInput = fields["#edit_webImageImage"].elem;
-//                     const file = fileInput.files[0];
-
-//                     // ✅ Allow submission if no image selected
-//                     if (!file) return resolve(true);
-
-//                     const reader = new FileReader();
-
-//                     reader.onload = function (e) {
-//                         const img = new Image();
-//                         img.src = e.target.result;
-
-//                         img.onload = () => {
-//                             const isExact = img.width === 1920 && img.height === 600;
-//                             resolve(isExact);
-//                         };
-
-//                         img.onerror = () => resolve(false);
-//                     };
-
-//                     reader.readAsDataURL(file);
-//                 });
-//             },
-//             errorMessage: "*Image size must be exactly 1920px × 600px",
-//         },
-//     ])
-//     .onSuccess((event) => {
-//         $(".editweb_submit_btn").attr("disabled", true).html("Updating...");
-//         editWebImagesFormSubmit(event); // ✅ Submits only if all validation passes
-//     });
-
-
+// Add Web Banner Validation Rules
 addValidator1
     .addField("#add_webImageImage", [
         {
@@ -194,11 +40,11 @@ addValidator1
             rule: "files",
             value: {
                 files: {
-                    extensions: ["jpeg", "jpg", "png"],
-                    maxSize: 1000000, // 1 MB
+                    extensions: ["jpeg", "jpg", "png", "webp"],
+                    maxSize: 4194304, // 4MB
                 },
             },
-            errorMessage: "*Unsupported format or file too large",
+            errorMessage: "*Unsupported format or file exceeds 4MB",
         },
         {
             validator: (value, fields) => {
@@ -207,8 +53,7 @@ addValidator1
                     const file = fileInput?.files?.[0];
 
                     if (!file || !file.type.startsWith("image/")) {
-                        resolve(false);
-                        return;
+                        return resolve(false);
                     }
 
                     const img = new Image();
@@ -224,26 +69,228 @@ addValidator1
         },
     ])
     .onSuccess((event) => {
-        // Only called when all validation passed
-        $(".addweb_submit_btn").attr("disabled", true).html("Uploading.....");
-        addWebImagesFormSubmit(event); // your submit function
+        addWebImagesFormSubmit(event);
     });
 
-// end webbanner
+// Edit Web Banner Validation Rules
+editValidator1
+    .addField("#edit_webImageImage", [
+        {
+            rule: "files",
+            value: {
+                files: {
+                    extensions: ["jpeg", "jpg", "png", "webp"],
+                    maxSize: 4194304, // 4MB
+                },
+            },
+            errorMessage: "*Unsupported format or file exceeds 4MB",
+        },
+        {
+            validator: (value, fields) => {
+                return new Promise((resolve) => {
+                    const fileInput = fields["#edit_webImageImage"].elem;
+                    const file = fileInput?.files?.[0];
 
+                    // Optional on edit: If no new file selected, existing image remains valid
+                    if (!file || !file.type.startsWith("image/")) {
+                        return resolve(true);
+                    }
+
+                    const img = new Image();
+                    img.onload = () => {
+                        const isValidSize = img.width === 1920 && img.height === 600;
+                        resolve(isValidSize);
+                    };
+                    img.onerror = () => resolve(false);
+                    img.src = URL.createObjectURL(file);
+                });
+            },
+            errorMessage: "*Image size must be exactly 1920px × 600px",
+        },
+    ])
+    .onSuccess((event) => {
+        editWebImagesFormSubmit(event);
+    });
+
+// ------------------------------------------------------------------------------
+// Add Web Banner File Change & Preview Handler
+// ------------------------------------------------------------------------------
+$("#add_webImageImage").on("change", function () {
+    const fileInput = this;
+    const file = fileInput.files && fileInput.files[0];
+
+    // Reset preview state
+    $("#add_web_preview_wrapper").hide();
+    $("#add_web_preview_img").attr("src", "");
+
+    if (!file) {
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        Swal.fire({
+            icon: "error",
+            title: "Invalid File",
+            text: "Please upload an image file (PNG, JPG, JPEG, WEBP).",
+        });
+        $(fileInput).val("");
+        return;
+    }
+
+    if (file.size > 4 * 1024 * 1024) {
+        Swal.fire({
+            icon: "error",
+            title: "File Too Large",
+            text: "Image file size should be below 4MB.",
+        });
+        $(fileInput).val("");
+        return;
+    }
+
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+        if (img.width !== 1920 || img.height !== 600) {
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Image Size",
+                text: `Image must be exactly 1920 x 600 pixels. (Current: ${img.width} x ${img.height} px)`,
+            });
+            // Wipe invalid file and hide preview
+            $(fileInput).val("");
+            $("#add_web_preview_wrapper").hide();
+            $("#add_web_preview_img").attr("src", "");
+            URL.revokeObjectURL(objectUrl);
+            return;
+        }
+
+        // Show valid preview
+        $("#add_web_preview_img").attr("src", objectUrl);
+        $("#add_web_preview_wrapper").show();
+        addValidator1.revalidateField("#add_webImageImage");
+    };
+
+    img.onerror = () => {
+        Swal.fire({
+            icon: "error",
+            title: "Invalid Image",
+            text: "Could not load the image. Please upload a valid image file.",
+        });
+        $(fileInput).val("");
+        $("#add_web_preview_wrapper").hide();
+        $("#add_web_preview_img").attr("src", "");
+        URL.revokeObjectURL(objectUrl);
+    };
+
+    img.src = objectUrl;
+});
+
+// Remove button for Add Web Banner Preview
+$(document).on("click", "#add_web_remove_btn", function (e) {
+    e.preventDefault();
+    $("#add_webImageImage").val("");
+    $("#add_web_preview_wrapper").hide();
+    $("#add_web_preview_img").attr("src", "");
+    addValidator1.revalidateField("#add_webImageImage");
+});
+
+// ------------------------------------------------------------------------------
+// Edit Web Banner File Change & Preview Handler
+// ------------------------------------------------------------------------------
+$("#edit_webImageImage").on("change", function () {
+    const fileInput = this;
+    const file = fileInput.files && fileInput.files[0];
+
+    // Reset new preview wrapper
+    $("#edit_web_new_preview_wrapper").hide();
+    $("#edit_web_new_preview_img").attr("src", "");
+
+    if (!file) {
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        Swal.fire({
+            icon: "error",
+            title: "Invalid File",
+            text: "Please upload an image file (PNG, JPG, JPEG, WEBP).",
+        });
+        $(fileInput).val("");
+        return;
+    }
+
+    if (file.size > 4 * 1024 * 1024) {
+        Swal.fire({
+            icon: "error",
+            title: "File Too Large",
+            text: "Image file size should be below 4MB.",
+        });
+        $(fileInput).val("");
+        return;
+    }
+
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+        if (img.width !== 1920 || img.height !== 600) {
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Image Size",
+                text: `Banner image must be exactly 1920 x 600 pixels. (Current: ${img.width} x ${img.height} px)`,
+            });
+            // Wipe invalid file immediately so it is never retained
+            $(fileInput).val("");
+            $("#edit_web_new_preview_wrapper").hide();
+            $("#edit_web_new_preview_img").attr("src", "");
+            URL.revokeObjectURL(objectUrl);
+            return;
+        }
+
+        // Show valid new preview side-by-side with current image
+        $("#edit_web_new_preview_img").attr("src", objectUrl);
+        $("#edit_web_new_preview_wrapper").show();
+        editValidator1.revalidateField("#edit_webImageImage");
+    };
+
+    img.onerror = () => {
+        Swal.fire({
+            icon: "error",
+            title: "Invalid Image File",
+            text: "Unable to load the image. Please upload a valid image file.",
+        });
+        $(fileInput).val("");
+        $("#edit_web_new_preview_wrapper").hide();
+        $("#edit_web_new_preview_img").attr("src", "");
+        URL.revokeObjectURL(objectUrl);
+    };
+
+    img.src = objectUrl;
+});
+
+// Remove button for Edit Web Banner New Preview
+$(document).on("click", "#edit_web_remove_btn", function (e) {
+    e.preventDefault();
+    $("#edit_webImageImage").val("");
+    $("#edit_web_new_preview_wrapper").hide();
+    $("#edit_web_new_preview_img").attr("src", "");
+    editValidator1.revalidateField("#edit_webImageImage");
+});
+
+// ------------------------------------------------------------------------------
+// Offer Banner Validation & Handlers (Mobile / Secondary Banners)
+// ------------------------------------------------------------------------------
 $("#add_bannerImageImage").on("change", function () {
-    const file = this.files[0];
+    const file = this.files && this.files[0];
     if (file && file.type.startsWith("image/")) {
-        let img = new Image();
+        const img = new Image();
         img.src = window.URL.createObjectURL(file);
-
         img.decode().then(() => {
             if (!(img.width <= 1510 && img.height <= 300)) {
-                console.log("hi");
                 $(".product_remove_btn").trigger("click");
                 addValidator.showErrors({
-                    "#add_bannerImageImage":
-                        "*Image resolution should be below 600 * 600",
+                    "#add_bannerImageImage": "*Image resolution should be below 1510 * 300",
                 });
             }
         });
@@ -266,83 +313,69 @@ addValidator
                     minSize: 0,
                 },
             },
-            errorMessage:
-                "*Unsupported File Format  or File size should below 50KB",
+            errorMessage: "*Unsupported File Format or File size should be below 40MB",
         },
         {
             validator: (value, fields) => () => {
-                const file = fields["#add_bannerImageImage"].elem.files[0];
+                const file = fields["#add_bannerImageImage"].elem?.files?.[0];
                 if (file) {
-                    let img = new Image();
+                    const img = new Image();
                     img.src = window.URL.createObjectURL(file);
-
-                    return new Promise((resolve, reject) => {
+                    return new Promise((resolve) => {
                         img.decode().then(() => {
                             if (!(img.width <= 1510 && img.height <= 300)) {
                                 $(".product_remove_btn").trigger("click");
                             }
-                            resolve(img.width <= 1496 && img.height <= 300);
+                            resolve(img.width <= 1510 && img.height <= 300);
                         });
                     });
                 }
-
-                return new Promise((resolve, reject) => {
-                    resolve(true);
-                });
+                return Promise.resolve(true);
             },
-            errorMessage: "*Image resolution should be below 600 * 600",
-            // make sure to set the "required" property to true
+            errorMessage: "*Image resolution should be below 1510 * 300",
         },
     ])
     .onSuccess((event) => {
-        $(".add_submit_btn").attr("disabled", "true");
-        $(".add_submit_btn").html("Uploading.....");
         addBannerImagesFormSubmit(event);
     });
 
 editValidator.onSuccess((event) => {
-    $(".edit_submit_btn").attr("disabled", "true");
-    $(".edit_submit_btn").html("Uploading.....");
     editBannerImagesFormSubmit(event);
 });
 
+// ------------------------------------------------------------------------------
+// GridJS Data Tables
+// ------------------------------------------------------------------------------
 const gridNew = new gridjs.Grid({
     columns: [
-        // { name: "S.NO", sort: false },
         { name: "Banner Image", sort: false },
-        {
-            name: "Action",
-            sort: false,
-        },
+        { name: "Action", sort: false },
     ],
-    // pagination: {
-    //     limit: 10,
-    // },
-    sort: !0,
-    search: 0,
-    data: bannerImages.map((bannerImages, index) => {
+    sort: true,
+    search: false,
+    data: (window.bannerImages || []).map((bannerImages, index) => {
         return [
-            // index + 1,
-            // bannerImages.bannerImage_name,
             gridjs.html(
                 `
                 <div class="text-center sortable-row" data-id="${bannerImages.id}">
-                <img class="bannerImage_image_el gridImage" src="images/${bannerImages.banner_image}"  alt ="categgory_image${index}"/>
-            </div>
-
-            `
+                    <img class="bannerImage_image_el gridImage" src="images/${bannerImages.banner_image}" alt="banner_image_${index}"/>
+                </div>
+                `
             ),
             gridjs.html(
-                `<div> <button data-bs-toggle="modal"
-                data-bannerImagesid ="${bannerImages.id}"
-                data-bannerImagesimage ="${bannerImages.banner_image}"  data-bs-target="#editBannerImagesModal"  class="btn btn-secondary edit_btn ">Edit</button> <button class="btn btn-danger delete_btn" data-bannerImagesid = ${bannerImages.id}>Delete</button> </div>`
+                `<div>
+                    <button data-bs-toggle="modal"
+                        data-bannerImagesid="${bannerImages.id}"
+                        data-bannerImagesimage="${bannerImages.banner_image}"
+                        data-bs-target="#editBannerImagesModal"
+                        class="btn btn-secondary edit_btn">Edit</button>
+                    <button class="btn btn-danger delete_btn" data-bannerImagesid="${bannerImages.id}">Delete</button>
+                </div>`
             ),
         ];
     }),
     style: {
-        table: {
-            border: "1px solid #ccc",
-        },
+        table: { border: "1px solid #ccc" },
         th: {
             "background-color": "rgba(0, 0, 0, 0.1)",
             color: "#000",
@@ -358,8 +391,6 @@ const gridNew = new gridjs.Grid({
     },
 });
 
-// gridNew.render(document.getElementById("table-gridjs"));
-
 function gridjsReRender(bannerImages) {
     if (gridNew) gridNew.config.plugin.remove("pagination");
     if (gridNew) gridNew.config.plugin.remove("search");
@@ -367,20 +398,22 @@ function gridjsReRender(bannerImages) {
         .updateConfig({
             data: bannerImages.map((bannerImages, index) => {
                 return [
-                    // index + 1,
-                    // bannerImages.bannerImage_name,
                     gridjs.html(
                         `
                         <div class="text-center sortable-row" data-id="${bannerImages.id}">
-                        <img class="bannerImage_image_el gridImage" src="images/${bannerImages.banner_image}"  alt ="categgory_image${index}"/>
-                    </div>
-
-                    `
+                            <img class="bannerImage_image_el gridImage" src="images/${bannerImages.banner_image}" alt="banner_image_${index}"/>
+                        </div>
+                        `
                     ),
                     gridjs.html(
-                        `<div> <button data-bs-toggle="modal"
-                        data-bannerImagesid ="${bannerImages.id}"
-                        data-bannerImagesimage ="${bannerImages.banner_image}"  data-bs-target="#editBannerImagesModal"  class="btn btn-secondary edit_btn ">Edit</button> <button class="btn btn-danger delete_btn" data-bannerImagesid = ${bannerImages.id}>Delete</button> </div>`
+                        `<div>
+                            <button data-bs-toggle="modal"
+                                data-bannerImagesid="${bannerImages.id}"
+                                data-bannerImagesimage="${bannerImages.banner_image}"
+                                data-bs-target="#editBannerImagesModal"
+                                class="btn btn-secondary edit_btn">Edit</button>
+                            <button class="btn btn-danger delete_btn" data-bannerImagesid="${bannerImages.id}">Delete</button>
+                        </div>`
                     ),
                 ];
             }),
@@ -388,44 +421,37 @@ function gridjsReRender(bannerImages) {
         .forceRender();
 }
 
-// web banner
+// Web Banner GridJS Table
 const gridNew1 = new gridjs.Grid({
     columns: [
-        // { name: "S.NO", sort: false },
         { name: "Web Banner Image", sort: false },
-        {
-            name: "Action",
-            sort: false,
-        },
+        { name: "Action", sort: false },
     ],
-    // pagination: {
-    //     limit: 10,
-    // },
-    sort: !0,
-    search: 0,
-    data: webbannerImages.map((webbannerImages, index) => {
+    sort: true,
+    search: false,
+    data: (window.webbannerImages || []).map((webbannerImages, index) => {
         return [
-            // index + 1,
-            // bannerImages.bannerImage_name,
             gridjs.html(
                 `
                 <div class="text-center sortable-row" data-id="${webbannerImages.id}">
-                <img class="bannerImage_image_el gridImage" src="images/${webbannerImages.image}"  alt ="categgory_image${index}"/>
-            </div>
-
-            `
+                    <img class="bannerImage_image_el gridImage" src="images/${webbannerImages.image}" alt="web_banner_${index}"/>
+                </div>
+                `
             ),
             gridjs.html(
-                `<div> <button data-bs-toggle="modal"
-                data-webbannerImagesid ="${webbannerImages.id}"
-                data-webbannerImagesimage ="${webbannerImages.image}"  data-bs-target="#editWebImagesModal"  class="btn btn-secondary editweb_btn ">Edit</button> <button class="btn btn-danger deleteweb_btn" data-webbannerImagesid = ${webbannerImages.id}>Delete</button> </div>`
+                `<div>
+                    <button data-bs-toggle="modal"
+                        data-webbannerImagesid="${webbannerImages.id}"
+                        data-webbannerImagesimage="${webbannerImages.image}"
+                        data-bs-target="#editWebImagesModal"
+                        class="btn btn-secondary editweb_btn">Edit</button>
+                    <button class="btn btn-danger deleteweb_btn" data-webbannerImagesid="${webbannerImages.id}">Delete</button>
+                </div>`
             ),
         ];
     }),
     style: {
-        table: {
-            border: "1px solid #ccc",
-        },
+        table: { border: "1px solid #ccc" },
         th: {
             "background-color": "rgba(0, 0, 0, 0.1)",
             color: "#000",
@@ -450,20 +476,22 @@ function gridjsReRender1(webbannerImages) {
         .updateConfig({
             data: webbannerImages.map((webbannerImages, index) => {
                 return [
-                    // index + 1,
-                    // bannerImages.bannerImage_name,
                     gridjs.html(
                         `
                         <div class="text-center sortable-row" data-id="${webbannerImages.id}">
-                        <img class="bannerImage_image_el gridImage" src="images/${webbannerImages.image}"  alt ="categgory_image${index}"/>
-                    </div>
-
-                    `
+                            <img class="bannerImage_image_el gridImage" src="images/${webbannerImages.image}" alt="web_banner_${index}"/>
+                        </div>
+                        `
                     ),
                     gridjs.html(
-                        `<div> <button data-bs-toggle="modal"
-                        data-webbannerImagesid ="${webbannerImages.id}"
-                        data-webbannerImagesimage ="${webbannerImages.image}"  data-bs-target="#editWebImagesModal"  class="btn btn-secondary editweb_btn ">Edit</button> <button class="btn btn-danger deleteweb_btn" data-webbannerImagesid = ${webbannerImages.id}>Delete</button> </div>`
+                        `<div>
+                            <button data-bs-toggle="modal"
+                                data-webbannerImagesid="${webbannerImages.id}"
+                                data-webbannerImagesimage="${webbannerImages.image}"
+                                data-bs-target="#editWebImagesModal"
+                                class="btn btn-secondary editweb_btn">Edit</button>
+                            <button class="btn btn-danger deleteweb_btn" data-webbannerImagesid="${webbannerImages.id}">Delete</button>
+                        </div>`
                     ),
                 ];
             }),
@@ -471,10 +499,52 @@ function gridjsReRender1(webbannerImages) {
         .forceRender();
 }
 
-// add web banner
+// ------------------------------------------------------------------------------
+// AJAX Form Submissions (With Anti-Spam / Multi-Click Protection)
+// ------------------------------------------------------------------------------
 
+// Double-click interceptors on submit buttons
+$(document).on("click", ".addweb_submit_btn", function (e) {
+    if (isAddWebSubmitting) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+    }
+});
+
+$(document).on("click", ".editweb_submit_btn", function (e) {
+    if (isEditWebSubmitting) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+    }
+});
+
+$(document).on("click", ".add_submit_btn", function (e) {
+    if (isAddBannerSubmitting) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+    }
+});
+
+$(document).on("click", ".edit_submit_btn", function (e) {
+    if (isEditBannerSubmitting) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+    }
+});
+
+// 1. Add Web Banner
 function addWebImagesFormSubmit(e) {
-    const formdata = new FormData(e.target);
+    if (isAddWebSubmitting) return;
+    isAddWebSubmitting = true;
+
+    const $btn = $(".addweb_submit_btn");
+    $btn.prop("disabled", true).addClass("disabled").html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Uploading...');
+
+    const formdata = new FormData(e.target || e);
     $.ajax({
         url: "bannerwebImages",
         method: "POST",
@@ -482,13 +552,16 @@ function addWebImagesFormSubmit(e) {
         data: formdata,
         processData: false,
         contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") || window.csrfToken
+        },
         success: function (response) {
-            $(".addweb_submit_btn").removeAttr("disabled");
-            $(".addweb_submit_btn").html("Submit");
             const updatedBannersImages = response.webbannerImages;
             $("#addWebImagesForm")[0].reset();
-            $("#addWebImagesModal").hide();
-            $(".product_remove_btn").trigger("click");
+            $("#add_webImageImage").val("");
+            $("#add_web_preview_wrapper").hide();
+            $("#add_web_preview_img").attr("src", "");
+            $("#addWebImagesModal").modal("hide");
             $(".modal-backdrop").remove();
             document.body.style.overflowY = "scroll";
 
@@ -497,19 +570,69 @@ function addWebImagesFormSubmit(e) {
             renderSort();
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            $(".editweb_submit_btn").removeAttr("disabled");
-            $(".addweb_submit_btn").removeAttr("disabled");
-            $(".editweb_submit_btn").html("Update");
-            $(".addweb_submit_btn").html("Submit");
             console.log(textStatus + ": " + errorThrown);
-
             Swal.fire(textStatus.toUpperCase(), errorThrown, "warning");
         },
+        complete: function () {
+            isAddWebSubmitting = false;
+            $btn.prop("disabled", false).removeClass("disabled").html("Submit");
+        }
     });
 }
 
+// 2. Edit Web Banner
+function editWebImagesFormSubmit(e) {
+    if (isEditWebSubmitting) return;
+    isEditWebSubmitting = true;
+
+    const $btn = $(".editweb_submit_btn");
+    $btn.prop("disabled", true).addClass("disabled").html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Updating...');
+
+    const formdata = new FormData(e.target || e);
+    $.ajax({
+        url: "updatewebBannerImages/" + $("#edit_webImages_id").val(),
+        method: "POST",
+        dataType: "json",
+        data: formdata,
+        processData: false,
+        contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") || window.csrfToken
+        },
+        success: function (response) {
+            const updatedBannerImages = response.webbannerImages;
+            $("#editWebImagesForm")[0].reset();
+            $("#edit_webImageImage").val("");
+            $("#edit_web_new_preview_wrapper").hide();
+            $("#edit_web_new_preview_img").attr("src", "");
+            $("#editWebImagesModal").modal("hide");
+            $(".modal-backdrop").remove();
+            document.body.style.overflowY = "scroll";
+
+            gridjsReRender1(updatedBannerImages);
+            Swal.fire("Updated", "Records Updated Successfully.", "success");
+            renderSort();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus + ": " + errorThrown);
+            Swal.fire(textStatus.toUpperCase(), errorThrown, "warning");
+        },
+        complete: function () {
+            isEditWebSubmitting = false;
+            $btn.prop("disabled", false).removeClass("disabled").html("Update");
+        }
+    });
+}
+
+// 3. Add Offer Banner
 function addBannerImagesFormSubmit(e) {
-    const formdata = new FormData(e.target);
+    if (isAddBannerSubmitting) return;
+    isAddBannerSubmitting = true;
+
+    const $btn = $(".add_submit_btn");
+    $btn.prop("disabled", true).addClass("disabled").html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Uploading...');
+
+    const formdata = new FormData(e.target || e);
     $.ajax({
         url: "bannerImages",
         method: "POST",
@@ -517,12 +640,14 @@ function addBannerImagesFormSubmit(e) {
         data: formdata,
         processData: false,
         contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") || window.csrfToken
+        },
         success: function (response) {
-            $(".add_submit_btn").removeAttr("disabled");
-            $(".add_submit_btn").html("Submit");
             const updatedBannerImages = response.bannerImages;
             $("#addBannerImagesForm")[0].reset();
-            $("#addBannerImagesModal").hide();
+            $("#add_bannerImageImage").val("");
+            $("#addBannerImagesModal").modal("hide");
             $(".product_remove_btn").trigger("click");
             $(".modal-backdrop").remove();
             document.body.style.overflowY = "scroll";
@@ -532,19 +657,25 @@ function addBannerImagesFormSubmit(e) {
             renderSort();
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            $(".edit_submit_btn").removeAttr("disabled");
-            $(".add_submit_btn").removeAttr("disabled");
-            $(".edit_submit_btn").html("Update");
-            $(".add_submit_btn").html("Submit");
             console.log(textStatus + ": " + errorThrown);
-
             Swal.fire(textStatus.toUpperCase(), errorThrown, "warning");
         },
+        complete: function () {
+            isAddBannerSubmitting = false;
+            $btn.prop("disabled", false).removeClass("disabled").html("Submit");
+        }
     });
 }
 
+// 4. Edit Offer Banner
 function editBannerImagesFormSubmit(e) {
-    const formdata = new FormData(e.target);
+    if (isEditBannerSubmitting) return;
+    isEditBannerSubmitting = true;
+
+    const $btn = $(".edit_submit_btn");
+    $btn.prop("disabled", true).addClass("disabled").html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Updating...');
+
+    const formdata = new FormData(e.target || e);
     $.ajax({
         url: "updateBannerImages/" + $("#edit_bannerImages_id").val(),
         method: "POST",
@@ -552,112 +683,150 @@ function editBannerImagesFormSubmit(e) {
         data: formdata,
         processData: false,
         contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") || window.csrfToken
+        },
         success: function (response) {
             const updatedBannerImages = response.bannerImages;
             $("#editBannerImagesForm")[0].reset();
-            $("#editBannerImagesModal").hide();
+            $("#edit_bannerImageImage").val("");
+            $("#editBannerImagesModal").modal("hide");
             $(".modal-backdrop").remove();
             document.body.style.overflowY = "scroll";
+
             gridjsReRender(updatedBannerImages);
-            $(".edit_submit_btn").removeAttr("disabled");
-            $(".edit_submit_btn").html("Update");
             $(".edit_product_remove_btn").trigger("click");
-            Swal.fire("Updated", "Records Updated  Successfully.", "success");
+            Swal.fire("Updated", "Records Updated Successfully.", "success");
             renderSort();
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            $(".edit_submit_btn").removeAttr("disabled");
-            $(".add_submit_btn").removeAttr("disabled");
-            $(".edit_submit_btn").html("Update");
-            $(".add_submit_btn").html("Submit");
             console.log(textStatus + ": " + errorThrown);
-
             Swal.fire(textStatus.toUpperCase(), errorThrown, "warning");
         },
+        complete: function () {
+            isEditBannerSubmitting = false;
+            $btn.prop("disabled", false).removeClass("disabled").html("Update");
+        }
     });
 }
 
-// edit web banner
-function editWebImagesFormSubmit(e) {
-    const formdata = new FormData(e.target);
-    $.ajax({
-        url: "updatewebBannerImages/" + $("#edit_webImages_id").val(),
-        method: "POST",
-        dataType: "json",
-        data: formdata,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-            const updatedBannerImages = response.webbannerImages;
-            $("#editWebImagesForm")[0].reset();
-            $("#editWebImagesModal").hide();
-            $(".modal-backdrop").remove();
-            document.body.style.overflowY = "scroll";
-            gridjsReRender1(updatedBannerImages);
-            $(".editweb_submit_btn").removeAttr("disabled");
-            $(".editweb_submit_btn").html("Update");
-            $(".edit_product_remove_btn").trigger("click");
-            Swal.fire("Updated", "Records Updated  Successfully.", "success");
-            renderSort();
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            $(".editweb_submit_btn").removeAttr("disabled");
-            $(".addweb_submit_btn").removeAttr("disabled");
-            $(".editweb_submit_btn").html("Update");
-            $(".addweb_submit_btn").html("Submit");
-            console.log(textStatus + ": " + errorThrown);
-
-            Swal.fire(textStatus.toUpperCase(), errorThrown, "warning");
-        },
-    });
-}
-
-// end web banner
-
+// ------------------------------------------------------------------------------
+// Document Ready & Modal Lifecycle Handlers
+// ------------------------------------------------------------------------------
 $(function () {
+    // Password visibility toggle
     $(".bx-show").hide();
     $(".icon").on("click", function () {
         const parentEl = $(this).closest(".input-group");
-        var input = $(this).closest(".input-group").find("input");
+        var input = parentEl.find("input");
         if (input.attr("type") === "password") {
             input.attr("type", "text");
-            $(parentEl).find(".bx-hide").hide();
-            $(parentEl).find(".bx-show").show();
+            parentEl.find(".bx-hide").hide();
+            parentEl.find(".bx-show").show();
         } else {
             input.attr("type", "password");
-            $(parentEl).find(".bx-show").hide();
-            $(parentEl).find(".bx-hide").show();
+            parentEl.find(".bx-show").hide();
+            parentEl.find(".bx-hide").show();
         }
     });
 
-    $(document).on("click", ".edit_btn", function () {
-        const imagePath = $(this).attr("data-bannerImagesimage");
-        console.log(imagePath);
-        $("#edit_bannerImages_id").val($(this).attr("data-bannerImagesid"));
-        $("#edit_bannerImagesname").val($(this).attr("data-bannerImagesname"));
-        $(".edit_preview_image").attr("src", `images/${imagePath}`);
+    // --------------------------------------------------------------------------
+    // Opening Edit Web Banner Modal
+    // --------------------------------------------------------------------------
+    $(document).on("click", ".editweb_btn", function () {
+        const id = $(this).attr("data-webbannerimagesid");
+        const imagePath = $(this).attr("data-webbannerimagesimage");
+
+        // Set ID and hidden input
+        $("#edit_webImages_id").val(id);
+        $("#existing_web_image").val(imagePath);
+
+        // Display current active image in its dedicated container
+        $("#edit_web_current_image").attr("src", `images/${imagePath}`);
+
+        // Clean-slate reset for new image preview and input
+        $("#edit_webImageImage").val("");
+        $("#edit_web_new_preview_wrapper").hide();
+        $("#edit_web_new_preview_img").attr("src", "");
+
+        // Reset button state
+        isEditWebSubmitting = false;
+        $(".editweb_submit_btn").prop("disabled", false).removeClass("disabled").html("Update");
+
+        // Clear previous validation error messages
+        if (typeof editValidator1 !== "undefined") {
+            editValidator1.clearErrors();
+        }
     });
 
-    $(document).on("click", ".editweb_btn", function () {
-    const imagePath = $(this).attr("data-webbannerimagesimage");
+    // --------------------------------------------------------------------------
+    // Modal Hidden / Close Event Cleanup (Ensures no lingering invalid images)
+    // --------------------------------------------------------------------------
+    $("#editWebImagesModal").on("hidden.bs.modal", function () {
+        $("#edit_webImageImage").val("");
+        $("#edit_web_new_preview_wrapper").hide();
+        $("#edit_web_new_preview_img").attr("src", "");
+        isEditWebSubmitting = false;
+        $(".editweb_submit_btn").prop("disabled", false).removeClass("disabled").html("Update");
 
-    $(".edit_preview_image").attr("src", `images/${imagePath}`);
-    $("#edit_webImages_id").val($(this).attr("data-webbannerImagesid"));
+        if (typeof editValidator1 !== "undefined") {
+            editValidator1.clearErrors();
+        }
+    });
 
-    // Save current image path (will be used on submit if no new file uploaded)
-    $("#existing_web_image").val(imagePath);
+    $("#addWebImagesModal").on("hidden.bs.modal", function () {
+        $("#add_webImageImage").val("");
+        $("#add_web_preview_wrapper").hide();
+        $("#add_web_preview_img").attr("src", "");
+        isAddWebSubmitting = false;
+        $(".addweb_submit_btn").prop("disabled", false).removeClass("disabled").html("Submit");
 
-    // Clear file input
-    $("#edit_webImageImage").val("");
-});
+        if (typeof addValidator1 !== "undefined") {
+            addValidator1.clearErrors();
+        }
+    });
 
-$("#edit_webImageImage").on("change", function () {
-    editValidator1.revalidateField("#edit_webImageImage");
-});
+    // --------------------------------------------------------------------------
+    // Offer Banner Modal Lifecycle
+    // --------------------------------------------------------------------------
+    $(document).on("click", ".edit_btn", function () {
+        const imagePath = $(this).attr("data-bannerImagesimage");
+        $("#edit_bannerImages_id").val($(this).attr("data-bannerImagesid"));
+        $("#edit_bannerImagesname").val($(this).attr("data-bannerImagesname"));
+        $("#edit_banner_preview_imageid").attr("src", `images/${imagePath}`);
+        $("#edit_bannerImageImage").val("");
 
+        isEditBannerSubmitting = false;
+        $(".edit_submit_btn").prop("disabled", false).removeClass("disabled").html("Update");
 
+        if (typeof editValidator !== "undefined") {
+            editValidator.clearErrors();
+        }
+    });
 
+    $("#editBannerImagesModal").on("hidden.bs.modal", function () {
+        $("#edit_bannerImageImage").val("");
+        isEditBannerSubmitting = false;
+        $(".edit_submit_btn").prop("disabled", false).removeClass("disabled").html("Update");
 
+        if (typeof editValidator !== "undefined") {
+            editValidator.clearErrors();
+        }
+    });
+
+    $("#addBannerImagesModal").on("hidden.bs.modal", function () {
+        $("#add_bannerImageImage").val("");
+        isAddBannerSubmitting = false;
+        $(".add_submit_btn").prop("disabled", false).removeClass("disabled").html("Submit");
+
+        if (typeof addValidator !== "undefined") {
+            addValidator.clearErrors();
+        }
+    });
+
+    // --------------------------------------------------------------------------
+    // Delete Handlers
+    // --------------------------------------------------------------------------
     $(document).on("click", ".delete_btn", function () {
         const id = $(this).attr("data-bannerImagesid");
         Swal.fire({
@@ -672,38 +841,26 @@ $("#edit_webImageImage").on("change", function () {
             if (result.isConfirmed) {
                 $.ajax({
                     url: "destroyBannerImages/" + id,
-                    method: "post",
+                    method: "POST",
                     dataType: "json",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") || window.csrfToken
+                    },
                     success: function (response) {
                         const updatedBannerImages = response.bannerImages;
                         gridjsReRender(updatedBannerImages);
-                        Swal.fire(
-                            "Deleted!",
-                            "Records Deleted Successfully.",
-                            "success"
-                        );
-
+                        Swal.fire("Deleted!", "Records Deleted Successfully.", "success");
                         renderSort();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        $(".edit_submit_btn").removeAttr("disabled");
-                        $(".add_submit_btn").removeAttr("disabled");
-                        $(".edit_submit_btn").html("Update");
-                        $(".add_submit_btn").html("Submit");
                         console.log(textStatus + ": " + errorThrown);
-
-                        Swal.fire(
-                            textStatus.toUpperCase(),
-                            errorThrown,
-                            "warning"
-                        );
+                        Swal.fire(textStatus.toUpperCase(), errorThrown, "warning");
                     },
                 });
             }
         });
     });
 
-    // web delete functions
     $(document).on("click", ".deleteweb_btn", function () {
         const id = $(this).attr("data-webbannerImagesid");
         Swal.fire({
@@ -718,31 +875,20 @@ $("#edit_webImageImage").on("change", function () {
             if (result.isConfirmed) {
                 $.ajax({
                     url: "destroywebBannerImages/" + id,
-                    method: "post",
+                    method: "POST",
                     dataType: "json",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") || window.csrfToken
+                    },
                     success: function (response) {
                         const updatedBannerImages = response.webbannerImages;
                         gridjsReRender1(updatedBannerImages);
-                        Swal.fire(
-                            "Deleted!",
-                            "Records Deleted Successfully.",
-                            "success"
-                        );
-
+                        Swal.fire("Deleted!", "Records Deleted Successfully.", "success");
                         renderSort();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        $(".editweb_submit_btn").removeAttr("disabled");
-                        $(".addweb_submit_btn").removeAttr("disabled");
-                        $(".editweb_submit_btn").html("Update");
-                        $(".addweb_submit_btn").html("Submit");
                         console.log(textStatus + ": " + errorThrown);
-
-                        Swal.fire(
-                            textStatus.toUpperCase(),
-                            errorThrown,
-                            "warning"
-                        );
+                        Swal.fire(textStatus.toUpperCase(), errorThrown, "warning");
                     },
                 });
             }
@@ -750,207 +896,87 @@ $("#edit_webImageImage").on("change", function () {
     });
 });
 
+// ------------------------------------------------------------------------------
+// Preview Container Handlers for Offer Banners
+// ------------------------------------------------------------------------------
 $(function () {
     const backupHtml = $(".preview-container").html();
 
-    // Listen for changes to the input field
     $("#add_bannerImageImage").on("change", function () {
-        // Get the selected file
-        var file = $(this)[0].files[0];
-
-        // Check if the file is an image
-        if (file.type.match("image.*")) {
-            // Create a new FileReader object
-            var reader = new FileReader();
-
-            // Set up the FileReader to load the image
+        const file = this.files && this.files[0];
+        if (file && file.type.match("image.*")) {
+            const reader = new FileReader();
             reader.onload = function (e) {
-                // Create a new image element
-                var img = $("<img>").attr("src", e.target.result);
-
-                // Create a remove button
-                var removeBtn = $("<button>")
+                const img = $("<img>").attr("src", e.target.result);
+                const removeBtn = $("<button>")
                     .addClass("btn btn-danger product_remove_btn mt-2")
                     .text("Remove");
 
-                // Add the image and remove button to the preview container
                 $(".preview-container").empty().append(img).append(removeBtn);
 
-                // Listen for clicks on the remove button
-                $('.product_remove_btn').on("click", function (e) {
-                    e.preventDefault();
-
-                    // Remove the image from the preview container
+                $(".product_remove_btn").on("click", function (ev) {
+                    ev.preventDefault();
                     $(".preview-container").html(backupHtml);
-                    // Clear the input field
                     $("#add_bannerImageImage").val("");
                 });
             };
-
-            // Read the selected file as a data URL
             reader.readAsDataURL(file);
         }
     });
-});
 
-$(function () {
-    const backupHtml = $(".preview-container").html();
+    const editBackupHtml = $(".edit_preview-container").html();
 
-    // Listen for changes to the input field
-    $("#add_webImageImage").on("change", function () {
-        // Get the selected file
-        var file = $(this)[0].files[0];
-
-        // Check if the file is an image
-        if (file.type.match("image.*")) {
-            // Create a new FileReader object
-            var reader = new FileReader();
-
-            // Set up the FileReader to load the image
-            reader.onload = function (e) {
-                // Create a new image element
-                var img = $("<img>").attr("src", e.target.result);
-
-                // Create a remove button
-                var removeBtn = $("<button>")
-                    .addClass("btn btn-danger product_remove_btn mt-2")
-                    .text("Remove");
-
-                // Add the image and remove button to the preview container
-                $(".preview-container").empty().append(img).append(removeBtn);
-
-                // Listen for clicks on the remove button
-                removeBtn.on("click", function (e) {
-                    e.preventDefault();
-
-                    // Remove the image from the preview container
-                    $(".preview-container").html(backupHtml);
-                    // Clear the input field
-                    $("#add_webImageImage").val("");
-                });
-            };
-
-            // Read the selected file as a data URL
-            reader.readAsDataURL(file);
-        }
-    });
-});
-
-$(function () {
-    const backupHtml = $(".edit_preview-container").html();
-
-    // Listen for changes to the input field
     $("#edit_bannerImageImage").on("change", function () {
-        // Get the selected file
-        var file = $(this)[0].files[0];
-
-        // Check if the file is an image
-        if (file.type.match("image.*")) {
-            // Create a new FileReader object
-            var reader = new FileReader();
-
-            // Set up the FileReader to load the image
+        const file = this.files && this.files[0];
+        if (file && file.type.match("image.*")) {
+            const reader = new FileReader();
             reader.onload = function (e) {
-                // Create a new image element
-                var img = $("<img>").attr("src", e.target.result);
-
-                // Create a remove button
-                var removeBtn = $("<button>")
+                const img = $("<img>").attr("src", e.target.result);
+                const removeBtn = $("<button>")
                     .addClass("btn btn-danger edit_product_remove_btn mt-2")
                     .text("Remove");
 
-                // Add the image and remove button to the preview container
-                $(".edit_preview-container")
-                    .empty()
-                    .append(img)
-                    .append(removeBtn);
+                $(".edit_preview-container").empty().append(img).append(removeBtn);
 
-                // Listen for clicks on the remove button
-                removeBtn.on("click", function (e) {
-                    e.preventDefault();
-
-                    // Remove the image from the preview container
-                    $(".edit_preview-container").html(backupHtml);
-                    // Clear the input field
+                removeBtn.on("click", function (ev) {
+                    ev.preventDefault();
+                    $(".edit_preview-container").html(editBackupHtml);
                     $("#edit_bannerImageImage").val("");
                 });
             };
-
-            // Read the selected file as a data URL
             reader.readAsDataURL(file);
         }
     });
 });
 
-// edit banner
-$(function () {
-    const backupHtml = $(".edit_preview-container").html();
-
-    // Listen for changes to the input field
-    $("#edit_webImageImage").on("change", function () {
-        // Get the selected file
-        var file = $(this)[0].files[0];
-
-        // Check if the file is an image
-        if (file.type.match("image.*")) {
-            // Create a new FileReader object
-            var reader = new FileReader();
-
-            // Set up the FileReader to load the image
-            reader.onload = function (e) {
-                // Create a new image element
-                var img = $("<img>").attr("src", e.target.result);
-
-                // Create a remove button
-                var removeBtn = $("<button>")
-                    .addClass("btn btn-danger edit_product_remove_btn mt-2")
-                    .text("Remove");
-
-                // Add the image and remove button to the preview container
-                $(".edit_preview-container")
-                    .empty()
-                    .append(img)
-                    .append(removeBtn);
-
-                // Listen for clicks on the remove button
-                removeBtn.on("click", function (e) {
-                    e.preventDefault();
-
-                    // Remove the image from the preview container
-                    $(".edit_preview-container").html(backupHtml);
-                    // Clear the input field
-                    $("#edit_webImageImage").val("");
-                });
-            };
-
-            // Read the selected file as a data URL
-            reader.readAsDataURL(file);
-        }
-    });
-});
-//
-
+// ------------------------------------------------------------------------------
+// Drag & Drop Sortable Ordering
+// ------------------------------------------------------------------------------
 function renderSort() {
-    new Sortable(document.querySelector("tbody"), {
+    const tbody = document.querySelector("tbody");
+    if (!tbody) return;
+
+    new Sortable(tbody, {
         handle: ".sortable-row",
         animation: 150,
         forceFallback: true,
         scroll: true,
         scrollSensitivity: 10,
         scrollSpeed: 100,
-        onEnd: function (evt) {
+        onEnd: function () {
             const sortableRows = document.querySelectorAll(".sortable-row");
-            const newOrder = Array.from(sortableRows).map(
-                (row, index) => row.dataset.id
-            );
+            const newOrder = Array.from(sortableRows).map((row) => row.dataset.id);
 
             $.ajax({
-                type: "post",
+                type: "POST",
                 url: "updateOrder",
                 data: { order: newOrder },
-                dataType: "dataType",
+                dataType: "json",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") || window.csrfToken
+                },
                 success: function (response) {
-                    console.log(response);
+                    console.log("Order updated:", response);
                 },
             });
         },
