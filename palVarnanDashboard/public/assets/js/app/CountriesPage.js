@@ -68,7 +68,7 @@ const gridNew = new gridjs.Grid({
     columns: [
         "S.NO",
         "Country Name",
-        "Currency",
+        "Tax",
         {
             name: "Action",
             sort: false,
