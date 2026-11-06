@@ -35,27 +35,18 @@ class WareHouseBranchController extends Controller
     // STORE
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'country_id' => 'required|exists:countries,id',
             'warehouse_id' => 'required|exists:warehouse,id',
-            'phone' => 'required',
-            'address' => 'required',
-            'pincode' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'branch_name' => 'required',
+            'branch_name' => 'required|string|min:2|max:255',
+            'phone' => 'required|string|min:7|max:50',
+            'address' => 'required|string|min:3|max:255',
+            'pincode' => 'required|string|min:4|max:20',
+            'city' => 'required|string|min:2|max:100',
+            'state' => 'required|string|min:2|max:100',
         ]);
 
-        WareHouseBranch::create([
-            'country_id' => $request->country_id,
-            'warehouse_id' => $request->warehouse_id,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'pincode' => $request->pincode,
-            'city' => $request->city,
-            'state' => $request->state,
-            'branch_name' => $request->branch_name,
-        ]);
+        WareHouseBranch::create($validated);
 
         $branches = WareHouseBranch::with(['country', 'warehouse'])->get();
 
@@ -68,29 +59,20 @@ class WareHouseBranchController extends Controller
     // UPDATE
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'country_id' => 'required|exists:countries,id',
             'warehouse_id' => 'required|exists:warehouse,id',
-            'phone' => 'required',
-            'address' => 'required',
-            'pincode' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'branch_name' => 'required',
+            'branch_name' => 'required|string|min:2|max:255',
+            'phone' => 'required|string|min:7|max:50',
+            'address' => 'required|string|min:3|max:255',
+            'pincode' => 'required|string|min:4|max:20',
+            'city' => 'required|string|min:2|max:100',
+            'state' => 'required|string|min:2|max:100',
         ]);
 
         $branch = WareHouseBranch::findOrFail($id);
 
-        $branch->update([
-            'country_id' => $request->country_id,
-            'warehouse_id' => $request->warehouse_id,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'pincode' => $request->pincode,
-            'city' => $request->city,
-            'state' => $request->state,
-            'branch_name' => $request->branch_name,
-        ]);
+        $branch->update($validated);
 
         $branches = WareHouseBranch::with(['country', 'warehouse'])->get();
 
