@@ -160,8 +160,8 @@
                                 <div class="col-6">
                                     <div class="mb-2">Previous Image</div>
                                     <label class="edit_show_preview-container">
-                                        <img src="" alt="edit_bannerImage_image" id="edit_preview_imageid"
-                                            class="edit_preview_image"></label>
+                                        <img src="" alt="edit_bannerImage_image" id="edit_banner_preview_imageid"
+                                            class="edit_banner_preview_image"></label>
                                 </div>
 
                                 <div class="col-6">
@@ -213,6 +213,12 @@
                                 accept=".jpeg, .jpg, .png" />
                         </div>
 
+                        <div id="add_web_preview_wrapper" class="mb-3" style="display: none;">
+                            <label class="form-label d-block fw-semibold">Preview</label>
+                            <img id="add_web_preview_img" src="" alt="Banner Preview" class="img-fluid rounded border" style="max-height: 140px; width: 100%; object-fit: cover;">
+                            <button type="button" class="btn btn-sm btn-danger mt-2" id="add_web_remove_btn"><i class="mdi mdi-close"></i> Remove</button>
+                        </div>
+
                         <div class="text-center">
                             <button class="btn btn-primary addweb_submit_btn mt-3" type="submit">
                                 Submit
@@ -257,29 +263,23 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12 d-flex">
+                            <div class="col-md-12 d-flex gap-3">
                                 <div class="col-6">
-                                    <div class="mb-2">Previous Image</div>
-                                    <label class="edit_show_preview-container">
-                                        <img src="" alt="edit_bannerImage_image"
-                                            class="edit_preview_image"></label>
+                                    <div class="mb-2 fw-semibold">Current Image</div>
+                                    <div class="edit_show_preview-container">
+                                        <img src="" alt="Current Banner" id="edit_web_current_image"
+                                            class="img-fluid rounded border" style="max-height: 140px; width: 100%; object-fit: cover;">
+                                    </div>
                                 </div>
 
-                                {{-- <div class="col-6">
-                                    <div class="mb-2">New Image</div>
-                                    <label for="edit_bannerImageImage" class="edit_preview-container">
-                                        <div class="flex justify-content-center">
-                                            <div class="text-center">
-                                                <i class="display-4 col-12 text-muted mdi mdi-cloud-upload"></i>
-                                            </div>
-                                            <div>
-                                                <span class="col-12">Upload Image</span>
-                                            </div>
-                                        </div>
-                                    </label>
-
-                                </div> --}}
-
+                                <div class="col-6" id="edit_web_new_preview_wrapper" style="display: none;">
+                                    <div class="mb-2 fw-semibold">New Image Preview</div>
+                                    <div>
+                                        <img src="" alt="New Banner Preview" id="edit_web_new_preview_img"
+                                            class="img-fluid rounded border" style="max-height: 140px; width: 100%; object-fit: cover;">
+                                        <button type="button" class="btn btn-sm btn-danger mt-2" id="edit_web_remove_btn"><i class="mdi mdi-close"></i> Remove</button>
+                                    </div>
+                                </div>
                             </div>
 
 
