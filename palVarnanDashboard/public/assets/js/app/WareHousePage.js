@@ -7,6 +7,7 @@ function getSelectedCountry(prefix) {
     const name = (selected.text() || "").toLowerCase();
     const val = String(el.val() || "");
     if (name.includes("mexic") || val === "244") return "mexico";
+    if (val === "" || val === "0") return "unknown"; // No country selected yet
     return "india";
 }
 
@@ -18,6 +19,7 @@ function validatePhone(value, prefix) {
     if (country === "mexico") {
         return /^(?:\+52|52)?[1-9]\d{9}$/.test(clean);
     }
+    // For "unknown" or "india", validate as India
     return /^(?:\+91|91)?[6-9]\d{9}$/.test(clean);
 }
 
@@ -29,6 +31,10 @@ function validatePincode(value, prefix) {
     if (country === "mexico") {
         return /^[0-9]{5}$/.test(clean);
     }
+    if (country === "unknown") {
+        // Accept either India (6-digit) or Mexico (5-digit) when country not selected
+        return /^[1-9][0-9]{5}$/.test(clean) || /^[0-9]{5}$/.test(clean);
+    }
     return /^[1-9][0-9]{5}$/.test(clean);
 }
 
@@ -39,7 +45,11 @@ function handlePincodeInput(prefix) {
     const pincodeInput = $(`#${prefix}_pincode`);
     let pincode = pincodeInput.val().trim().replace(/[^0-9]/g, "");
     const country = getSelectedCountry(prefix);
-    const maxLen = country === "mexico" ? 5 : 6;
+
+    // Determine max length based on country
+    let maxLen = 6; // default India
+    if (country === "mexico") maxLen = 5;
+    if (country === "unknown") maxLen = 6; // allow up to 6 (covers both)
 
     if (pincode.length > maxLen) {
         pincode = pincode.substring(0, maxLen);
@@ -48,10 +58,29 @@ function handlePincodeInput(prefix) {
 
     clearTimeout(lookupTimeouts[prefix]);
 
-    if ((country === "india" && pincode.length === 6) || (country === "mexico" && pincode.length === 5)) {
+    // Determine if we should trigger lookup
+    let shouldLookup = false;
+    let lookupCountry = country;
+
+    if (country === "india" && pincode.length === 6) {
+        shouldLookup = true;
+    } else if (country === "mexico" && pincode.length === 5) {
+        shouldLookup = true;
+    } else if (country === "unknown") {
+        // Auto-detect: 6 digits = India, 5 digits = Mexico
+        if (pincode.length === 6) {
+            shouldLookup = true;
+            lookupCountry = "india";
+        } else if (pincode.length === 5) {
+            shouldLookup = true;
+            lookupCountry = "mexico";
+        }
+    }
+
+    if (shouldLookup) {
         lookupTimeouts[prefix] = setTimeout(async () => {
             try {
-                let response = await fetch(`warehouse/lookup-pincode?pincode=${encodeURIComponent(pincode)}&country=${encodeURIComponent(country)}`);
+                let response = await fetch(`warehouse/lookup-pincode?pincode=${encodeURIComponent(pincode)}&country=${encodeURIComponent(lookupCountry)}`);
                 let resData = await response.json();
 
                 if (response.ok && resData.success && (resData.city || resData.state)) {
@@ -62,8 +91,8 @@ function handlePincodeInput(prefix) {
                     return;
                 }
 
-                // Client fallback
-                if (country === "india") {
+                // Client-side fallback (direct API calls)
+                if (lookupCountry === "india") {
                     let directRes = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
                     let directData = await directRes.json();
                     if (Array.isArray(directData) && directData[0]?.Status === "Success" && directData[0]?.PostOffice?.length > 0) {
@@ -75,8 +104,9 @@ function handlePincodeInput(prefix) {
                         $(`#${prefix}_city`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
                         $(`#${prefix}_state`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
                     }
-                } else if (country === "mexico") {
-                    let zipRes = await fetch(`https://api.zippopotam.us/mx/${pincode}`);
+                } else if (lookupCountry === "mexico") {
+                    let padded = pincode.padStart(5, '0');
+                    let zipRes = await fetch(`https://api.zippopotam.us/mx/${padded}`);
                     if (zipRes.ok) {
                         let zipData = await zipRes.json();
                         if (zipData.places && zipData.places.length > 0) {
@@ -95,6 +125,16 @@ function handlePincodeInput(prefix) {
         }, 300);
     }
 }
+
+// Re-evaluate pincode when country dropdown changes (Select2 + native)
+$(document).on("select2:select change", "#add_country_id, #edit_country_id", function () {
+    const id = $(this).attr("id");
+    const prefix = id.startsWith("add") ? "add" : "edit";
+    const pincodeVal = $(`#${prefix}_pincode`).val()?.trim();
+    if (pincodeVal && pincodeVal.length >= 5) {
+        handlePincodeInput(prefix);
+    }
+});
 
 // Block any text / letters from being typed into Phone fields
 $(document).on("keydown", "#add_phone, #edit_phone", function (e) {
