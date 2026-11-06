@@ -9,30 +9,7 @@ use Illuminate\Http\Request;
 class UnitController extends Controller
 {
     
-    private function getAllowedCountryIds(): array
-    {
-        $user = auth()->user();
-        $countryIds = is_array($user->country_id)
-            ? $user->country_id
-            : json_decode($user->country_id, true) ?? [];
-        $countryIds = array_map('intval', $countryIds);
-
-        $sessionCountryId = session('country_id');
-        if (!$sessionCountryId) return $countryIds;
-        if (in_array((int)$sessionCountryId, $countryIds)) return [(int)$sessionCountryId];
-        return $countryIds;
-    }
-
-    private function filterByCountry($collection, array $allowedCountryIds)
-    {
-        return $collection->filter(function ($item) use ($allowedCountryIds) {
-            $ids = array_map('intval', explode(',', $item->country_id ?? ''));
-            return count(array_intersect($ids, $allowedCountryIds)) > 0;
-        })->values();
-    }
-
-
-    public function index()
+            public function index()
     {
         $allowedCountryIds = $this->getAllowedCountryIds();
 

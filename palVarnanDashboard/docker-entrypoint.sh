@@ -31,7 +31,7 @@ php artisan route:clear || true
 php artisan view:clear || true
 
 # Ensure permissions for Laravel writable directories and upload paths
-mkdir -p /var/www/html/public/images/home_promotions /var/www/html/public/images/web_images /var/www/html/public/images/banner_images || true
+mkdir -p /var/www/html/public/images/home_promotions /var/www/html/public/images/web_images /var/www/html/public/images/banner_images /var/www/html/public/images/brand_images /var/www/html/public/images/category_images /var/www/html/public/images/gift_images /var/www/html/public/images/gift_variant_images /var/www/html/public/images/offer_images /var/www/html/public/images/product_images /var/www/html/public/images/product_thum_images /var/www/html/public/images/variant_images || true
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
 

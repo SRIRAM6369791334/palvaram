@@ -14,49 +14,7 @@ class HomePromotionController extends Controller
      * Safely parse user's allowed country IDs regardless of how country_id is stored in DB
      * (array, int, JSON string, comma-separated string, or null).
      */
-    private function getAllowedCountryIds()
-    {
-        $user = auth()->user();
-        if (!$user) {
-            return [];
-        }
-
-        $raw = $user->country_id;
-        if (is_array($raw)) {
-            $countryIds = $raw;
-        } elseif (is_numeric($raw)) {
-            $countryIds = [(int)$raw];
-        } elseif (is_string($raw)) {
-            $decoded = json_decode($raw, true);
-            if (is_array($decoded)) {
-                $countryIds = $decoded;
-            } elseif (is_numeric($decoded)) {
-                $countryIds = [(int)$decoded];
-            } else {
-                $countryIds = array_filter(explode(',', $raw));
-            }
-        } else {
-            $countryIds = [];
-        }
-
-        $countryIds = array_values(array_unique(array_map('intval', (array)$countryIds)));
-
-        // Super Admin or unrestricted user gets all available countries
-        $isSuperAdmin = method_exists($user, 'hasRole') && $user->hasRole('Super Admin');
-        if ($isSuperAdmin || empty($countryIds)) {
-            $allCountryIds = Country::pluck('id')->toArray();
-            $countryIds = !empty($countryIds) ? $countryIds : $allCountryIds;
-        }
-
-        $sessionCountryId = session('country_id');
-        if ($sessionCountryId && in_array((int)$sessionCountryId, $countryIds)) {
-            return [(int)$sessionCountryId];
-        }
-
-        return $countryIds;
-    }
-
-    public function index()
+        public function index()
     {
         $allowedCountryIds = $this->getAllowedCountryIds();
         $user = auth()->user();

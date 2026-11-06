@@ -8,21 +8,7 @@ use Illuminate\Http\Request;
 
 class GiftSupplierController extends Controller
 {
-    private function getAllowedCountryIds(): array
-    {
-        $user = auth()->user();
-        $countryIds = is_array($user->country_id)
-            ? $user->country_id
-            : json_decode($user->country_id, true) ?? [];
-        $countryIds = array_map('intval', $countryIds);
-
-        $sessionCountryId = session('country_id');
-        if (!$sessionCountryId) return $countryIds;
-        if (in_array((int)$sessionCountryId, $countryIds)) return [(int)$sessionCountryId];
-        return $countryIds;
-    }
-
-    private function parseCountryIds($countryId): array
+        private function parseCountryIds($countryId): array
     {
         if (empty($countryId)) return [];
         return array_map('intval', explode(',', (string) $countryId));

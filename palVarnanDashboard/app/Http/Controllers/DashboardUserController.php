@@ -12,30 +12,7 @@ use Spatie\Permission\Models\Role;
 class DashboardUserController extends Controller
 {
 
-    private function getAllowedCountryIds()
-    {
-        $user = auth()->user();
-
-        $countryIds = is_array($user->country_id)
-            ? $user->country_id
-            : json_decode($user->country_id, true) ?? [];
-
-        $countryIds = array_map('intval', $countryIds);
-
-        $sessionCountryId = session('country_id');
-
-        if (!$sessionCountryId) {
-            return $countryIds;
-        }
-
-        if (in_array((int)$sessionCountryId, $countryIds)) {
-            return [(int)$sessionCountryId];
-        }
-
-        return $countryIds;
-    }
-
-    public function index()
+        public function index()
     {
         $allowedCountryIds = $this->getAllowedCountryIds();
 
@@ -43,11 +20,7 @@ class DashboardUserController extends Controller
             ->get()
             ->filter(function ($user) use ($allowedCountryIds) {
 
-                $ids = is_array($user->country_id)
-                    ? $user->country_id
-                    : json_decode($user->country_id, true);
-
-                $ids = array_map('intval', $ids ?? []);
+                $ids = (array)$user->country_id;
 
                 return count(array_intersect($ids, $allowedCountryIds)) > 0;
             })

@@ -16,30 +16,7 @@ use App\Models\SupplierDetail;
 class PurchaseOrderController extends Controller
 {
 
-    private function getAllowedCountryIds()
-    {
-        $user = auth()->user();
-
-        $countryIds = is_array($user->country_id)
-            ? $user->country_id
-            : json_decode($user->country_id, true) ?? [];
-
-        $countryIds = array_map('intval', $countryIds);
-
-        $sessionCountryId = session('country_id');
-
-        if (!$sessionCountryId) {
-            return $countryIds;
-        }
-
-        if (in_array((int)$sessionCountryId, $countryIds)) {
-            return [(int)$sessionCountryId];
-        }
-
-        return $countryIds;
-    }
-
-public function index()
+    public function index()
 {
     $allowedCountryIds = $this->getAllowedCountryIds();
 

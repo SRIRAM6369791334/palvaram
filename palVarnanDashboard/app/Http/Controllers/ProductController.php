@@ -50,14 +50,7 @@ class ProductController extends Controller
      */
 public function index()
 {
-    $user = auth()->user();
-    $countryIds = is_array($user->country_id) ? $user->country_id : json_decode($user->country_id, true) ?? [];
-    $allowedCountryIds = array_map('intval', $countryIds);
-
-    $sessionCountryId = session('country_id');
-    if ($sessionCountryId && in_array((int)$sessionCountryId, $allowedCountryIds)) {
-        $allowedCountryIds = [(int)$sessionCountryId];
-    }
+    $allowedCountryIds = $this->getAllowedCountryIds();
 
     $products = Product::with(['category', 'brand'])
         ->where(function($query) use ($allowedCountryIds) {

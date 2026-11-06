@@ -409,7 +409,10 @@ $(function () {
 });
 
 function renderSort() {
-    new Sortable(document.querySelector("tbody"), {
+    if (typeof Sortable === "undefined") return;
+    const tbody = document.querySelector("tbody");
+    if (!tbody) return;
+    new Sortable(tbody, {
         handle: ".sortable-row",
         animation: 150,
         forceFallback: true,

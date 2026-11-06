@@ -270,6 +270,7 @@ $(document).on("click", ".delete_btn", function () {
 });
 
 function renderSort() {
+    if (typeof Sortable === "undefined") return;
     const table = document.querySelector("#table-gridjs tbody");
     if (!table) return;
 

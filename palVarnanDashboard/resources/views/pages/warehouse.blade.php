@@ -249,6 +249,6 @@
         window.warehouse = @json($warehouse);
         window.csrfToken = "{{ csrf_token() }}";
     </script>
-    <script src="{{ URL::asset('assets/js/app/WareHousePage.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('assets/libs/sortable/sortable.js') }}"></script>
+    <script src="{{ URL::asset('assets/js/app/WareHousePage.js') }}?v={{ time() }}"></script>
 @endsection
