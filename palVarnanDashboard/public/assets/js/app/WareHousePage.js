@@ -79,61 +79,86 @@ function handlePincodeInput(prefix) {
 
     if (shouldLookup) {
         lookupTimeouts[prefix] = setTimeout(async () => {
+            function fillFields(city, state) {
+                if (city) $(`#${prefix}_city`).val(city);
+                if (state) $(`#${prefix}_state`).val(state);
+                $(`#${prefix}_city`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
+                $(`#${prefix}_state`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+
+            // 1) Try direct public APIs first (no auth needed, CORS enabled)
             try {
-                let response = await fetch(`warehouse/lookup-pincode?pincode=${encodeURIComponent(pincode)}&country=${encodeURIComponent(lookupCountry)}`);
-                let resData = await response.json();
-
-                if (response.ok && resData.success && (resData.city || resData.state)) {
-                    if (resData.city) $(`#${prefix}_city`).val(resData.city);
-                    if (resData.state) $(`#${prefix}_state`).val(resData.state);
-                    $(`#${prefix}_city`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
-                    $(`#${prefix}_state`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
-                    return;
-                }
-
-                // Client-side fallback (direct API calls)
-                if (lookupCountry === "india") {
-                    let directRes = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-                    let directData = await directRes.json();
-                    if (Array.isArray(directData) && directData[0]?.Status === "Success" && directData[0]?.PostOffice?.length > 0) {
-                        const po = directData[0].PostOffice[0];
-                        const c = po.District || po.Block || po.Name || "";
-                        const s = po.State || "";
-                        if (c) $(`#${prefix}_city`).val(c);
-                        if (s) $(`#${prefix}_state`).val(s);
-                        $(`#${prefix}_city`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
-                        $(`#${prefix}_state`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
-                    }
-                } else if (lookupCountry === "mexico") {
+                if (lookupCountry === "mexico") {
                     let padded = pincode.padStart(5, '0');
                     let zipRes = await fetch(`https://api.zippopotam.us/mx/${padded}`);
                     if (zipRes.ok) {
                         let zipData = await zipRes.json();
                         if (zipData.places && zipData.places.length > 0) {
-                            const c = zipData.places[0]["place name"] || "";
-                            const s = zipData.places[0].state || "";
-                            if (c) $(`#${prefix}_city`).val(c);
-                            if (s) $(`#${prefix}_state`).val(s);
-                            $(`#${prefix}_city`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
-                            $(`#${prefix}_state`)[0]?.dispatchEvent(new Event('input', { bubbles: true }));
+                            fillFields(zipData.places[0]["place name"] || "", zipData.places[0].state || "");
+                            return;
+                        }
+                    }
+                } else if (lookupCountry === "india") {
+                    let directRes = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+                    let directData = await directRes.json();
+                    if (Array.isArray(directData) && directData[0]?.Status === "Success" && directData[0]?.PostOffice?.length > 0) {
+                        const po = directData[0].PostOffice[0];
+                        fillFields(po.District || po.Block || po.Name || "", po.State || "");
+                        return;
+                    }
+                    // Fallback: Zippopotam India
+                    let zipRes = await fetch(`https://api.zippopotam.us/in/${pincode}`);
+                    if (zipRes.ok) {
+                        let zipData = await zipRes.json();
+                        if (zipData.places && zipData.places.length > 0) {
+                            fillFields(zipData.places[0]["place name"] || "", zipData.places[0].state || "");
+                            return;
                         }
                     }
                 }
-            } catch (e) {
-                console.error("Pincode lookup error:", e);
+            } catch (e1) {
+                console.warn("Direct API lookup failed, trying server proxy:", e1);
+            }
+
+            // 2) Fallback: server-side proxy
+            try {
+                let response = await fetch(`warehouse/lookup-pincode?pincode=${encodeURIComponent(pincode)}&country=${encodeURIComponent(lookupCountry)}`);
+                if (response.ok) {
+                    let resData = await response.json();
+                    if (resData.success && (resData.city || resData.state)) {
+                        fillFields(resData.city || "", resData.state || "");
+                    }
+                }
+            } catch (e2) {
+                console.error("Server proxy lookup also failed:", e2);
             }
         }, 300);
     }
 }
 
 // Re-evaluate pincode when country dropdown changes (Select2 + native)
-$(document).on("select2:select change", "#add_country_id, #edit_country_id", function () {
-    const id = $(this).attr("id");
-    const prefix = id.startsWith("add") ? "add" : "edit";
-    const pincodeVal = $(`#${prefix}_pincode`).val()?.trim();
-    if (pincodeVal && pincodeVal.length >= 5) {
-        handlePincodeInput(prefix);
-    }
+// Bind directly on elements (Select2 events don't bubble for delegation)
+function bindCountryChangeHandler(selector) {
+    const el = $(selector);
+    if (!el.length) return;
+    const prefix = el.attr("id").startsWith("add") ? "add" : "edit";
+    el.on("select2:select change", function () {
+        const pincodeVal = $(`#${prefix}_pincode`).val()?.trim();
+        if (pincodeVal && pincodeVal.length >= 5) {
+            handlePincodeInput(prefix);
+        }
+    });
+}
+
+// Bind immediately (for native change) + after DOM ready (for Select2 events)
+bindCountryChangeHandler("#add_country_id");
+bindCountryChangeHandler("#edit_country_id");
+$(document).ready(function () {
+    // Re-bind after Select2 init to catch select2:select events
+    setTimeout(function () {
+        bindCountryChangeHandler("#add_country_id");
+        bindCountryChangeHandler("#edit_country_id");
+    }, 500);
 });
 
 // Block any text / letters from being typed into Phone fields
