@@ -6,63 +6,113 @@ use App\Models\Country;
 use App\Models\HomePromotion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class HomePromotionController extends Controller
 {
-        
-private function getAllowedCountryIds()
-{
-    $user = auth()->user();
-    $countryIds = is_array($user->country_id) ? $user->country_id : json_decode($user->country_id, true) ?? [];
-    $countryIds = array_map('intval', $countryIds);
+    /**
+     * Safely parse user's allowed country IDs regardless of how country_id is stored in DB
+     * (array, int, JSON string, comma-separated string, or null).
+     */
+    private function getAllowedCountryIds()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return [];
+        }
 
-    $sessionCountryId = session('country_id');
+        $raw = $user->country_id;
+        if (is_array($raw)) {
+            $countryIds = $raw;
+        } elseif (is_numeric($raw)) {
+            $countryIds = [(int)$raw];
+        } elseif (is_string($raw)) {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) {
+                $countryIds = $decoded;
+            } elseif (is_numeric($decoded)) {
+                $countryIds = [(int)$decoded];
+            } else {
+                $countryIds = array_filter(explode(',', $raw));
+            }
+        } else {
+            $countryIds = [];
+        }
 
-    // If empty string or null (All Countries selected), return all allowed
-    if (!$sessionCountryId) {
+        $countryIds = array_values(array_unique(array_map('intval', (array)$countryIds)));
+
+        // Super Admin or unrestricted user gets all available countries
+        $isSuperAdmin = method_exists($user, 'hasRole') && $user->hasRole('Super Admin');
+        if ($isSuperAdmin || empty($countryIds)) {
+            $allCountryIds = Country::pluck('id')->toArray();
+            $countryIds = !empty($countryIds) ? $countryIds : $allCountryIds;
+        }
+
+        $sessionCountryId = session('country_id');
+        if ($sessionCountryId && in_array((int)$sessionCountryId, $countryIds)) {
+            return [(int)$sessionCountryId];
+        }
+
         return $countryIds;
     }
-
-    if (in_array((int)$sessionCountryId, $countryIds)) {
-        return [(int)$sessionCountryId];
-    }
-
-    return $countryIds;
-}
 
     public function index()
     {
         $allowedCountryIds = $this->getAllowedCountryIds();
+        $user = auth()->user();
+        $isSuperAdmin = $user && method_exists($user, 'hasRole') && $user->hasRole('Super Admin');
 
-        $promotions = HomePromotion::with('country')
-            ->whereIn('country_id', $allowedCountryIds)
-            ->orderBy('sort_order', 'asc')
-            ->get();
+        $promotionsQuery = HomePromotion::with('country');
+        $countriesQuery = Country::query();
 
-        // ✅ Only show countries the user is assigned to
-        $countries = Country::whereIn('id', $allowedCountryIds)->get();
+        if (!$isSuperAdmin && !empty($allowedCountryIds)) {
+            $promotionsQuery->whereIn('country_id', $allowedCountryIds);
+            $countriesQuery->whereIn('id', $allowedCountryIds);
+        }
+
+        $promotions = $promotionsQuery->orderBy('sort_order', 'asc')->get();
+        $countries = $countriesQuery->get();
 
         return view("pages.home_promotions", compact("promotions", "countries"));
     }
 
     public function store(Request $request)
     {
-        $allowedCountryIds = $this->getAllowedCountryIds();
+        try {
+            $allowedCountryIds = $this->getAllowedCountryIds();
+            $user = auth()->user();
+            $isSuperAdmin = $user && method_exists($user, 'hasRole') && $user->hasRole('Super Admin');
 
-        $request->validate([
-            "bg_image"       => "required|mimes:png,jpg,webp,jpeg|dimensions:width=597,height=354",
-            "badge_text"     => "required|string|max:255",
-            "main_title"     => "required|string|max:255",
-            "highlight_text" => "required|string|max:255",
-            "link_url"       => "required|string|max:255",
-            "country_id"     => "required|in:" . implode(',', $allowedCountryIds),
-        ], [
-            "bg_image.dimensions" => "Image resolution must be exactly 597 × 354 px.",
-            "country_id.in"       => "You are not allowed to create promotions for this country.",
-        ]);
+            $countryRule = "required";
+            if (!$isSuperAdmin && !empty($allowedCountryIds)) {
+                $countryRule .= "|in:" . implode(',', $allowedCountryIds);
+            }
 
-        if ($request->hasFile("bg_image")) {
-            $path = $request->file("bg_image")->store("home_promotions", "public");
+            $request->validate([
+                "bg_image"       => "required|mimes:png,jpg,webp,jpeg|dimensions:width=597,height=354",
+                "badge_text"     => "required|string|max:255",
+                "main_title"     => "required|string|max:255",
+                "highlight_text" => "required|string|max:255",
+                "link_url"       => "required|string|max:255",
+                "country_id"     => $countryRule,
+            ], [
+                "bg_image.dimensions" => "Image resolution must be exactly 597 × 354 px.",
+                "country_id.in"       => "You are not allowed to create promotions for this country.",
+            ]);
+
+            $uploadDir = public_path("images/home_promotions");
+            if (!File::isDirectory($uploadDir)) {
+                File::makeDirectory($uploadDir, 0775, true, true);
+            }
+
+            try {
+                $path = $request->file("bg_image")->store("home_promotions", "public");
+            } catch (\Throwable $storeEx) {
+                $file = $request->file("bg_image");
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($uploadDir, $filename);
+                $path = "home_promotions/" . $filename;
+            }
 
             HomePromotion::create([
                 "country_id"     => $request->country_id,
@@ -73,87 +123,162 @@ private function getAllowedCountryIds()
                 "bg_image"       => $path,
             ]);
 
-            $promotions = HomePromotion::with('country')
-                ->whereIn('country_id', $allowedCountryIds)
-                ->orderBy('sort_order', 'asc')
-                ->get();
+            $promotionsQuery = HomePromotion::with('country');
+            if (!$isSuperAdmin && !empty($allowedCountryIds)) {
+                $promotionsQuery->whereIn('country_id', $allowedCountryIds);
+            }
+            $promotions = $promotionsQuery->orderBy('sort_order', 'asc')->get();
 
-            return response()->json(["message" => "Promotion Added Successfully", "promotions" => $promotions]);
+            return response()->json([
+                "message" => "Promotion Added Successfully",
+                "promotions" => $promotions
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            throw $ve;
+        } catch (\Throwable $e) {
+            Log::error("Home promotion store error: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response()->json([
+                "message" => "Failed to add promotion: " . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json(["error" => "No image found"], 400);
     }
 
     public function update(Request $request, $id)
     {
-        
-        $allowedCountryIds = $this->getAllowedCountryIds();
+        try {
+            $allowedCountryIds = $this->getAllowedCountryIds();
+            $user = auth()->user();
+            $isSuperAdmin = $user && method_exists($user, 'hasRole') && $user->hasRole('Super Admin');
 
-        $promo = HomePromotion::whereIn('country_id', $allowedCountryIds)->findOrFail($id);
+            // Find promotion
+            $promo = HomePromotion::findOrFail($id);
 
-        $request->validate([
-            "bg_image"       => $request->hasFile("bg_image") ? "mimes:png,jpg,webp,jpeg|dimensions:width=597,height=354" : "nullable",
-            "badge_text"     => "required|string|max:255",
-            "main_title"     => "required|string|max:255",
-            "highlight_text" => "required|string|max:255",
-            "link_url"       => "required|string|max:255",
-        ], [
-            "bg_image.dimensions" => "Image resolution must be exactly 597 × 354 px."
-        ]);
+            // Authorization check
+            if (!$isSuperAdmin && !empty($allowedCountryIds) && !in_array((int)$promo->country_id, $allowedCountryIds)) {
+                return response()->json(["message" => "You are not authorized to update this promotion."], 403);
+            }
 
-        $data = [
-            "badge_text"     => $request->badge_text,
-            "main_title"     => $request->main_title,
-            "highlight_text" => $request->highlight_text,
-            "link_url"       => $request->link_url,
-        ];
+            $rules = [
+                "badge_text"     => "required|string|max:255",
+                "main_title"     => "required|string|max:255",
+                "highlight_text" => "required|string|max:255",
+                "link_url"       => "required|string|max:255",
+            ];
 
-        // ✅ Only update country_id if user is allowed
-        if ($request->country_id && in_array((int)$request->country_id, $allowedCountryIds)) {
-            $data["country_id"] = $request->country_id;
+            if ($request->hasFile("bg_image")) {
+                $rules["bg_image"] = "required|mimes:png,jpg,webp,jpeg|dimensions:width=597,height=354";
+            }
+
+            $request->validate($rules, [
+                "bg_image.dimensions" => "Image resolution must be exactly 597 × 354 px."
+            ]);
+
+            $data = [
+                "badge_text"     => $request->badge_text,
+                "main_title"     => $request->main_title,
+                "highlight_text" => $request->highlight_text,
+                "link_url"       => $request->link_url,
+            ];
+
+            // Only update country_id if valid
+            if ($request->filled('country_id')) {
+                if ($isSuperAdmin || in_array((int)$request->country_id, $allowedCountryIds)) {
+                    $data["country_id"] = $request->country_id;
+                }
+            }
+
+            if ($request->hasFile("bg_image")) {
+                $uploadDir = public_path("images/home_promotions");
+                if (!File::isDirectory($uploadDir)) {
+                    File::makeDirectory($uploadDir, 0775, true, true);
+                }
+
+                if (!empty($promo->bg_image)) {
+                    $oldImagePath = public_path("images/") . $promo->bg_image;
+                    if (File::exists($oldImagePath) && !File::isDirectory($oldImagePath)) {
+                        @File::delete($oldImagePath);
+                    }
+                }
+
+                try {
+                    $data["bg_image"] = $request->file("bg_image")->store("home_promotions", "public");
+                } catch (\Throwable $storeEx) {
+                    $file = $request->file("bg_image");
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move($uploadDir, $filename);
+                    $data["bg_image"] = "home_promotions/" . $filename;
+                }
+            }
+
+            $promo->update($data);
+
+            $promotionsQuery = HomePromotion::with('country');
+            if (!$isSuperAdmin && !empty($allowedCountryIds)) {
+                $promotionsQuery->whereIn('country_id', $allowedCountryIds);
+            }
+            $promotions = $promotionsQuery->orderBy('sort_order', 'asc')->get();
+
+            return response()->json([
+                "message" => "Promotion Updated Successfully",
+                "promotions" => $promotions
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            throw $ve;
+        } catch (\Throwable $e) {
+            Log::error("Home promotion update error: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response()->json([
+                "message" => "Failed to update promotion: " . $e->getMessage()
+            ], 500);
         }
-
-        if ($request->hasFile("bg_image")) {
-            $oldImagePath = public_path("images/") . $promo->bg_image;
-            if (File::exists($oldImagePath)) File::delete($oldImagePath);
-            $data["bg_image"] = $request->file("bg_image")->store("home_promotions", "public");
-        }
-
-        $promo->update($data);
-
-        $promotions = HomePromotion::with('country')
-            ->whereIn('country_id', $allowedCountryIds)
-            ->orderBy('sort_order', 'asc')
-            ->get();
-
-        return response()->json(["message" => "Promotion Updated Successfully", "promotions" => $promotions]);
     }
 
     public function destroy($id)
     {
-        $allowedCountryIds = $this->getAllowedCountryIds();
+        try {
+            $allowedCountryIds = $this->getAllowedCountryIds();
+            $user = auth()->user();
+            $isSuperAdmin = $user && method_exists($user, 'hasRole') && $user->hasRole('Super Admin');
 
-        // ✅ Admin can only delete their own country's promotions
-        $promo = HomePromotion::whereIn('country_id', $allowedCountryIds)->findOrFail($id);
+            $promo = HomePromotion::findOrFail($id);
 
-        $oldImagePath = public_path("images/") . $promo->bg_image;
-        if (File::exists($oldImagePath)) File::delete($oldImagePath);
+            if (!$isSuperAdmin && !empty($allowedCountryIds) && !in_array((int)$promo->country_id, $allowedCountryIds)) {
+                return response()->json(["message" => "You are not authorized to delete this promotion."], 403);
+            }
 
-        $promo->delete();
+            if (!empty($promo->bg_image)) {
+                $oldImagePath = public_path("images/") . $promo->bg_image;
+                if (File::exists($oldImagePath) && !File::isDirectory($oldImagePath)) {
+                    @File::delete($oldImagePath);
+                }
+            }
 
-        $promotions = HomePromotion::with('country')
-            ->whereIn('country_id', $allowedCountryIds)
-            ->orderBy('sort_order', 'asc')
-            ->get();
+            $promo->delete();
 
-        return response()->json(["message" => "Promotion Deleted Successfully", "promotions" => $promotions]);
+            $promotionsQuery = HomePromotion::with('country');
+            if (!$isSuperAdmin && !empty($allowedCountryIds)) {
+                $promotionsQuery->whereIn('country_id', $allowedCountryIds);
+            }
+            $promotions = $promotionsQuery->orderBy('sort_order', 'asc')->get();
+
+            return response()->json([
+                "message" => "Promotion Deleted Successfully",
+                "promotions" => $promotions
+            ]);
+        } catch (\Throwable $e) {
+            Log::error("Home promotion delete error: " . $e->getMessage());
+            return response()->json([
+                "message" => "Failed to delete promotion: " . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function updateSortOrder(Request $request)
     {
-        $order = $request->input('order');
-        foreach ($order as $position => $id) {
-            HomePromotion::where('id', $id)->update(['sort_order' => $position]);
+        $order = $request->input('order', []);
+        if (is_array($order)) {
+            foreach ($order as $position => $id) {
+                HomePromotion::where('id', $id)->update(['sort_order' => $position]);
+            }
         }
         return response()->json(['success' => true]);
     }

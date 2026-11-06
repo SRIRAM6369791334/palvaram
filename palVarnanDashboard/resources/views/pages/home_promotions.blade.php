@@ -118,7 +118,7 @@
                             </div>
                         </div>
                         <div class="text-center">
-                            <button class="btn btn-primary mt-3" type="submit">Submit</button>
+                            <button class="btn btn-primary mt-3 add_promo_submit_btn" type="submit">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -197,7 +197,7 @@
                             </div>
                         </div>
                         <div class="text-center">
-                            <button class="btn btn-primary mt-3" type="submit">Update</button>
+                            <button class="btn btn-primary mt-3 edit_promo_submit_btn" type="submit">Update</button>
                         </div>
                     </form>
                 </div>
@@ -214,6 +214,6 @@
         window.promotions = @json($promotions);
         window.csrfToken = "{{ csrf_token() }}";
     </script>
-    <script src="{{ URL::asset('assets/js/app/HomePromotionsPage.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('assets/libs/sortable/sortable.js') }}"></script>
+    <script src="{{ URL::asset('assets/js/app/HomePromotionsPage.js') }}?v={{ time() }}"></script>
 @endsection

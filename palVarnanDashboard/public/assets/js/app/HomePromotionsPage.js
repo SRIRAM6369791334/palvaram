@@ -1,3 +1,8 @@
+// ==============================================================================
+// Pal Varnan Dashboard - Home Promotions (4 Banners) Script
+// Resolves Sortable dependency, JustValidate boolean returns, and Multi-submit spam
+// ==============================================================================
+
 const addValidator = new JustValidate("#addPromotionForm", {
     validateBeforeSubmitting: true,
 });
@@ -7,47 +12,43 @@ const editValidator = new JustValidate("#editPromotionForm", {
 
 let invalidAddImage = false;
 let invalidEditImage = false;
+let isSubmittingPromo = false;
 
+// ------------------------------------------------------------------------------
+// Form Validation Setup
+// ------------------------------------------------------------------------------
 if ($("#add_country_id").length) {
-addValidator
-    .addField("#add_country_id", [{ rule: "required", errorMessage: "*Country is required" }])
-    .addField("#add_badge_text", [{ rule: "required", errorMessage: "*Badge Text is required" }])
-    .addField("#add_main_title", [{ rule: "required", errorMessage: "*Main Title is required" }])
-    .addField("#add_highlight_text", [{ rule: "required", errorMessage: "*Highlight Text is required" }])
-    .addField("#add_link_url", [{ rule: "required", errorMessage: "*Link URL is required" }])
-    .addField("#add_bg_image", [
-        {
-            rule: "minFilesCount",
-            value: 1,
-            errorMessage: "*Upload Background Image",
-        },
-        {
-            validator: (value, fields) => {
-                if (invalidAddImage) return false;
-                return new Promise((resolve) => {
-                    const file = fields["#add_bg_image"].elem.files[0];
-                    if (!file || !file.type.match(/^image\//)) return resolve(false);
+    addValidator.addField("#add_country_id", [{ rule: "required", errorMessage: "*Country is required" }]);
+}
 
-                    const img = new Image();
-                    img.onload = () => {
-                        resolve(img.width === 597 && img.height === 354);
-                    };
-                    img.onerror = () => resolve(false);
-                    img.src = URL.createObjectURL(file);
-                });
+if ($("#addPromotionForm").length) {
+    addValidator
+        .addField("#add_badge_text", [{ rule: "required", errorMessage: "*Badge Text is required" }])
+        .addField("#add_main_title", [{ rule: "required", errorMessage: "*Main Title is required" }])
+        .addField("#add_highlight_text", [{ rule: "required", errorMessage: "*Highlight Text is required" }])
+        .addField("#add_link_url", [{ rule: "required", errorMessage: "*Link URL is required" }])
+        .addField("#add_bg_image", [
+            {
+                rule: "minFilesCount",
+                value: 1,
+                errorMessage: "*Upload Background Image",
             },
-            errorMessage: "*Image resolution must be exactly 597 × 354 px",
-        }
-    ])
-    .onSuccess((event) => {
-        submitForm(event, "store");
-    });
-
+            {
+                validator: (value, fields) => {
+                    const file = fields["#add_bg_image"]?.elem?.files?.[0];
+                    if (!file) return false;
+                    return !invalidAddImage;
+                },
+                errorMessage: "*Image resolution must be exactly 597 × 354 px",
+            }
+        ])
+        .onSuccess((event) => {
+            submitForm(event, "store");
+        });
 }
 
 if ($("#editPromotionForm").length) {
     editValidator
-
         .addField("#edit_badge_text", [{ rule: "required", errorMessage: "*Badge Text is required" }])
         .addField("#edit_main_title", [{ rule: "required", errorMessage: "*Main Title is required" }])
         .addField("#edit_highlight_text", [{ rule: "required", errorMessage: "*Highlight Text is required" }])
@@ -55,20 +56,9 @@ if ($("#editPromotionForm").length) {
         .addField("#edit_bg_image", [
             {
                 validator: (value, fields) => {
-                    if (invalidEditImage) return false;
-
                     const file = fields["#edit_bg_image"]?.elem?.files?.[0];
-
-                    if (!file) return true;
-
-                    if (!file.type.match(/^image\//)) return false;
-
-                    return new Promise((resolve) => {
-                        const img = new Image();
-                        img.onload = () => resolve(img.width === 597 && img.height === 354);
-                        img.onerror = () => resolve(false);
-                        img.src = URL.createObjectURL(file);
-                    });
+                    if (!file) return true; // Optional when editing
+                    return !invalidEditImage;
                 },
                 errorMessage: "*Image resolution must be exactly 597 × 354 px",
             }
@@ -77,12 +67,14 @@ if ($("#editPromotionForm").length) {
             submitForm(event, "update");
         });
 
-    // Add country validation only if dropdown exists (super admin)
     if ($("#edit_country_id").length) {
         editValidator.addField("#edit_country_id", [{ rule: "required", errorMessage: "*Country is required" }]);
     }
 }
 
+// ------------------------------------------------------------------------------
+// GridJS Data Table
+// ------------------------------------------------------------------------------
 const gridNew = new gridjs.Grid({
     columns: [
         { name: "S.NO", sort: true },
@@ -95,7 +87,7 @@ const gridNew = new gridjs.Grid({
     pagination: {
         limit: 10,
     },
-    data: promotions.map((promo, index) => {
+    data: (window.promotions || []).map((promo, index) => {
         return [
             index + 1,
             gridjs.html(`<div class="text-center sortable-row" data-id="${promo.id}">
@@ -104,9 +96,8 @@ const gridNew = new gridjs.Grid({
             gridjs.html(`<strong>Country:</strong> ${promo.country?.name || '-'}<br><strong>Badge:</strong> ${promo.badge_text || '-'}<br><strong>Title:</strong> ${promo.main_title || '-'}<br><strong>Highlight:</strong> ${promo.highlight_text || '-'}<br><strong>Link:</strong> ${promo.link_url || '-'}`),
             gridjs.html(`<div> 
                 <button data-bs-toggle="modal" data-bs-target="#editPromotionModal" class="btn btn-secondary edit_btn" 
-                    data-id="${promo.id}" data-badge="${promo.badge_text}" data-title="${promo.main_title}" data-country="${promo.country_id}" 
-                    data-highlight="${promo.highlight_text}" data-link="${promo.link_url}" data-image="${promo.bg_image}">Edit</button> 
-                 
+                    data-id="${promo.id}" data-badge="${promo.badge_text || ''}" data-title="${promo.main_title || ''}" data-country="${promo.country_id || ''}" 
+                    data-highlight="${promo.highlight_text || ''}" data-link="${promo.link_url || ''}" data-image="${promo.bg_image || ''}">Edit</button> 
             </div>`),
         ];
     }),
@@ -131,7 +122,7 @@ gridNew.render(document.getElementById("table-gridjs"));
 
 function gridjsReRender(data) {
     gridNew.updateConfig({
-        data: data.map((promo, index) => {
+        data: (data || []).map((promo, index) => {
             return [
                 index + 1,
                 gridjs.html(`<div class="text-center sortable-row" data-id="${promo.id}">
@@ -145,25 +136,40 @@ function gridjsReRender(data) {
                 gridjs.html(`<div>
                     <button data-bs-toggle="modal" data-bs-target="#editPromotionModal" class="btn btn-secondary edit_btn"
                         data-id="${promo.id}"
-                        data-badge="${promo.badge_text}"
-                        data-title="${promo.main_title}"
-                        data-country="${promo.country_id}"
-                        data-highlight="${promo.highlight_text}"
-                        data-link="${promo.link_url}"
-                        data-image="${promo.bg_image}">Edit</button>
+                        data-badge="${promo.badge_text || ''}"
+                        data-title="${promo.main_title || ''}"
+                        data-country="${promo.country_id || ''}"
+                        data-highlight="${promo.highlight_text || ''}"
+                        data-link="${promo.link_url || ''}"
+                        data-image="${promo.bg_image || ''}">Edit</button>
                 </div>`),
             ];
         }),
     }).forceRender();
 
-    // ✅ Re-init sort after re-render
     setTimeout(renderSort, 300);
 }
 
-function submitForm(e, type) {
-    e.preventDefault();
+// ------------------------------------------------------------------------------
+// Form Submission with Anti-Multi-Click Protection
+// ------------------------------------------------------------------------------
+$(document).on("click", ".edit_promo_submit_btn, .add_promo_submit_btn", function (e) {
+    if (isSubmittingPromo) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+    }
+});
 
-    const formdata = new FormData(e.target);
+function submitForm(e, type) {
+    if (isSubmittingPromo) return;
+    isSubmittingPromo = true;
+
+    const $btn = type === "store" ? $(".add_promo_submit_btn") : $(".edit_promo_submit_btn");
+    const originalText = type === "store" ? "Submit" : "Update";
+    $btn.prop("disabled", true).addClass("disabled").html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Saving...');
+
+    const formdata = new FormData(e.target || e);
     formdata.append('_token', window.csrfToken);
 
     const url = type === "store"
@@ -177,8 +183,10 @@ function submitForm(e, type) {
         data: formdata,
         processData: false,
         contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": window.csrfToken
+        },
         success: function (response) {
-
             if (response.promotions) {
                 gridjsReRender(response.promotions);
             }
@@ -199,7 +207,7 @@ function submitForm(e, type) {
                 if ($(".edit_preview-container").length) {
                     $(".edit_preview-container").html(originalEditPreview);
                 }
-            }, 400); // slight delay so modal finishes hiding
+            }, 300);
 
             Swal.fire({
                 icon: "success",
@@ -218,14 +226,23 @@ function submitForm(e, type) {
                 errorMessage = errors[firstKey][0];
             } else if (xhr.responseJSON && xhr.responseJSON.message) {
                 errorMessage = xhr.responseJSON.message;
+            } else if (xhr.responseJSON && xhr.responseJSON.error) {
+                errorMessage = xhr.responseJSON.error;
             } else {
                 errorMessage += ": " + xhr.statusText;
             }
             Swal.fire("Error", errorMessage, "error");
+        },
+        complete: function () {
+            isSubmittingPromo = false;
+            $btn.prop("disabled", false).removeClass("disabled").html(originalText);
         }
     });
 }
 
+// ------------------------------------------------------------------------------
+// Edit Button & Lifecycle
+// ------------------------------------------------------------------------------
 $(document).on("click", ".edit_btn", function () {
     const id = $(this).data("id");
     const badge = $(this).data("badge");
@@ -242,8 +259,55 @@ $(document).on("click", ".edit_btn", function () {
     $("#edit_link_url").val(link);
     $("#edit_country_id").val(country);
     $("#edit_country_id_hidden").val(country);
-    $("#edit_preview_image").attr("src", "images/" + image).show();
-    invalidEditImage = false; // reset flag on open
+
+    // Clean reset of new image and preview
+    $("#edit_bg_image").val("");
+    invalidEditImage = false;
+    isSubmittingPromo = false;
+    $(".edit_promo_submit_btn").prop("disabled", false).removeClass("disabled").html("Update");
+
+    if ($(".edit_preview-container").length) {
+        $(".edit_preview-container").html(originalEditPreview);
+    }
+
+    if (image) {
+        $("#edit_preview_image").attr("src", "images/" + image).show();
+    } else {
+        $("#edit_preview_image").hide();
+    }
+
+    if (typeof editValidator !== "undefined") {
+        editValidator.clearErrors();
+    }
+});
+
+// Modal Close Handlers (Ensures no invalid lingering images)
+$("#editPromotionModal").on("hidden.bs.modal", function () {
+    $("#edit_bg_image").val("");
+    invalidEditImage = false;
+    isSubmittingPromo = false;
+    $(".edit_promo_submit_btn").prop("disabled", false).removeClass("disabled").html("Update");
+
+    if ($(".edit_preview-container").length) {
+        $(".edit_preview-container").html(originalEditPreview);
+    }
+    if (typeof editValidator !== "undefined") {
+        editValidator.clearErrors();
+    }
+});
+
+$("#addPromotionModal").on("hidden.bs.modal", function () {
+    $("#add_bg_image").val("");
+    invalidAddImage = false;
+    isSubmittingPromo = false;
+    $(".add_promo_submit_btn").prop("disabled", false).removeClass("disabled").html("Submit");
+
+    if ($(".preview-container").length) {
+        $(".preview-container").html(originalAddPreview);
+    }
+    if (typeof addValidator !== "undefined") {
+        addValidator.clearErrors();
+    }
 });
 
 $(document).on("click", ".delete_btn", function () {
@@ -263,8 +327,19 @@ $(document).on("click", ".delete_btn", function () {
     });
 });
 
+// ------------------------------------------------------------------------------
+// Drag & Drop Sortable Ordering
+// ------------------------------------------------------------------------------
 function renderSort() {
-    new Sortable(document.querySelector("tbody"), {
+    if (typeof Sortable === "undefined") {
+        console.warn("Sortable library not loaded yet.");
+        return;
+    }
+
+    const tbody = document.querySelector("tbody");
+    if (!tbody) return;
+
+    new Sortable(tbody, {
         handle: ".sortable-row",
         animation: 150,
         onEnd: function () {
@@ -274,84 +349,127 @@ function renderSort() {
     });
 }
 
-renderSort();
+// Initialize sortable after DOM is fully ready
+$(function () {
+    renderSort();
+});
 
-// Image Preview Logic
-let originalAddPreview = $(".preview-container").html();
-let originalEditPreview = $(".edit_preview-container").html();
+// ------------------------------------------------------------------------------
+// Image Preview & Dimension Validation Handlers
+// ------------------------------------------------------------------------------
+const originalAddPreview = $(".preview-container").html();
+const originalEditPreview = $(".edit_preview-container").html();
 
 $("#add_bg_image").on("change", function () {
-    var file = $(this)[0].files[0];
+    const file = this.files && this.files[0];
     if (file && file.type.match("image.*")) {
-        var imgCheck = new Image();
+        const imgCheck = new Image();
+        const objectUrl = URL.createObjectURL(file);
+
         imgCheck.onload = function () {
             if (imgCheck.width !== 597 || imgCheck.height !== 354) {
                 invalidAddImage = true;
-                $("#add_bg_image").val(""); // Need to clear it so we don't accidentally submit it later if validation gets removed
+                $("#add_bg_image").val("");
                 $(".preview-container").html(originalAddPreview);
                 Swal.fire({
                     icon: 'error',
                     title: 'Invalid Image Size',
-                    text: 'Image resolution must be exactly 597 × 354 px!',
+                    text: `Image resolution must be exactly 597 × 354 px! (Selected: ${imgCheck.width} × ${imgCheck.height} px)`,
                 });
                 addValidator.showErrors({
-                    "#add_bg_image": "*Image resolution must be exactly	597 × 354 px!"
+                    "#add_bg_image": "*Image resolution must be exactly 597 × 354 px!"
                 });
+                URL.revokeObjectURL(objectUrl);
                 return;
             }
 
             invalidAddImage = false;
-            var reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = function (e) {
-                var img = $("<img>").attr("src", e.target.result).css({ "max-width": "100%", "height": "auto", "border-radius": "8px" });
-                var removeBtn = $("<button>").addClass("btn btn-danger product_remove_btn mt-2").text("Remove");
+                const img = $("<img>").attr("src", e.target.result).css({ "max-width": "100%", "height": "auto", "border-radius": "8px" });
+                const removeBtn = $("<button>").addClass("btn btn-danger product_remove_btn mt-2").text("Remove");
                 $(".preview-container").empty().append(img).append(removeBtn);
-                $(".product_remove_btn").on("click", function (e) {
-                    e.preventDefault();
+                $(".product_remove_btn").on("click", function (ev) {
+                    ev.preventDefault();
                     $(".preview-container").html(originalAddPreview);
                     $("#add_bg_image").val("");
+                    invalidAddImage = false;
+                    addValidator.revalidateField("#add_bg_image");
                 });
             };
             reader.readAsDataURL(file);
+            addValidator.revalidateField("#add_bg_image");
         };
-        imgCheck.src = URL.createObjectURL(file);
+
+        imgCheck.onerror = function () {
+            invalidAddImage = true;
+            $("#add_bg_image").val("");
+            $(".preview-container").html(originalAddPreview);
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Image',
+                text: 'Could not load image file.',
+            });
+            URL.revokeObjectURL(objectUrl);
+        };
+
+        imgCheck.src = objectUrl;
     }
 });
 
 $("#edit_bg_image").on("change", function () {
-    var file = $(this)[0].files[0];
+    const file = this.files && this.files[0];
     if (file && file.type.match("image.*")) {
-        var imgCheck = new Image();
+        const imgCheck = new Image();
+        const objectUrl = URL.createObjectURL(file);
+
         imgCheck.onload = function () {
             if (imgCheck.width !== 597 || imgCheck.height !== 354) {
                 invalidEditImage = true;
-                $("#edit_bg_image").val(""); // Clear it so it doesn't get submitted
+                $("#edit_bg_image").val("");
                 $(".edit_preview-container").html(originalEditPreview);
                 Swal.fire({
                     icon: 'error',
                     title: 'Invalid Image Size',
-                    text: 'Image resolution must be exactly 597 × 354 px!',
+                    text: `Image resolution must be exactly 597 × 354 px! (Selected: ${imgCheck.width} × ${imgCheck.height} px)`,
                 });
                 editValidator.showErrors({
-                    "#edit_bg_image": "*Image resolution must be exactly	597 × 354 px!"
+                    "#edit_bg_image": "*Image resolution must be exactly 597 × 354 px!"
                 });
+                URL.revokeObjectURL(objectUrl);
                 return;
             }
 
             invalidEditImage = false;
-            var reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = function (e) {
-                var img = $("<img>").attr("src", e.target.result).css({ "max-width": "100%", "height": "auto", "border-radius": "8px" });
-                var removeBtn = $("<button>").addClass("btn btn-danger edit_product_remove_btn mt-2").text("Remove");
+                const img = $("<img>").attr("src", e.target.result).css({ "max-width": "100%", "height": "auto", "border-radius": "8px" });
+                const removeBtn = $("<button>").addClass("btn btn-danger edit_product_remove_btn mt-2").text("Remove");
                 $(".edit_preview-container").empty().append(img).append(removeBtn);
-                $(".edit_product_remove_btn").on("click", function (e) {
-                    e.preventDefault();
+                $(".edit_product_remove_btn").on("click", function (ev) {
+                    ev.preventDefault();
                     $(".edit_preview-container").html(originalEditPreview);
                     $("#edit_bg_image").val("");
+                    invalidEditImage = false;
+                    editValidator.revalidateField("#edit_bg_image");
                 });
             };
             reader.readAsDataURL(file);
+            editValidator.revalidateField("#edit_bg_image");
         };
-        imgCheck.src = URL.createObjectURL(file);
+
+        imgCheck.onerror = function () {
+            invalidEditImage = true;
+            $("#edit_bg_image").val("");
+            $(".edit_preview-container").html(originalEditPreview);
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Image',
+                text: 'Could not load image file.',
+            });
+            URL.revokeObjectURL(objectUrl);
+        };
+
+        imgCheck.src = objectUrl;
     }
 });

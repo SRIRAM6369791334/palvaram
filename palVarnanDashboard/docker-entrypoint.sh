@@ -30,9 +30,10 @@ php artisan config:clear || true
 php artisan route:clear || true
 php artisan view:clear || true
 
-# Ensure permissions for Laravel writable directories
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Ensure permissions for Laravel writable directories and upload paths
+mkdir -p /var/www/html/public/images/home_promotions /var/www/html/public/images/web_images /var/www/html/public/images/banner_images || true
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
 
 echo "==> Application ready. Starting Apache web server on port ${PORT}..."
 exec apache2-foreground
