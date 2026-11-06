@@ -45,11 +45,22 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'    => 'required|string|max:255',
+            'name'    => 'required|string|min:2|max:255',
             'email'   => 'required|email|max:255',
-            'phone'   => 'required|string|max:25',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string|max:3000',
+            'phone'   => ['required', 'string', 'min:7', 'max:25', 'regex:/^\+?[0-9\s\-\(\)]{7,20}$/'],
+            'subject' => 'required|string|min:2|max:255',
+            'message' => 'required|string|min:10|max:3000',
+        ], [
+            'name.required'    => 'Full Name is required.',
+            'name.min'         => 'Full Name must be at least 2 characters.',
+            'email.required'   => 'Email Address is required.',
+            'email.email'      => 'Please enter a valid email address.',
+            'phone.required'   => 'Phone Number is required.',
+            'phone.min'        => 'Phone Number must contain at least 7 digits.',
+            'phone.regex'      => 'Please enter a valid phone number.',
+            'subject.required' => 'Please select an inquiry topic.',
+            'message.required' => 'Your message is required.',
+            'message.min'      => 'Message must be at least 10 characters long.',
         ]);
 
         try {

@@ -39,7 +39,7 @@
                         Have questions about our fresh farm groceries, pricing, or international export orders? Fill in the form below and our team will get back to you shortly.
                     </p>
 
-                    <form id="contactForm" action="{{ route('contact.store') }}" method="POST">
+                    <form id="contactForm" action="{{ route('contact.store') }}" method="POST" novalidate>
                         @csrf
                         <div class="row gy-4">
                             <!-- Full Name -->
@@ -53,6 +53,7 @@
                                        name="name" 
                                        placeholder="Enter your name" 
                                        required>
+                                <div class="invalid-feedback text-danger text-xs mt-2" id="name_error"></div>
                             </div>
 
                             <!-- Email Address -->
@@ -66,6 +67,7 @@
                                        name="email" 
                                        placeholder="example@gmail.com" 
                                        required>
+                                <div class="invalid-feedback text-danger text-xs mt-2" id="email_error"></div>
                             </div>
 
                             <!-- Phone Number -->
@@ -79,6 +81,7 @@
                                        name="phone" 
                                        placeholder="+91 98765 43210" 
                                        required>
+                                <div class="invalid-feedback text-danger text-xs mt-2" id="phone_error"></div>
                             </div>
 
                             <!-- Subject / Topic -->
@@ -96,6 +99,7 @@
                                     <option value="Global Export">Global / Bulk Export Query</option>
                                     <option value="Feedback">Feedback or Suggestion</option>
                                 </select>
+                                <div class="invalid-feedback text-danger text-xs mt-2" id="subject_error"></div>
                             </div>
 
                             <!-- Message -->
@@ -109,6 +113,7 @@
                                           rows="5" 
                                           placeholder="Tell us what you need or how we can assist you..." 
                                           required></textarea>
+                                <div class="invalid-feedback text-danger text-xs mt-2" id="message_error"></div>
                             </div>
 
                             <!-- Submit Button -->
@@ -276,20 +281,162 @@
 </section>
 <!-- ========================= Trust Shipping Badges End ========================= -->
 
+<style>
+.contact-box .is-invalid {
+    border-color: #dc3545 !important;
+    background-color: #fff8f8 !important;
+}
+.contact-box .is-invalid:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15) !important;
+}
+.contact-box .invalid-feedback {
+    display: none;
+    font-size: 0.8125rem;
+    color: #dc3545;
+    font-weight: 500;
+}
+.contact-box .is-invalid ~ .invalid-feedback {
+    display: block;
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const contactForm = document.getElementById('contactForm');
     if (!contactForm) return;
 
+    const fields = {
+        name: {
+            el: document.getElementById('name'),
+            errorEl: document.getElementById('name_error'),
+            validate: function (val) {
+                val = (val || '').trim();
+                if (!val) return 'Full Name is required.';
+                if (val.length < 2) return 'Full Name must be at least 2 characters.';
+                if (!/^[a-zA-Z\s\.\'\-]+$/.test(val)) return 'Full Name can only contain letters, spaces, and hyphens.';
+                if (val.length > 100) return 'Full Name cannot exceed 100 characters.';
+                return '';
+            }
+        },
+        email: {
+            el: document.getElementById('email'),
+            errorEl: document.getElementById('email_error'),
+            validate: function (val) {
+                val = (val || '').trim();
+                if (!val) return 'Email Address is required.';
+                const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+                if (!emailRegex.test(val)) return 'Please enter a valid email address (e.g. name@domain.com).';
+                if (val.length > 255) return 'Email cannot exceed 255 characters.';
+                return '';
+            }
+        },
+        phone: {
+            el: document.getElementById('phone'),
+            errorEl: document.getElementById('phone_error'),
+            validate: function (val) {
+                val = (val || '').trim();
+                if (!val) return 'Phone Number is required.';
+                const digits = val.replace(/[^0-9]/g, '');
+                if (digits.length < 10) return 'Phone Number must contain at least 10 digits.';
+                if (digits.length > 15) return 'Phone Number cannot exceed 15 digits.';
+                // Must be valid phone format (optional leading +, followed by digits, spaces, hyphens)
+                if (!/^\+?[0-9\s\-\(\)]{10,20}$/.test(val)) return 'Please enter a valid phone number (e.g. +91 98765 43210).';
+                return '';
+            }
+        },
+        subject: {
+            el: document.getElementById('subject'),
+            errorEl: document.getElementById('subject_error'),
+            validate: function (val) {
+                val = (val || '').trim();
+                if (!val) return 'Please select an inquiry topic.';
+                return '';
+            }
+        },
+        message: {
+            el: document.getElementById('message'),
+            errorEl: document.getElementById('message_error'),
+            validate: function (val) {
+                val = (val || '').trim();
+                if (!val) return 'Your Message is required.';
+                if (val.length < 10) return 'Message must be at least 10 characters long.';
+                if (val.length > 3000) return 'Message cannot exceed 3000 characters.';
+                return '';
+            }
+        }
+    };
+
+    function validateField(fieldName) {
+        const field = fields[fieldName];
+        if (!field || !field.el) return true;
+
+        const error = field.validate(field.el.value);
+        if (error) {
+            field.el.classList.add('is-invalid');
+            if (field.errorEl) field.errorEl.textContent = error;
+            return false;
+        } else {
+            field.el.classList.remove('is-invalid');
+            if (field.errorEl) field.errorEl.textContent = '';
+            return true;
+        }
+    }
+
+    // Real-time validation on input, change, and blur
+    Object.keys(fields).forEach(key => {
+        const field = fields[key];
+        if (!field.el) return;
+
+        field.el.addEventListener('input', function () {
+            // Live sanitization for phone
+            if (key === 'phone') {
+                this.value = this.value.replace(/[^0-9+\-\s\(\)]/g, '');
+            }
+            if (this.classList.contains('is-invalid')) {
+                validateField(key);
+            }
+        });
+
+        field.el.addEventListener('blur', function () {
+            validateField(key);
+        });
+
+        if (field.el.tagName === 'SELECT') {
+            field.el.addEventListener('change', function () {
+                validateField(key);
+            });
+        }
+    });
+
     contactForm.addEventListener('submit', function (e) {
         e.preventDefault();
+
+        // Validate all fields
+        let isValid = true;
+        let firstInvalid = null;
+
+        Object.keys(fields).forEach(key => {
+            const ok = validateField(key);
+            if (!ok && isValid) {
+                isValid = false;
+                firstInvalid = fields[key].el;
+            }
+        });
+
+        if (!isValid) {
+            if (firstInvalid) {
+                firstInvalid.focus();
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
 
         const submitBtn = document.getElementById('contactSubmitBtn');
         const submitText = document.getElementById('contactSubmitText');
         const submitIcon = document.getElementById('contactSubmitIcon');
         const formData = new FormData(contactForm);
 
-        // Visual loading state
+        // Visual loading state & lock
         submitBtn.disabled = true;
         submitText.textContent = 'Sending Message...';
         submitIcon.className = 'ph-bold ph-spinner ph-spin text-lg';
@@ -305,6 +452,17 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(async response => {
             const data = await response.json();
             if (!response.ok) {
+                // If server returned field validation errors, display them on specific inputs
+                if (data.errors) {
+                    Object.keys(data.errors).forEach(errKey => {
+                        if (fields[errKey] && fields[errKey].el) {
+                            fields[errKey].el.classList.add('is-invalid');
+                            if (fields[errKey].errorEl) {
+                                fields[errKey].errorEl.textContent = data.errors[errKey][0];
+                            }
+                        }
+                    });
+                }
                 let errorMsg = data.message || 'Something went wrong. Please check your inputs.';
                 if (data.errors) {
                     errorMsg = Object.values(data.errors).flat().join('<br>');
@@ -320,7 +478,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 html: data.message || 'Thank you for reaching out to Pal Varnan. We will contact you shortly.',
                 confirmButtonColor: window.palMainColor || '#1c799b'
             });
+
             contactForm.reset();
+            Object.keys(fields).forEach(key => {
+                if (fields[key].el) fields[key].el.classList.remove('is-invalid');
+                if (fields[key].errorEl) fields[key].errorEl.textContent = '';
+            });
         })
         .catch(error => {
             Swal.fire({
