@@ -18,4 +18,4 @@ services:
       - key: MYSQL_ATTR_SSL_CA
         value: /etc/ssl/certs/ca-certificates.crt
       - key: RUN_MIGRATIONS
-        value: "false"
+        value: "true"
