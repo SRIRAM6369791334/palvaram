@@ -142,6 +142,7 @@
                                             <th class="h6 mb-0 text-sm fw-bold py-16 px-16 text-center">Qty</th>
                                             <th class="h6 mb-0 text-sm fw-bold py-16 px-16">Total</th>
                                             <th class="h6 mb-0 text-sm fw-bold py-16 px-16 text-center">Status</th>
+                                            <th class="h6 mb-0 text-sm fw-bold py-16 px-16 text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -200,6 +201,19 @@
                                                         <span class="badge {{ $badgeClass }} border rounded-pill px-12 py-4 text-xs fw-semibold">
                                                             {{ $status }}
                                                         </span>
+                                                    </td>
+                                                    <td class="py-16 px-16 text-center text-nowrap">
+                                                        @if(in_array(strtolower($status), ['order placed', 'pending']))
+                                                            <button type="button" class="btn btn-sm btn-outline-danger py-4 px-12 rounded-pill text-xs fw-semibold cancel-order-btn" data-order="{{ $order->order_number }}" style="border: 1px solid #ef4444; color: #ef4444;">
+                                                                <i class="ph ph-x-circle me-2"></i> Cancel
+                                                            </button>
+                                                        @elseif(strtolower($status) === 'delivered')
+                                                            <button type="button" class="btn btn-sm btn-outline-warning py-4 px-12 rounded-pill text-xs fw-semibold return-order-btn" data-order="{{ $order->order_number }}" style="border: 1px solid #f59e0b; color: #d97706;">
+                                                                <i class="ph ph-arrow-u-up-left me-2"></i> Return
+                                                            </button>
+                                                        @else
+                                                            <span class="text-xs text-gray-400">—</span>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -1063,5 +1077,66 @@
         if (subtotalEl) subtotalEl.textContent = '₹' + subtotal.toFixed(2);
         if (totalEl)    totalEl.textContent    = '₹' + subtotal.toFixed(2);
     }
+    // Cancel Order handler
+    document.querySelectorAll(".cancel-order-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            const orderNum = this.dataset.order;
+            const reason = prompt("Please provide a reason for cancelling order #" + orderNum + ":", "Ordered by mistake");
+            if (reason === null) return;
+            this.disabled = true;
+            this.innerHTML = "<span class=\"spinner-border spinner-border-sm me-4\"></span> Cancelling...";
+            fetch("/myaccount/order/" + encodeURIComponent(orderNum) + "/cancel", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": CSRF, "Accept": "application/json" },
+                body: JSON.stringify({ reason: reason })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    window.location.reload();
+                } else {
+                    alert(data.message || "Failed to cancel order.");
+                    this.disabled = false;
+                    this.innerHTML = "<i class=\"ph ph-x-circle me-2\"></i> Cancel";
+                }
+            })
+            .catch(() => {
+                alert("Network error. Please try again.");
+                this.disabled = false;
+                this.innerHTML = "<i class=\"ph ph-x-circle me-2\"></i> Cancel";
+            });
+        });
+    });
+
+    // Return Order handler
+    document.querySelectorAll(".return-order-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            const orderNum = this.dataset.order;
+            const reason = prompt("Please describe the issue or reason for return request for #" + orderNum + ":", "Damaged product or wrong item");
+            if (reason === null) return;
+            this.disabled = true;
+            this.innerHTML = "<span class=\"spinner-border spinner-border-sm me-4\"></span> Submitting...";
+            fetch("/myaccount/order/" + encodeURIComponent(orderNum) + "/return", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": CSRF, "Accept": "application/json" },
+                body: JSON.stringify({ reason: reason })
+            })
+            .then(r => r.json())
+            .then(data => {
+                alert(data.message || (data.success ? "Return request submitted." : "Failed"));
+                if (data.success) window.location.reload();
+                else {
+                    this.disabled = false;
+                    this.innerHTML = "<i class=\"ph ph-arrow-u-up-left me-2\"></i> Return";
+                }
+            })
+            .catch(() => {
+                alert("Network error. Please try again.");
+                this.disabled = false;
+                this.innerHTML = "<i class=\"ph ph-arrow-u-up-left me-2\"></i> Return";
+            });
+        });
+    });
 </script>
 @endpush

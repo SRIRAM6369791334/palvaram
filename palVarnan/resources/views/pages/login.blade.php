@@ -104,14 +104,14 @@
                                 <i class="ph-bold ph-key"></i>
                             </span>
                             <h5 class="text-24 fw-bold mb-8">Reset Password</h5>
-                            <p class="text-gray-500 text-sm mb-0">Enter your email and create a new password</p>
+                            <p class="text-gray-500 text-sm mb-0" id="resetSubheading">Enter your email to receive a 6-digit verification code</p>
                         </div>
 
                         <div id="resetMsg" style="display:none;" class="alert py-10 px-16 text-sm mb-20 rounded-8 flex-align gap-8"></div>
 
-                        <form id="resetForm" method="POST">
+                        <!-- Step 1: Send OTP -->
+                        <form id="sendOtpForm" method="POST">
                             @csrf
-
                             <div class="mb-20">
                                 <label for="forgotEmail" class="text-neutral-900 text-sm mb-8 fw-semibold d-block">
                                     Registered Email <span class="text-danger">*</span>
@@ -120,6 +120,34 @@
                                     <input type="email" name="email" id="forgotEmail" class="common-input rounded-8 ps-44" placeholder="Enter your registered email" required>
                                     <span class="position-absolute top-50 start-0 translate-middle-y ms-16 text-gray-400 text-xl pointer-events-none">
                                         <i class="ph ph-envelope-simple"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-main py-14 px-32 w-100 rounded-8 fw-semibold flex-center gap-8 mt-28" id="sendOtpBtn">
+                                <span>Send Verification Code</span>
+                                <i class="ph-bold ph-paper-plane-tilt"></i>
+                            </button>
+                        </form>
+
+                        <!-- Step 2: Verify OTP & Reset Password -->
+                        <form id="verifyOtpForm" method="POST" style="display:none;">
+                            @csrf
+                            <input type="hidden" name="email" id="verifiedEmail">
+
+                            <div class="mb-16 p-12 bg-main-50 border border-main-200 rounded-8 flex-between">
+                                <span class="text-xs text-gray-600">Code sent to: <strong id="sentEmailDisplay" class="text-main-600"></strong></span>
+                                <button type="button" id="changeEmailBtn" class="border-0 bg-transparent text-xs text-main-600 fw-semibold text-decoration-underline p-0">Change</button>
+                            </div>
+
+                            <div class="mb-20">
+                                <label for="otpCode" class="text-neutral-900 text-sm mb-8 fw-semibold d-block">
+                                    6-Digit Verification Code <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <input type="text" name="otp" id="otpCode" class="common-input rounded-8 ps-44" placeholder="Enter 6-digit OTP" maxlength="6" pattern="[0-9]{6}" required style="letter-spacing: 4px; font-weight: 600;">
+                                    <span class="position-absolute top-50 start-0 translate-middle-y ms-16 text-gray-400 text-xl pointer-events-none">
+                                        <i class="ph ph-shield-check"></i>
                                     </span>
                                 </div>
                             </div>
@@ -137,8 +165,8 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-main py-14 px-32 w-100 rounded-8 fw-semibold flex-center gap-8 mt-28" id="resetBtn">
-                                <span>Update Password</span>
+                            <button type="submit" class="btn btn-main py-14 px-32 w-100 rounded-8 fw-semibold flex-center gap-8 mt-28" id="verifyOtpBtn">
+                                <span>Verify & Update Password</span>
                                 <i class="ph-bold ph-check"></i>
                             </button>
                         </form>
@@ -219,24 +247,43 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginSuccessAlert = document.getElementById("loginSuccessAlert");
     const loginSuccessMsg = document.getElementById("loginSuccessMsg");
 
-    const resetForm = document.getElementById("resetForm");
-    const resetBtn = document.getElementById("resetBtn");
+    const sendOtpForm = document.getElementById("sendOtpForm");
+    const sendOtpBtn = document.getElementById("sendOtpBtn");
+    const verifyOtpForm = document.getElementById("verifyOtpForm");
+    const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+    const forgotEmail = document.getElementById("forgotEmail");
+    const verifiedEmail = document.getElementById("verifiedEmail");
+    const sentEmailDisplay = document.getElementById("sentEmailDisplay");
+    const changeEmailBtn = document.getElementById("changeEmailBtn");
     const resetMsg = document.getElementById("resetMsg");
+    const resetSubheading = document.getElementById("resetSubheading");
 
     let isLoggingIn = false;
-    let isResetting = false;
+    let isSendingOtp = false;
+    let isVerifyingOtp = false;
 
     // Toggle forms
     showForgot?.addEventListener("click", function () {
         loginBox.style.display = "none";
         forgotBox.style.display = "block";
+        sendOtpForm.style.display = "block";
+        verifyOtpForm.style.display = "none";
         resetMsg.style.display = "none";
+        resetSubheading.textContent = "Enter your email to receive a 6-digit verification code";
+    });
+
+    changeEmailBtn?.addEventListener("click", function () {
+        sendOtpForm.style.display = "block";
+        verifyOtpForm.style.display = "none";
+        resetMsg.style.display = "none";
+        resetSubheading.textContent = "Enter your email to receive a 6-digit verification code";
     });
 
     backToLogin?.addEventListener("click", function () {
         forgotBox.style.display = "none";
         loginBox.style.display = "block";
         loginAlert.style.display = "none";
+        resetMsg.style.display = "none";
     });
 
     // ================= LOGIN SUBMIT =================
@@ -302,42 +349,105 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // ================= RESET PASSWORD =================
-    resetForm?.addEventListener("submit", function (e) {
+    // ================= STEP 1: SEND RESET OTP =================
+    sendOtpForm?.addEventListener("submit", function (e) {
         e.preventDefault();
-        if (isResetting) return;
-        isResetting = true;
+        if (isSendingOtp) return;
+        isSendingOtp = true;
 
-        const origResetHtml = resetBtn.innerHTML;
-        resetBtn.disabled = true;
-        resetBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-8" role="status"></span> Updating...';
+        const origHtml = sendOtpBtn.innerHTML;
+        sendOtpBtn.disabled = true;
+        sendOtpBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-8" role="status"></span> Sending Code...';
+        resetMsg.style.display = "none";
 
-        fetch("{{ route('password.reset.direct') }}", {
+        fetch("{{ route('password.sendOtp') }}", {
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN": "{{ csrf_token() }}",
                 "Accept": "application/json"
             },
-            body: new FormData(resetForm)
+            body: new FormData(sendOtpForm)
         })
         .then(res => res.json().then(data => ({ status: res.status, body: data })))
         .then(res => {
             if (res.status !== 200) {
                 resetMsg.className = "alert alert-danger py-10 px-16 text-sm mb-20 rounded-8 flex-align gap-8";
                 resetMsg.innerHTML = '<i class="ph-bold ph-warning-circle text-lg flex-shrink-0"></i> <span>' + 
-                    (res.body.errors && res.body.errors.email ? res.body.errors.email[0] : (res.body.message || "Failed to update password")) + 
+                    (res.body.errors && res.body.errors.email ? res.body.errors.email[0] : (res.body.message || "Failed to send verification code")) + 
                     '</span>';
                 resetMsg.style.display = "flex";
-                resetBtn.disabled = false;
-                resetBtn.innerHTML = origResetHtml;
-                isResetting = false;
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.innerHTML = origHtml;
+                isSendingOtp = false;
+                return;
+            }
+
+            const emailVal = forgotEmail.value.trim();
+            verifiedEmail.value = emailVal;
+            sentEmailDisplay.textContent = emailVal;
+
+            sendOtpForm.style.display = "none";
+            verifyOtpForm.style.display = "block";
+            resetSubheading.textContent = "Enter the 6-digit verification code sent to your email";
+
+            resetMsg.className = "alert alert-success py-10 px-16 text-sm mb-20 rounded-8 flex-align gap-8";
+            resetMsg.innerHTML = '<i class="ph-bold ph-check-circle text-lg flex-shrink-0"></i> <span>' + (res.body.message || "Verification code sent to your email.") + '</span>';
+            resetMsg.style.display = "flex";
+
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.innerHTML = origHtml;
+            isSendingOtp = false;
+            document.getElementById("otpCode").focus();
+        })
+        .catch(() => {
+            resetMsg.className = "alert alert-danger py-10 px-16 text-sm mb-20 rounded-8 flex-align gap-8";
+            resetMsg.innerHTML = '<i class="ph-bold ph-warning-circle text-lg flex-shrink-0"></i> <span>Network error. Please try again.</span>';
+            resetMsg.style.display = "flex";
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.innerHTML = origHtml;
+            isSendingOtp = false;
+        });
+    });
+
+    // ================= STEP 2: VERIFY OTP & RESET PASSWORD =================
+    verifyOtpForm?.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (isVerifyingOtp) return;
+        isVerifyingOtp = true;
+
+        const origHtml = verifyOtpBtn.innerHTML;
+        verifyOtpBtn.disabled = true;
+        verifyOtpBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-8" role="status"></span> Updating...';
+        resetMsg.style.display = "none";
+
+        fetch("{{ route('password.resetWithOtp') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Accept": "application/json"
+            },
+            body: new FormData(verifyOtpForm)
+        })
+        .then(res => res.json().then(data => ({ status: res.status, body: data })))
+        .then(res => {
+            if (res.status !== 200) {
+                const errMsg = res.body.errors 
+                    ? (res.body.errors.otp ? res.body.errors.otp[0] : (res.body.errors.password ? res.body.errors.password[0] : (res.body.errors.email ? res.body.errors.email[0] : "Verification failed")))
+                    : (res.body.message || "Failed to update password");
+
+                resetMsg.className = "alert alert-danger py-10 px-16 text-sm mb-20 rounded-8 flex-align gap-8";
+                resetMsg.innerHTML = '<i class="ph-bold ph-warning-circle text-lg flex-shrink-0"></i> <span>' + errMsg + '</span>';
+                resetMsg.style.display = "flex";
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.innerHTML = origHtml;
+                isVerifyingOtp = false;
                 return;
             }
 
             resetMsg.className = "alert alert-success py-10 px-16 text-sm mb-20 rounded-8 flex-align gap-8";
-            resetMsg.innerHTML = '<i class="ph-bold ph-check-circle text-lg flex-shrink-0"></i> <span>Password updated successfully! Redirecting to login...</span>';
+            resetMsg.innerHTML = '<i class="ph-bold ph-check-circle text-lg flex-shrink-0"></i> <span>Password reset successfully! Redirecting to login...</span>';
             resetMsg.style.display = "flex";
-            resetForm.reset();
+            verifyOtpForm.reset();
 
             setTimeout(() => {
                 forgotBox.style.display = "none";
@@ -345,19 +455,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 resetMsg.style.display = "none";
                 loginSuccessMsg.textContent = "Password reset! You can now log in with your new password.";
                 loginSuccessAlert.style.display = "flex";
-            }, 1500);
+            }, 1800);
 
-            resetBtn.disabled = false;
-            resetBtn.innerHTML = origResetHtml;
-            isResetting = false;
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.innerHTML = origHtml;
+            isVerifyingOtp = false;
         })
         .catch(() => {
             resetMsg.className = "alert alert-danger py-10 px-16 text-sm mb-20 rounded-8 flex-align gap-8";
             resetMsg.innerHTML = '<i class="ph-bold ph-warning-circle text-lg flex-shrink-0"></i> <span>Network error. Please try again.</span>';
             resetMsg.style.display = "flex";
-            resetBtn.disabled = false;
-            resetBtn.innerHTML = origResetHtml;
-            isResetting = false;
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.innerHTML = origHtml;
+            isVerifyingOtp = false;
         });
     });
 

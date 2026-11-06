@@ -37,4 +37,8 @@ class Product extends Model {
     public function childImages() {
         return $this->hasMany( ProductChildImage::class, 'product_id' );
     }
+
+    public function reviews() {
+        return $this->hasMany( Review::class, 'prod_id', 'id' )->latest();
+    }
 }

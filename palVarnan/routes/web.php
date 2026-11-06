@@ -35,11 +35,19 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('/search', [SearchController::class, 'search']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/category/{slug}', function ($slug) {
+    return redirect()->to('/products?category=' . urlencode($slug));
+});
+Route::get('/brand/{slug}', function ($slug) {
+    $brand = \App\Models\Brand::where('slug', $slug)->orWhere('id', $slug)->first();
+    $param = $brand ? $brand->id : $slug;
+    return redirect()->to('/products?brand=' . urlencode($param));
+});
 
 Route::post('/register-store', [AuthController::class, 'registerStore']) ->name('register.store');
 Route::post('/login-store', [AuthController::class, 'login'])->name('login.store');
-Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
-Route::post('/reset-password-direct', [AuthController::class, 'resetPassword'])->name('password.reset.direct');
+Route::post('/password/send-otp', [AuthController::class, 'sendResetOtp'])->name('password.sendOtp');
+Route::post('/password/verify-reset', [AuthController::class, 'resetPasswordWithOtp'])->name('password.resetWithOtp');
 
 Route::put('/profile-update', [ProfileController::class, 'update'])
     ->name('profile.update');
@@ -68,6 +76,7 @@ Route::delete('/wishlist/{id}/remove', [WishlistController::class, 'remove'])->n
 Route::get('/wishlist/check', [WishlistController::class, 'check'])->middleware('auth');
 Route::get('/wishlist/check-product', [WishlistController::class, 'checkProduct'])->middleware('auth');
 Route::get('/product/{slug}', [ProductController::class, 'show']);
+Route::post('/product/{slug}/review', [ProductController::class, 'storeReview'])->name('product.review');
 Route::get('/cart/subtotal', [CartController::class, 'subtotal']);
 
 Route::get('/myaccount', [ProfileController::class, 'index'])->name('account.index');
@@ -85,4 +94,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/address', [CheckoutController::class, 'storeAddress'])->name('address.store');
     Route::put('/checkout/address/{address}', [CheckoutController::class, 'updateAddress'])->name('address.update');
     Route::delete('/checkout/address/{address}', [CheckoutController::class, 'destroyAddress'])->name('address.destroy');
+    Route::post('/myaccount/order/{order}/cancel', [ProfileController::class, 'cancelOrder'])->name('order.cancel');
+    Route::post('/myaccount/order/{order}/return', [ProfileController::class, 'returnOrder'])->name('order.return');
 });

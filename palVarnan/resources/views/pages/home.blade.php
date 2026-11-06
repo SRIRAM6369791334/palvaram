@@ -226,272 +226,50 @@
 
             <!-- ALL TAB -->
             <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
-                <div class="row g-12">
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&h=300&fit=crop&auto=format" alt="Vitamin C Supplement">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">C-500 Antioxidant Protect Dietary Supplement</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
+                <div class="row g-16">
+                    @forelse($featuredProducts as $product)
+                        @php
+                            $variant = $product->variants->first();
+                            $offerPrice = $variant->offer_price ?? $product->product_price ?? 0;
+                            $mrpPrice = $variant->product_mrp_price ?? 0;
+                            $imgSrc = $product->product_image
+                                ? asset('storage/' . $product->product_image)
+                                : asset('assets/images/thumbs/product-img1.png');
+                        @endphp
+                        <div class="col-xxl-3 col-lg-4 col-sm-6 col-12" data-aos="fade-up">
+                            <div class="product-card h-100 p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item bg-white d-flex flex-column justify-content-between" style="box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+                                <div>
+                                    <a href="/product/{{ $product->slug }}" class="product-card__thumb flex-center overflow-hidden rounded-12 bg-gray-50 mb-12" style="height: 190px;">
+                                        <img src="{{ $imgSrc }}" alt="{{ $product->product_name }}" class="w-100 h-100 object-fit-contain p-8" onerror="this.src='/assets/images/logo/logo.png'">
+                                    </a>
+                                    <div class="product-card__content">
+                                        <span class="text-xs text-main-600 fw-semibold d-block mb-4">{{ $product->category->category_name ?? 'Farm Fresh' }}</span>
+                                        <h6 class="title text-base fw-semibold mb-8">
+                                            <a href="/product/{{ $product->slug }}" class="link text-line-2 text-inherit">{{ $product->product_name }}</a>
+                                        </h6>
                                     </div>
-                                   
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
+                                </div>
+                                <div class="product-card__content mt-12">
+                                    <div class="product-card__price mb-12 d-flex align-items-baseline gap-6">
+                                        <span class="text-heading text-lg fw-bold text-main-600">₹{{ number_format($offerPrice, 2) }}</span>
+                                        @if($mrpPrice > $offerPrice)
+                                            <span class="text-gray-400 text-xs fw-semibold text-decoration-line-through">₹{{ number_format($mrpPrice, 2) }}</span>
+                                        @endif
+                                    </div>
+                                    <a href="/product/{{ $product->slug }}" class="btn btn-main py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-xs fw-semibold">
+                                        <span>View Options</span> <i class="ph-bold ph-arrow-right"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1600718374662-0483d2b9da44?w=300&h=300&fit=crop&auto=format" alt="Almond Milk">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Marcel's Modern Pantry Almond Unsweetened</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                   
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
+                    @empty
+                        <div class="col-12 text-center py-40">
+                            <p class="text-gray-500">No products available in this region currently.</p>
                         </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=300&fit=crop&auto=format" alt="Whole Milk">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">O Organics Milk, Whole, Vitamin D</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                   
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-info-600 px-8 py-4 text-sm text-white">Best Sale</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop&auto=format" alt="Organic Bread">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Whole Grains and Seeds Organic Bread</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                  
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&h=300&fit=crop&auto=format" alt="Strawberry Yogurt">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Lucerne Yogurt, Lowfat, Strawberry</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                 
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&h=300&fit=crop&auto=format" alt="Granola Bar">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Nature Valley Whole Grain Oats and Honey Protein</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                   
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=300&fit=crop&auto=format" alt="Fresh Salad">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Fresh Garden Salad Mix Organic Greens</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                   
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1519996529931-28324d5a630e?w=300&h=300&fit=crop&auto=format" alt="Mixed Fruits">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Fresh Mixed Tropical Fruit Basket Assorted</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=300&fit=crop&auto=format" alt="Organic Blueberries">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Organic Blueberries Fresh Pint Antioxidant Rich</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=300&h=300&fit=crop&auto=format" alt="Atlantic Salmon">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Good & Gather Farmed Atlantic Salmon</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=300&h=300&fit=crop&auto=format" alt="Raw Shrimp">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Market Pantry 41/50 Raw Tail-Off Large Raw Shrimp</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-warning-600 px-8 py-4 text-sm text-white">New</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&h=300&fit=crop&auto=format" alt="Orange Juice">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Tropicana 100% Juice, Orange, No Pulp</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    @endforelse
                 </div>
             </div>
 
-            <!-- GROCERY TAB -->
             <div class="tab-pane fade" id="pills-grocery" role="tabpanel" aria-labelledby="pills-grocery-tab" tabindex="0">
                 <div class="row g-12">
 

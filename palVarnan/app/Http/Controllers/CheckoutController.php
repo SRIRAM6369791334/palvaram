@@ -557,6 +557,19 @@ class CheckoutController extends Controller
             Log::error('Shiprocket API Error on placeOrder: ' . $e->getMessage());
         }
 
+        // 8. Send Order Confirmation Email
+        try {
+            $recipientEmail = $order->shipping_email ?? $user->email;
+            if ($recipientEmail) {
+                $orderWithItems = ProductOrder::with('items')->find($order->id);
+                \Illuminate\Support\Facades\Mail::to($recipientEmail)
+                    ->send(new \App\Mail\OrderPlacedConfirmation($orderWithItems));
+                Log::info('Order confirmation email sent successfully to: ' . $recipientEmail . ' for order: ' . $orderNumber);
+            }
+        } catch (\Throwable $mailEx) {
+            Log::error('Order confirmation email sending failed: ' . $mailEx->getMessage());
+        }
+
         return response()->json([
             'status' => 'success',
             'message' => 'Order placed successfully!',

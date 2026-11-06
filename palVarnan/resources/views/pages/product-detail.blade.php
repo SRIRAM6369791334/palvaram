@@ -971,57 +971,33 @@
                                 <div class="col-lg-6">
                                     <h6 class="mb-24 text-heading fw-bold">Customer Feedback</h6>
                                     
-                                    <div class="d-flex align-items-start gap-20 pb-28 border-bottom border-gray-100 mb-28">
-                                        <img src="/assets/images/thumbs/comment-img1.png" alt="" class="w-48 h-48 object-fit-cover rounded-circle flex-shrink-0" onerror="this.src='/assets/images/logo/favicon.png'">
-                                        <div class="flex-grow-1">
-                                            <div class="flex-between align-items-start gap-8">
-                                                <div>
-                                                    <h6 class="mb-4 text-sm fw-semibold">Ramesh Kumar</h6>
-                                                    <div class="flex-align gap-4">
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                    </div>
-                                                </div>
-                                                <span class="text-gray-400 text-xs">2 days ago</span>
+                                    @forelse($product->reviews as $rev)
+                                        <div class="d-flex align-items-start gap-20 pb-24 border-bottom border-gray-100 mb-24">
+                                            <div class="w-48 h-48 rounded-circle bg-main-50 text-main-600 flex-center fw-bold text-lg flex-shrink-0 border border-main-200">
+                                                {{ strtoupper(substr($rev->name ?? 'C', 0, 1)) }}
                                             </div>
-                                            <h6 class="mb-8 text-sm mt-12 fw-semibold">Great quality & fresh delivery!</h6>
-                                            <p class="text-gray-600 text-sm mb-12">Product was packaged neatly and delivered on time. High quality and completely genuine. Would definitely order again!</p>
-                                            <div class="flex-align gap-16">
-                                                <button type="button" class="flex-align gap-6 text-gray-500 hover-text-main-600 border-0 bg-transparent text-xs p-0">
-                                                    <i class="ph-bold ph-thumbs-up"></i> Helpful (12)
-                                                </button>
+                                            <div class="flex-grow-1">
+                                                <div class="flex-between align-items-start gap-8">
+                                                    <div>
+                                                        <h6 class="mb-4 text-sm fw-semibold">{{ $rev->name ?? 'Verified Buyer' }}</h6>
+                                                        <div class="flex-align gap-4">
+                                                            @for($i = 1; $i <= 5; $i++)
+                                                                <span class="text-xs {{ $i <= $rev->ratings ? 'text-warning-600' : 'text-gray-300' }} d-flex">
+                                                                    <i class="ph-fill ph-star"></i>
+                                                                </span>
+                                                            @endfor
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-gray-400 text-xs">{{ $rev->created_at ? $rev->created_at->diffForHumans() : 'Recently' }}</span>
+                                                </div>
+                                                <p class="text-gray-600 text-sm mt-8 mb-0">{{ $rev->review }}</p>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="d-flex align-items-start gap-20 pb-28 border-bottom border-gray-100 mb-36">
-                                        <img src="/assets/images/thumbs/comment-img2.png" alt="" class="w-48 h-48 object-fit-cover rounded-circle flex-shrink-0" onerror="this.src='/assets/images/logo/favicon.png'">
-                                        <div class="flex-grow-1">
-                                            <div class="flex-between align-items-start gap-8">
-                                                <div>
-                                                    <h6 class="mb-4 text-sm fw-semibold">Ananya Sharma</h6>
-                                                    <div class="flex-align gap-4">
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                    </div>
-                                                </div>
-                                                <span class="text-gray-400 text-xs">1 week ago</span>
-                                            </div>
-                                            <h6 class="mb-8 text-sm mt-12 fw-semibold">Authentic taste and value for money</h6>
-                                            <p class="text-gray-600 text-sm mb-12">Very satisfied with the taste and consistency. Customer service and doorstep delivery were prompt and smooth.</p>
-                                            <div class="flex-align gap-16">
-                                                <button type="button" class="flex-align gap-6 text-gray-500 hover-text-main-600 border-0 bg-transparent text-xs p-0">
-                                                    <i class="ph-bold ph-thumbs-up"></i> Helpful (8)
-                                                </button>
-                                            </div>
+                                    @empty
+                                        <div class="py-24 text-center border-bottom border-gray-100 mb-24">
+                                            <p class="text-gray-500 text-sm mb-0">No customer reviews yet. Be the first to share your experience!</p>
                                         </div>
-                                    </div>
+                                    @endforelse
 
                                     <!-- Write a Review Form -->
                                     <div class="mt-32">

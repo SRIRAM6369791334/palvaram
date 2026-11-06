@@ -66,7 +66,7 @@ class SearchController extends Controller
                 'name'  => $item->brand_name,
                 'type'  => 'Brand',
                 'image' => $baseImageUrl . $item->brand_image,
-                'url'   => url('/brand/' . $item->slug),
+                'url'   => url('/products?brand=' . $item->id),
             ];
         }
 
@@ -75,11 +75,12 @@ class SearchController extends Controller
             ->get();
 
         foreach ($categories as $item) {
+            $catSlug = !empty($item->slug) ? $item->slug : \Illuminate\Support\Str::slug($item->category_name);
             $results[] = [
                 'name'  => $item->category_name,
                 'type'  => 'Category',
                 'image' => $baseImageUrl . $item->category_image,
-                'url'   => url('/category/' . $item->slug),
+                'url'   => url('/products?category=' . $catSlug),
             ];
         }
 

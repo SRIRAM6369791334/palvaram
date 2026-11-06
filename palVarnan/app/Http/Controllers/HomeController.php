@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\HomePromotion;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,17 @@ class HomeController extends Controller
 
         $categories = Category::whereRaw("FIND_IN_SET(?, country_id)", [$countryId])->get();
 
-        return view('pages.home', compact('banners', 'categories'));
+        $featuredProducts = Product::with(['variants.unit', 'category'])
+            ->where(function ($q) use ($countryId) {
+                $q->whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+                  ->orWhere('country_id', $countryId)
+                  ->orWhereNull('country_id')
+                  ->orWhere('country_id', '');
+            })
+            ->latest()
+            ->take(12)
+            ->get();
+
+        return view('pages.home', compact('banners', 'categories', 'featuredProducts'));
     }
 }

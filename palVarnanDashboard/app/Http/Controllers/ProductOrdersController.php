@@ -107,7 +107,10 @@ class ProductOrdersController extends Controller {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{"email": "blokert5320@gmail.com","password": "Gokulnath@123"}',
+            CURLOPT_POSTFIELDS => json_encode([
+                'email' => config('services.shiprocket.email'),
+                'password' => config('services.shiprocket.password')
+            ]),
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json'
             ),

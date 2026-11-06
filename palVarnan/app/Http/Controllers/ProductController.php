@@ -184,7 +184,7 @@ class ProductController extends Controller
 
         $countryId = session('country_id');
 
-        $product = Product::with(['variants.unit', 'variants.size', 'variants.color', 'category', 'brand', 'childImages'])
+        $product = Product::with(['variants.unit', 'variants.size', 'variants.color', 'category', 'brand', 'childImages', 'reviews'])
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -251,4 +251,44 @@ if (Auth::check()) {
         ));
     }
     
+
+
+    public function storeReview(Request $request, $slug)
+    {
+        $product = Product::where('slug', $slug)->firstOrFail();
+
+        $request->validate([
+            'ratings' => 'required|integer|min:1|max:5',
+            'review'  => 'required|string|min:3|max:1000',
+        ]);
+
+        $userId = Auth::id();
+        $name = Auth::check() ? (Auth::user()->name ?? 'Customer') : ($request->name ?: 'Customer');
+        $email = Auth::check() ? Auth::user()->email : ($request->email ?: 'customer@example.com');
+
+        $review = \App\Models\Review::create([
+            'user_id'     => $userId,
+            'name'        => $name,
+            'email'       => $email,
+            'prod_id'     => $product->id,
+            'prod_var_id' => $request->variant_id ?? ($product->variants->first()->id ?? null),
+            'ratings'     => (int) $request->ratings,
+            'review'      => $request->review,
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Thank you! Your review has been submitted successfully.',
+                'review'  => [
+                    'name'       => $name,
+                    'ratings'    => (int) $request->ratings,
+                    'review'     => $request->review,
+                    'created_at' => $review->created_at ? $review->created_at->diffForHumans() : 'Just now'
+                ]
+            ]);
+        }
+
+        return back()->with('success', 'Thank you! Your review has been submitted successfully.');
+    }
 }
