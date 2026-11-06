@@ -114,13 +114,13 @@ editValidator
         },
         {
             rule: "minLength",
-            value: 6,
-            errorMessage: "*Pincode Should be  6 digits",
+            value: 5,
+            errorMessage: "*Pincode Should be at least 5 digits",
         },
         {
             rule: "maxLength",
             value: 6,
-            errorMessage: "*Pincode Should be  6 digits",
+            errorMessage: "*Pincode Should be at most 6 digits",
         },
     ])
     .onSuccess((event) => {
@@ -578,7 +578,7 @@ function ajaxGetArea(e) {
     if (e) e.preventDefault();
     const pincode = $("#pincode_input").val();
 
-    if (!pincode || pincode.length < 6) {
+    if (!pincode || pincode.length < 5) {
         $(".area_name_container").hide();
         return;
     }

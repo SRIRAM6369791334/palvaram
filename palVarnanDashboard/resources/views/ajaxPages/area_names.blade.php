@@ -6,4 +6,5 @@
     <option value="others">Others</option>
 @else
     <option value="" selected disabled>No Areas Found</option>
+    <option value="others">Others (Enter Manually)</option>
 @endif

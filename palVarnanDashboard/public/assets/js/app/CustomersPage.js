@@ -149,11 +149,15 @@ addValidator
             rule: "required",
             errorMessage: "*pincode Field is required",
         },
-
+        {
+            rule: "minLength",
+            value: 5,
+            errorMessage: "*Pincode must be at least 5 digits",
+        },
         {
             rule: "maxLength",
             value: 6,
-            errorMessage: "*Pincode invalid number",
+            errorMessage: "*Pincode cannot exceed 6 digits",
         },
     ])
     .onSuccess((event) => {
@@ -236,11 +240,15 @@ editValidator
             rule: "required",
             errorMessage: "*pincode Field is required",
         },
-
+        {
+            rule: "minLength",
+            value: 5,
+            errorMessage: "*Pincode must be at least 5 digits",
+        },
         {
             rule: "maxLength",
             value: 6,
-            errorMessage: "*Pincode invalid number",
+            errorMessage: "*Pincode cannot exceed 6 digits",
         },
     ])
 
@@ -1331,87 +1339,100 @@ $('.custid').on('change', function () {
 });
 
 
-$(document).ready(function () {
-    $('#pin_code_type').on('input', function () {
-        var pinCode = $(this).val();
-        if (pinCode.length === 6) {
-            // Make AJAX request to Laravel backend
-            $.ajax({
-                url: '/get-address-details',
-                method: 'GET',
-                data: { pincode: pinCode },
-                success: function (response) {
-                    // Clear existing options in the dropdown
-                    $('#city_input').empty();
+async function lookupCustomerAddress(pincode, isEdit) {
+    var prefix = isEdit ? "1" : "";
+    var districtEl = $("#pin_district" + prefix);
+    var stateEl = $("#pin_state" + prefix);
+    var cityEl = $("#city_input" + prefix);
 
-                    var district = response[0].match(/District: (.*?),/)[1];
-                    var state = response[0].match(/State: (.*)/)[1];
+    cityEl.empty().append('<option value="" disabled selected>Loading...</option>');
 
-                    $('#pin_district').val(district);
-                    $('#pin_state').val(state);
+    var clean = String(pincode).trim();
 
-                    // Iterate through each city in the response and add it to the dropdown
-                    response.forEach(function (cityDetails) {
-                        // Extract city, district, and state
-                        var cityMatch = cityDetails.match(/City: (.*?),/);
-
-
-                        var city = cityMatch ? cityMatch[1] : '';
-
-                        // Append a new option to the dropdown
-                        $('#city_input').append($('<option>', {
-                            value: city,
-                            text: city
-                        }));
+    // 1. Direct Public API for Mexico (5 digits)
+    if (/^\d{5}$/.test(clean)) {
+        try {
+            var padded = clean.padStart(5, "0");
+            var res = await fetch("https://api.zippopotam.us/mx/" + padded);
+            if (res.ok) {
+                var data = await res.json();
+                if (data.places && data.places.length > 0) {
+                    var firstPlace = data.places[0];
+                    districtEl.val(firstPlace["place name"] || "");
+                    stateEl.val(firstPlace.state || "");
+                    cityEl.empty();
+                    data.places.forEach(function (p) {
+                        var name = p["place name"];
+                        cityEl.append($("<option>", { value: name, text: name }));
                     });
-                },
-                error: function (error) {
-                    console.error('Error fetching address details:', error);
+                    return;
                 }
-            });
+            }
+        } catch (e) {
+            console.warn("Mexico public postal API failed:", e);
+        }
+    }
+
+    // 2. Local Backend Endpoint
+    $.ajax({
+        url: isEdit ? "/get-address-details1" : "/get-address-details",
+        method: "GET",
+        data: { pincode: clean },
+        success: async function (response) {
+            cityEl.empty();
+            if (response && response.length > 0) {
+                var first = response[0];
+                var districtMatch = first.match(/District: (.*?),/);
+                var stateMatch = first.match(/State: (.*)/);
+                districtEl.val(districtMatch ? districtMatch[1] : "");
+                stateEl.val(stateMatch ? stateMatch[1] : "");
+
+                response.forEach(function (cityDetails) {
+                    var cityMatch = cityDetails.match(/City: (.*?),/);
+                    var city = cityMatch ? cityMatch[1] : "";
+                    if (city) {
+                        cityEl.append($("<option>", { value: city, text: city }));
+                    }
+                });
+            } else {
+                // 3. Fallback to India public postal API if local DB had no record
+                try {
+                    var inRes = await fetch("https://api.postalpincode.in/pincode/" + clean);
+                    if (inRes.ok) {
+                        var inData = await inRes.json();
+                        if (inData[0] && inData[0].Status === "Success" && inData[0].PostOffice) {
+                            var offices = inData[0].PostOffice;
+                            districtEl.val(offices[0].District || "");
+                            stateEl.val(offices[0].State || "");
+                            offices.forEach(function (po) {
+                                cityEl.append($("<option>", { value: po.Name, text: po.Name }));
+                            });
+                            return;
+                        }
+                    }
+                } catch (e2) {}
+                cityEl.append('<option value="" disabled selected>No Area Found</option>');
+            }
+        },
+        error: function (error) {
+            console.error("Error fetching address details:", error);
+            cityEl.empty().append('<option value="" disabled selected>No Area Found</option>');
         }
     });
-});
-// edit manual entry
+}
 
 $(document).ready(function () {
-    $('#pin_code_type1').on('input', function () {
-        var pinCode = $(this).val();
-        if (pinCode.length === 6) {
-            // Make AJAX request to Laravel backend
-            $.ajax({
-                url: '/get-address-details1',
-                method: 'GET',
-                data: { pincode: pinCode },
-                success: function (response) {
-                    // Clear existing options in the dropdown
-                    $('#city_input1').empty();
+    $("#pin_code_type").on("input", function () {
+        var pin = $(this).val().trim();
+        if (pin.length >= 5 && pin.length <= 6) {
+            lookupCustomerAddress(pin, false);
+        }
+    });
 
-                    var district = response[0].match(/District: (.*?),/)[1];
-                    var state = response[0].match(/State: (.*)/)[1];
-
-                    $('#pin_district1').val(district);
-                    $('#pin_state1').val(state);
-
-                    // Iterate through each city in the response and add it to the dropdown
-                    response.forEach(function (cityDetails) {
-                        // Extract city, district, and state
-                        var cityMatch = cityDetails.match(/City: (.*?),/);
-
-
-                        var city = cityMatch ? cityMatch[1] : '';
-
-                        // Append a new option to the dropdown
-                        $('#city_input1').append($('<option>', {
-                            value: city,
-                            text: city
-                        }));
-                    });
-                },
-                error: function (error) {
-                    console.error('Error fetching address details:', error);
-                }
-            });
+    $("#pin_code_type1").on("input", function () {
+        var pin = $(this).val().trim();
+        if (pin.length >= 5 && pin.length <= 6) {
+            lookupCustomerAddress(pin, true);
         }
     });
 });

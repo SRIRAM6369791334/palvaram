@@ -145,7 +145,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_guest_select">User Entry</label>
-                                    <select class="form-select select2" name="is_guest_user" id="add_guest_select">
+                                    <select class="form-select" name="is_guest_user" id="add_guest_select">
                                         <option value="" selected>Select User</option>
 
                                         <option value="2">Direct</option>
@@ -192,7 +192,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label" for="address_type_select">Select Address Type*</label>
-                                        <select class="form-select select2" name="address_type_id" id="address_type_select"
+                                        <select class="form-select" name="address_type_id" id="address_type_select"
                                             required>
                                             <option value="" disabled selected>Select Address Type</option>
                                             <option value="1">Home</option>
@@ -207,7 +207,7 @@
                                 <div class="col-md-6 others_container">
                                     <div class="mb-3">
                                         <label class="form-label" for="pin_code_type">PinCode*</label>
-                                        <input type="text" class="form-control pincode_type" id="pin_code_type" pattern="[0-9]{6}"
+                                        <input type="text" class="form-control pincode_type" id="pin_code_type" pattern="[0-9]{5,6}"
                                             name="pincode" placeholder="Enter pin code" required />
                                         <div id="addressDetails"></div>
 
@@ -233,7 +233,7 @@
                                 <div class="col-md-6 others_container">
                                     <div class="mb-3">
                                         <label class="form-label" for="pin_code_type">City*</label>
-                                        <select class="form-select custid select2" name="area_name" id="city_input" required>
+                                        <select class="form-select custid" name="area_name" id="city_input" required>
 
                                             <option value="" disabled selected>Select Category</option>
 
@@ -309,7 +309,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_guest_select">User Entry</label>
-                                    <select class="form-select select2" name="is_guest_user" id="edit_guest_select">
+                                    <select class="form-select" name="is_guest_user" id="edit_guest_select">
                                         <option value="" selected>Select User</option>
 
                                         <option value="2">Direct</option>
@@ -356,7 +356,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label" for="address_type_select">Select Address Type*</label>
-                                        <select class="form-select select2" name="address_type_id" id="edit_address_type_select"
+                                        <select class="form-select" name="address_type_id" id="edit_address_type_select"
                                             required>
                                             <option value="" disabled selected>Select Address Type</option>
                                             <option value="1">Home</option>
@@ -371,7 +371,7 @@
                                 <div class="col-md-6 others_container">
                                     <div class="mb-3">
                                         <label class="form-label" for="pin_code_type">PinCode*</label>
-                                        <input type="text" class="form-control pincode_type1" id="pin_code_type1" pattern="[0-9]{6}"
+                                        <input type="text" class="form-control pincode_type1" id="pin_code_type1" pattern="[0-9]{5,6}"
                                             name="pincode" placeholder="Enter pin code" required />
                                         <div id="addressDetails"></div>
 
@@ -397,7 +397,7 @@
                                 <div class="col-md-6 others_container">
                                     <div class="mb-3">
                                         <label class="form-label" for="pin_code_type">City*</label>
-                                        <select class="form-select custid select2" name="area_name" id="city_input1" required>
+                                        <select class="form-select custid" name="area_name" id="city_input1" required>
 
                                             <option value="" disabled selected>Select Area</option>
 
@@ -478,7 +478,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="address_type_select">Select Address Type*</label>
-                                    <select class="form-select select2" name="address_type_id" id="address_type_select" required>
+                                    <select class="form-select" name="address_type_id" id="address_type_select" required>
                                         <option value="" disabled selected>Select Address Type</option>
                                         <option value="1">Home</option>
                                         <option value="2">Work</option>
@@ -869,9 +869,6 @@
 @section('script')
     {{-- bootstrap start --}}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script>
     {{-- bootstrap start --}}
     <script src="{{ URL::asset('assets/libs/gridjs/gridjs.min.js') }}"></script>
     <script src="{{ URL::asset('assets/js/app.js') }}"></script>
