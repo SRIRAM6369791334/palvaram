@@ -246,6 +246,7 @@ editValidator
 
 
     .onSuccess((event) => {
+        $(".edit_submit_btn").attr("disabled", "true").html("Updating...");
         editUserFormSubmit(event);
     });
 
@@ -491,6 +492,7 @@ function editUserFormSubmit(e) {
             $("#editUserModal").hide();
             $(".modal-backdrop").remove();
             document.body.style.overflowY = "scroll";
+            $(".edit_submit_btn").removeAttr("disabled").html("Update");
             gridjsReRender(updatedUsers);
             Swal.fire("Updated", "Records Updated  Successfully.", "success");
         },
@@ -506,19 +508,35 @@ function editUserFormSubmit(e) {
     });
 }
 
-const phoneNumberInput = document.getElementById("add_phone_number");
-const editphoneNumberInput = document.getElementById("edit_phone_number");
-
-// Prevent non-numeric input
-phoneNumberInput.addEventListener("input", function (event) {
-    const input = event.target.value;
-    const numericInput = input.replace(/[^0-9]/g, "");
-    phoneNumberInput.value = numericInput;
+// Block any text / letters from being typed into Phone fields
+$(document).on("keydown", "#add_phone_number, #edit_phone_number", function (e) {
+    if (
+        e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab' ||
+        e.key === 'Escape' || e.key === 'Enter' || e.key === 'ArrowLeft' ||
+        e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End' ||
+        (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase()))
+    ) {
+        return;
+    }
+    if (e.key === '+' && this.selectionStart === 0 && !this.value.includes('+')) {
+        return;
+    }
+    if (!/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+    }
 });
-editphoneNumberInput.addEventListener("input", function (event) {
-    const input = event.target.value;
-    const numericInput = input.replace(/[^0-9]/g, "");
-    editphoneNumberInput.value = numericInput;
+
+$(document).on("beforeinput", "#add_phone_number, #edit_phone_number", function (e) {
+    const data = e.originalEvent?.data;
+    if (data && !/^[0-9+]+$/.test(data)) {
+        e.preventDefault();
+    }
+});
+
+$(document).on("input paste", "#add_phone_number, #edit_phone_number", function () {
+    const hasPlus = this.value.startsWith('+');
+    let digits = this.value.replace(/[^0-9]/g, '');
+    this.value = (hasPlus ? '+' : '') + digits;
 });
 
 // show hide product while manual entry

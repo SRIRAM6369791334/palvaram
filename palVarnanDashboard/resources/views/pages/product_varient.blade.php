@@ -224,18 +224,19 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="add_unit_select">Select Product Unit*</label>
-                                    <select class="form-select select2" name="unit_id" id="add_unit_select">
+                                    <select class="form-select" name="unit_id" id="add_unit_select" required>
                                         <option value="" selected>Select Units</option>
 
                                         @foreach($units as $unit)
                                             <option value="{{ $unit->id }}">{{ $unit->unit_name }} ({{ $unit->short_name }})</option>
                                         @endforeach
                                         @if($units->isEmpty())
-                                            <option value="1">l</option>
-                                            <option value="2">ml</option>
-                                            <option value="3">g</option>
-                                            <option value="4">kg</option>
-                                            <option value="5">No's</option>
+                                            <option value="1">Kilogram (kg)</option>
+                                            <option value="2">Gram (g)</option>
+                                            <option value="3">Litre (l)</option>
+                                            <option value="4">Millilitre (ml)</option>
+                                            <option value="5">Pieces (pcs)</option>
+                                            <option value="6">Packet (pkt)</option>
                                         @endif
 
 
@@ -323,17 +324,14 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label" for="">Select Product GST*</label>
-                                    <select class="form-select select2" name="product_gst" id="produgst">
+                                    <label class="form-label" for="produgst">Select Product GST*</label>
+                                    <select class="form-select" name="product_gst" id="produgst" required>
                                         <option value="" selected>Select GST</option>
                                         <option value="0">0(GST Included)</option>
                                         <option value="5">5</option>
                                         <option value="12">12</option>
                                         <option value="18">18</option>
                                         <option value="28">28</option>
-
-
-
                                     </select>
                                 </div>
                             </div>
@@ -593,18 +591,19 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_unit_select">Select Product Unit*</label>
-                                    <select class="form-select select2" name="unit_id" id="edit_unit_select">
+                                    <select class="form-select" name="unit_id" id="edit_unit_select" required>
                                         <option value="" selected>Select Units</option>
 
                                         @foreach($units as $unit)
                                             <option value="{{ $unit->id }}">{{ $unit->unit_name }} ({{ $unit->short_name }})</option>
                                         @endforeach
                                         @if($units->isEmpty())
-                                            <option value="1">l</option>
-                                            <option value="2">ml</option>
-                                            <option value="3">g</option>
-                                            <option value="4">kg</option>
-                                            <option value="5">No's</option>
+                                            <option value="1">Kilogram (kg)</option>
+                                            <option value="2">Gram (g)</option>
+                                            <option value="3">Litre (l)</option>
+                                            <option value="4">Millilitre (ml)</option>
+                                            <option value="5">Pieces (pcs)</option>
+                                            <option value="6">Packet (pkt)</option>
                                         @endif
 
 
@@ -710,17 +709,14 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label" for="">Select Product GST</label>
-                                    <select class="form-select select2" name="product_gst" id="edit_product_gst">
+                                    <label class="form-label" for="edit_product_gst">Select Product GST*</label>
+                                    <select class="form-select" name="product_gst" id="edit_product_gst" required>
                                         <option value="" selected>Select GST</option>
                                         <option value="0">0 (GST Included)</option>
                                         <option value="5">5</option>
                                         <option value="12">12</option>
                                         <option value="18">18</option>
                                         <option value="28">28</option>
-
-
-
                                     </select>
                                 </div>
                             </div>
@@ -843,7 +839,6 @@
 @section('script')
     <script src="{{ URL::asset('assets/libs/gridjs/gridjs.min.js') }}"></script>
     <script src="{{ URL::asset('assets/js/app.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         window.productvarient = @json($productvarient);
         window.subcategories = @json($subcategories);

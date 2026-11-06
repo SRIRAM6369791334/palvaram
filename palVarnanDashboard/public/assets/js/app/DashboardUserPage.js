@@ -41,6 +41,10 @@ addValidator
             rule: "required",
             errorMessage: "*Phone Number Field is required",
         },
+        {
+            validator: (value) => /^(?:\+?[0-9]{7,15})$/.test(value.trim()),
+            errorMessage: "*Enter a valid phone number (7-15 digits, optional +)",
+        },
     ])
     .addField('#add_role_select', [
         {
@@ -91,6 +95,10 @@ addValidator
         {
             rule: "required",
             errorMessage: "*Phone Number Field is required",
+        },
+        {
+            validator: (value) => /^(?:\+?[0-9]{7,15})$/.test(value.trim()),
+            errorMessage: "*Enter a valid phone number (7-15 digits, optional +)",
         },
     ])
     .addField('#edit_role_select', [
@@ -300,6 +308,37 @@ function adduserFormSubmit(e) {
         },
     });
 }
+
+// Block any text / letters from being typed into Phone fields
+$(document).on("keydown", "#add_phone_number, #edit_phone_number", function (e) {
+    if (
+        e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab' ||
+        e.key === 'Escape' || e.key === 'Enter' || e.key === 'ArrowLeft' ||
+        e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End' ||
+        (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase()))
+    ) {
+        return;
+    }
+    if (e.key === '+' && this.selectionStart === 0 && !this.value.includes('+')) {
+        return;
+    }
+    if (!/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+    }
+});
+
+$(document).on("beforeinput", "#add_phone_number, #edit_phone_number", function (e) {
+    const data = e.originalEvent?.data;
+    if (data && !/^[0-9+]+$/.test(data)) {
+        e.preventDefault();
+    }
+});
+
+$(document).on("input paste", "#add_phone_number, #edit_phone_number", function () {
+    const hasPlus = this.value.startsWith('+');
+    let digits = this.value.replace(/[^0-9]/g, '');
+    this.value = (hasPlus ? '+' : '') + digits;
+});
 
 $(document).on("click", ".edit_btn2", function () {
 
