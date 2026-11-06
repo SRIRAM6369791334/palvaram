@@ -382,6 +382,68 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Block non-numeric keys on Phone field (prevent typing letters/text)
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.setAttribute('inputmode', 'tel');
+
+        phoneInput.addEventListener('keydown', function (e) {
+            // Allow control and navigation keys
+            if (
+                e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab' ||
+                e.key === 'Escape' || e.key === 'Enter' ||
+                e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+                e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+                e.key === 'Home' || e.key === 'End' ||
+                e.ctrlKey || e.metaKey || e.altKey
+            ) {
+                return;
+            }
+
+            // Allow '+' ONLY as the first character
+            if (e.key === '+' && this.selectionStart === 0 && !this.value.includes('+')) {
+                return;
+            }
+
+            // Block any non-digit key from being typed
+            if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        phoneInput.addEventListener('beforeinput', function (e) {
+            if (e.data && !/^[0-9+]+$/.test(e.data)) {
+                e.preventDefault();
+            }
+        });
+
+        phoneInput.addEventListener('paste', function (e) {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+            const hasPlus = text.trim().startsWith('+');
+            const clean = (hasPlus ? '+' : '') + text.replace(/[^0-9]/g, '');
+            document.execCommand('insertText', false, clean.substring(0, 16));
+        });
+    }
+
+    // Block numeric digits on Full Name field
+    const nameInput = document.getElementById('name');
+    if (nameInput) {
+        nameInput.addEventListener('keydown', function (e) {
+            if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                if (/^[0-9]$/.test(e.key)) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        nameInput.addEventListener('beforeinput', function (e) {
+            if (e.data && /[0-9]/.test(e.data)) {
+                e.preventDefault();
+            }
+        });
+    }
+
     // Real-time validation on input, change, and blur
     Object.keys(fields).forEach(key => {
         const field = fields[key];
@@ -390,7 +452,8 @@ document.addEventListener('DOMContentLoaded', function () {
         field.el.addEventListener('input', function () {
             // Live sanitization for phone
             if (key === 'phone') {
-                this.value = this.value.replace(/[^0-9+\-\s\(\)]/g, '');
+                const hasPlus = this.value.startsWith('+');
+                this.value = (hasPlus ? '+' : '') + this.value.replace(/[^0-9]/g, '');
             }
             if (this.classList.contains('is-invalid')) {
                 validateField(key);

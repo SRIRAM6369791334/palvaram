@@ -96,6 +96,60 @@ function handlePincodeInput(prefix) {
     }
 }
 
+// Block any text / letters from being typed into Phone fields
+$(document).on("keydown", "#add_phone, #edit_phone", function (e) {
+    if (
+        e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab' ||
+        e.key === 'Escape' || e.key === 'Enter' ||
+        e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+        e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+        e.key === 'Home' || e.key === 'End' ||
+        e.ctrlKey || e.metaKey || e.altKey
+    ) {
+        return;
+    }
+    // Allow '+' ONLY as the first character
+    if (e.key === '+' && this.selectionStart === 0 && !this.value.includes('+')) {
+        return;
+    }
+    // Block any non-digit
+    if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+    }
+});
+
+$(document).on("beforeinput", "#add_phone, #edit_phone", function (e) {
+    const data = e.originalEvent?.data;
+    if (data && !/^[0-9+]+$/.test(data)) {
+        e.preventDefault();
+    }
+});
+
+// Block any text / letters from being typed into Pincode fields
+$(document).on("keydown", "#add_pincode, #edit_pincode", function (e) {
+    if (
+        e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Tab' ||
+        e.key === 'Escape' || e.key === 'Enter' ||
+        e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+        e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+        e.key === 'Home' || e.key === 'End' ||
+        e.ctrlKey || e.metaKey || e.altKey
+    ) {
+        return;
+    }
+    // Only digits 0-9 allowed
+    if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+    }
+});
+
+$(document).on("beforeinput", "#add_pincode, #edit_pincode", function (e) {
+    const data = e.originalEvent?.data;
+    if (data && !/^[0-9]+$/.test(data)) {
+        e.preventDefault();
+    }
+});
+
 $(document).on("input paste", "#add_pincode", function () {
     handlePincodeInput("add");
 });
@@ -105,8 +159,9 @@ $(document).on("input paste", "#edit_pincode", function () {
 });
 
 $(document).on("input paste", "#add_phone, #edit_phone", function () {
-    let val = $(this).val().replace(/[^0-9+\-\s]/g, "");
-    $(this).val(val);
+    const hasPlus = this.value.startsWith('+');
+    let digits = this.value.replace(/[^0-9]/g, '');
+    $(this).val((hasPlus ? '+' : '') + digits);
 });
 
 // Form Validators
