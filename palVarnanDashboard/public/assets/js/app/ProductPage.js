@@ -446,6 +446,8 @@ editValidator
         { rule: "minLength", value: 3, errorMessage: "*Min 3 characters" },
         { rule: "maxLength", value: 500, errorMessage: "*Max 500 characters" },
     ])
+    .addField("#edit_unit_select", [{ rule: "required", errorMessage: "*Unit is required" }])
+    .addField("#edit_prodgst", [{ rule: "required", errorMessage: "*GST is required" }])
     .onSuccess((event) => {
         $(".edit_submit_btn").attr("disabled", true).html("Uploading.....");
         editProductFormSubmit(event);
@@ -478,7 +480,8 @@ const gridNew = new gridjs.Grid({
                 data-productname="${product.product_name}" data-productquantity="${product.product_quantity}"
                 data-productregularprice="${product.product_regular_price}" data-productmrpprice="${product.product_mrp_price}"
                 data-productdescription="${product.product_description}" data-productimage="${product.product_image}"
-                data-productspecification="${product.product_specification}" data-productunit="${product.unit_value}"
+                data-productspecification="${product.product_specification}" data-productunit="${product.unit_id || product.unit_value || ''}"
+                data-productgst="${product.product_gst !== undefined && product.product_gst !== null ? product.product_gst : '0'}"
                 data-productvalue="${product.product_value}"
                 data-bs-target="#editProductModal" class="btn btn-secondary edit_btn">Edit</button>
             <button class="btn btn-danger delete_btn" data-productid="${product.id}">Delete</button>
@@ -512,7 +515,8 @@ function gridjsReRender(products) {
                     data-productname="${product.product_name}" data-productquantity="${product.product_quantity}"
                     data-productregularprice="${product.product_regular_price}" data-productmrpprice="${product.product_mrp_price}"
                     data-productdescription="${product.product_description}" data-productimage="${product.product_image}"
-                    data-productspecification="${product.product_specification}" data-productunit="${product.unit_value}"
+                    data-productspecification="${product.product_specification}" data-productunit="${product.unit_id || product.unit_value || ''}"
+                    data-productgst="${product.product_gst !== undefined && product.product_gst !== null ? product.product_gst : '0'}"
                     data-productvalue="${product.product_value}"
                     data-bs-target="#editProductModal" class="btn btn-secondary edit_btn">Edit</button>
                 <button class="btn btn-danger delete_btn" data-productid="${product.id}">Delete</button>
@@ -598,6 +602,11 @@ $(function () {
         $("#edit_product_slug").val($(this).attr("data-slug"));
         $("#edit_product_description").val($(this).attr("data-productdescription"));
         $("#edit_product_specification").val($(this).attr("data-productspecification"));
+
+        const unitVal = $(this).attr("data-productunit");
+        const gstVal = $(this).attr("data-productgst");
+        $("#edit_unit_select").val(unitVal || "");
+        $("#edit_prodgst").val(gstVal !== undefined && gstVal !== null && gstVal !== "" ? gstVal : "0");
     });
 });
 
@@ -798,7 +807,17 @@ $(document).ready(function () {
                     <label class="form-label">Product Unit*</label>
                     <select class="form-select" name="unit_id[]">
                         <option value="" selected>Select Units</option>
-                        ${(window.units || []).map(u => `<option value="${u.id}">${u.unit_name} (${u.short_name})</option>`).join('')}
+                        ${(window.units && window.units.length > 0)
+                            ? window.units.map(u => `<option value="${u.id}">${u.unit_name} (${u.short_name})</option>`).join('')
+                            : `
+                            <option value="1">Kilogram (kg)</option>
+                            <option value="2">Gram (g)</option>
+                            <option value="3">Litre (l)</option>
+                            <option value="4">Millilitre (ml)</option>
+                            <option value="5">Pieces (pcs)</option>
+                            <option value="6">Packet (pkt)</option>
+                            `
+                        }
                     </select>
                 </div>
             </div>

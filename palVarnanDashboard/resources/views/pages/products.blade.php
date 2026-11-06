@@ -387,18 +387,19 @@
                                                     <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label class="form-label" for="add_unit_select">Product Unit*</label>
-                                                            <select class="form-select select2" name="unit_id[]" id="add_unit_select">
+                                                            <select class="form-select" name="unit_id[]" id="add_unit_select" required>
                                                                 <option value="" selected>Select Units</option>
                                                                 @foreach($units as $unit)
                                                                     <option value="{{ $unit->id }}">{{ $unit->unit_name }} ({{ $unit->short_name }})</option>
                                                                 @endforeach
                                                                 {{-- Fallback --}}
                                                                 @if($units->isEmpty())
-                                                                    <option value="1">Litre (l)</option>
-                                                                    <option value="2">Millilitre (ml)</option>
-                                                                    <option value="3">Gram (g)</option>
-                                                                    <option value="4">Kilogram (kg)</option>
-                                                                    <option value="5">Number (No's)</option>
+                                                                    <option value="1">Kilogram (kg)</option>
+                                                                    <option value="2">Gram (g)</option>
+                                                                    <option value="3">Litre (l)</option>
+                                                                    <option value="4">Millilitre (ml)</option>
+                                                                    <option value="5">Pieces (pcs)</option>
+                                                                    <option value="6">Packet (pkt)</option>
                                                                 @endif
                                                             </select>
                                                         </div>
@@ -446,18 +447,15 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="mb-3">
-                                                            <label class="form-label" for="">Product
-                                                                GST</label>
-                                                            <select class="form-select select2" name="product_gst[]"
-                                                                id="prodgst">
+                                                            <label class="form-label" for="prodgst">Product GST*</label>
+                                                            <select class="form-select" name="product_gst[]"
+                                                                id="prodgst" required>
                                                                 <option value="" selected>Select GST</option>
                                                                 <option value="0">0 (GST Included)</option>
                                                                 <option value="5">5</option>
                                                                 <option value="12">12</option>
                                                                 <option value="18">18</option>
                                                                 <option value="28">28</option>
-
-
                                                             </select>
                                                         </div>
                                                     </div>
@@ -786,20 +784,39 @@
                                         name="product_quantity" placeholder="Product Quantity" required>
                                 </div>
                             </div> --}}
-                            {{-- <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label" for="edit_product_unit">Product Unit*</label>
-                                    <select class="form-select select2" name="unit_value" id="edit_unit_select">
-                                        <option value="0"  selected>Select Units</option>
-
-                                            <option value="1">l</option>
-                                            <option value="2">ml</option>
-                                            <option value="3">g</option>
-                                            <option value="4">kg</option>
-
+                                    <label class="form-label" for="edit_unit_select">Product Unit*</label>
+                                    <select class="form-select" name="unit_id" id="edit_unit_select" required>
+                                        <option value="" selected>Select Units</option>
+                                        @foreach($units as $unit)
+                                            <option value="{{ $unit->id }}">{{ $unit->unit_name }} ({{ $unit->short_name }})</option>
+                                        @endforeach
+                                        @if($units->isEmpty())
+                                            <option value="1">Kilogram (kg)</option>
+                                            <option value="2">Gram (g)</option>
+                                            <option value="3">Litre (l)</option>
+                                            <option value="4">Millilitre (ml)</option>
+                                            <option value="5">Pieces (pcs)</option>
+                                            <option value="6">Packet (pkt)</option>
+                                        @endif
                                     </select>
                                 </div>
-                            </div> --}}
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="edit_prodgst">Product GST*</label>
+                                    <select class="form-select" name="product_gst" id="edit_prodgst" required>
+                                        <option value="" selected>Select GST</option>
+                                        <option value="0">0 (GST Included)</option>
+                                        <option value="5">5</option>
+                                        <option value="12">12</option>
+                                        <option value="18">18</option>
+                                        <option value="28">28</option>
+                                    </select>
+                                </div>
+                            </div>
                             {{-- <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label" for="edit_product_value">Value*</label>
@@ -882,7 +899,6 @@
 @section('script')
     <script src="{{ URL::asset('assets/libs/gridjs/gridjs.min.js') }}"></script>
     <script src="{{ URL::asset('assets/js/app.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         window.products = @json($products);

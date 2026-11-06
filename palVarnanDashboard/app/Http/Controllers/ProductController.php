@@ -52,7 +52,7 @@ public function index()
 {
     $allowedCountryIds = $this->getAllowedCountryIds();
 
-    $products = Product::with(['category', 'brand'])
+    $products = Product::with(['category', 'brand', 'variants'])
         ->where(function($query) use ($allowedCountryIds) {
             foreach ($allowedCountryIds as $id) {
                 $query->orWhereRaw("FIND_IN_SET(?, country_id)", [$id]);
@@ -71,6 +71,10 @@ public function index()
         } else {
             $product->country_name = '-';
         }
+
+        $firstVariant = $product->variants ? $product->variants->first() : null;
+        $product->unit_id = $product->unit_value ?: ($firstVariant ? $firstVariant->unit_id : null);
+        $product->product_gst = $firstVariant ? $firstVariant->product_gst : 0;
     });
 
     // rest unchanged...
@@ -297,7 +301,19 @@ public function store(Request $request)
             }
         }
 
-        $products = Product::with(['category', 'brand', 'country'])->get();
+        $products = Product::with(['category', 'brand', 'variants'])->get();
+        $allCountries = Country::all()->keyBy('id');
+        $products->each(function ($p) use ($allCountries) {
+            if (!empty($p->country_id)) {
+                $ids = array_map('trim', explode(',', $p->country_id));
+                $p->country_name = collect($ids)->map(fn($id) => $allCountries[$id]->name ?? null)->filter()->implode(', ');
+            } else {
+                $p->country_name = '-';
+            }
+            $firstVariant = $p->variants ? $p->variants->first() : null;
+            $p->unit_id = $p->unit_value ?: ($firstVariant ? $firstVariant->unit_id : null);
+            $p->product_gst = $firstVariant ? $firstVariant->product_gst : 0;
+        });
 
         return response()->json([
             "message" => $this->productOrderSuccessMessage,
@@ -346,6 +362,8 @@ public function store(Request $request)
             'brand_id'              => "nullable",
             'subcategory_id'        => "nullable",
             'slug'                  => "nullable|unique:products,slug," . $id,
+            'unit_id'               => "nullable",
+            'product_gst'           => "nullable",
         ]);
 
         $countryIdString = implode(',', $request->country_id);
@@ -357,28 +375,42 @@ public function store(Request $request)
             $validated['slug'] = Str::slug($request->product_name) . '-' . time();
         }
 
+        $updateData = [
+            'country_id'            => $countryIdString,
+            'category_id'           => $validated["category_id"],
+            'product_name'          => $validated["product_name"],
+            'product_description'   => $validated["product_description"] ?? '',
+            'product_specification' => $validated["product_specification"] ?? '',
+            'brand_id'              => $validated["brand_id"] ?? null,
+            'subcategory_id'        => $validated["subcategory_id"] ?? null,
+            'slug'                  => $validated["slug"],
+        ];
+
+        if ($request->filled('unit_id')) {
+            $updateData['unit_value'] = $request->unit_id;
+        }
+
         if ($request->hasFile("product_image")) {
             $path = $request->file("product_image")->store("product_images", "public");
             File::delete(public_path("images/" . $product->product_image));
-            $product->update([
-                ...$validated,
-                'country_id'    => $countryIdString,
-                "product_image" => $path,
+            $updateData["product_image"] = $path;
+        }
+
+        $product->update($updateData);
+
+        // Sync unit_id and product_gst to product variants
+        if ($request->filled('unit_id')) {
+            ProductVarient::where('product_id', $product->id)->update([
+                'unit_id' => $request->unit_id
             ]);
-        } else {
-            $product->update([
-                'country_id'            => $countryIdString,
-                'category_id'           => $validated["category_id"],
-                'product_name'          => $validated["product_name"],
-                'product_description'   => $validated["product_description"] ?? '',
-                'product_specification' => $validated["product_specification"] ?? '',
-                'brand_id'              => $validated["brand_id"] ?? null,
-                'subcategory_id'        => $validated["subcategory_id"] ?? null,
-                'slug'                  => $validated["slug"],
+        }
+        if ($request->has('product_gst') && $request->product_gst !== null && $request->product_gst !== '') {
+            ProductVarient::where('product_id', $product->id)->update([
+                'product_gst' => $request->product_gst
             ]);
         }
 
-        $products = Product::with(['category', 'brand'])->get();
+        $products = Product::with(['category', 'brand', 'variants'])->get();
 
         $allCountries = Country::all()->keyBy('id');
         $products->each(function ($p) use ($allCountries) {
@@ -389,6 +421,10 @@ public function store(Request $request)
             } else {
                 $p->country_name = '-';
             }
+
+            $firstVariant = $p->variants ? $p->variants->first() : null;
+            $p->unit_id = $p->unit_value ?: ($firstVariant ? $firstVariant->unit_id : null);
+            $p->product_gst = $firstVariant ? $firstVariant->product_gst : 0;
         });
 
         return response()->json([
