@@ -14,8 +14,8 @@ class SearchController extends Controller
     {
         $q = trim($request->q ?? $request->search ?? '');
 
-        // If accessed directly from browser address bar or traditional form submit, redirect to products catalog
-        if (!$request->ajax() && !$request->wantsJson()) {
+        // If accessed directly from browser address bar or traditional form submit without 'q' or json, redirect to products catalog
+        if (!$request->ajax() && !$request->wantsJson() && !$request->has('q')) {
             return redirect()->to(url('/products') . '?search=' . urlencode($q));
         }
 

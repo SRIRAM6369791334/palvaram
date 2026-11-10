@@ -348,9 +348,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (searchInput && resultsBox) {
         let timeout = null;
 
-        searchInput.addEventListener("keyup", function () {
+        const doSearch = function () {
             clearTimeout(timeout);
-            let query = this.value.trim();
+            let query = searchInput.value.trim();
 
             if (query.length < 2) {
                 resultsBox.classList.add("d-none");
@@ -359,7 +359,12 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             timeout = setTimeout(() => {
-                fetch(`/search?q=${encodeURIComponent(query)}`)
+                fetch(`/search?q=${encodeURIComponent(query)}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
                     .then(response => response.json())
                     .then(data => {
                         resultsBox.innerHTML = '';
@@ -400,7 +405,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
 
             }, 300);
-        });
+        };
+        searchInput.addEventListener("input", doSearch);
+        searchInput.addEventListener("keyup", doSearch);
 
         document.addEventListener("click", function(e) {
             if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
