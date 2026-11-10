@@ -40,7 +40,7 @@ class PurchaseOrder extends Model
 
     public function branch()
     {
-        return $this->belongsTo(WarehouseBranch::class, 'branch_id');
+        return $this->belongsTo(WareHouseBranch::class, 'branch_id');
     }
 
     public function supplier()
