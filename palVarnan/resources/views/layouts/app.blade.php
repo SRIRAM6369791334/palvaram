@@ -26,6 +26,125 @@
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
+    <!-- Global High-Contrast Button & SweetAlert2 Styling -->
+    <style>
+        /* WCAG 2.1 AA Button Contrast Overrides */
+        .btn-outline-danger {
+            color: #ef4444 !important;
+            background-color: transparent !important;
+            border: 1px solid #ef4444 !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-outline-danger:hover, .btn-outline-danger:active, .btn-outline-danger:focus {
+            color: #ffffff !important;
+            background-color: #ef4444 !important;
+            border-color: #dc2626 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.25) !important;
+        }
+
+        .btn-outline-warning {
+            color: #d97706 !important;
+            background-color: transparent !important;
+            border: 1px solid #f59e0b !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-outline-warning:hover, .btn-outline-warning:active, .btn-outline-warning:focus {
+            color: #ffffff !important;
+            background-color: #f59e0b !important;
+            border-color: #d97706 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.25) !important;
+        }
+
+        .btn-outline-success {
+            color: #10b981 !important;
+            background-color: transparent !important;
+            border: 1px solid #10b981 !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-outline-success:hover, .btn-outline-success:active, .btn-outline-success:focus {
+            color: #ffffff !important;
+            background-color: #10b981 !important;
+            border-color: #059669 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.25) !important;
+        }
+
+        .btn-outline-secondary, .btn-outline-gray {
+            color: #4b5563 !important;
+            background-color: transparent !important;
+            border: 1px solid #d1d5db !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-outline-secondary:hover, .btn-outline-gray:hover,
+        .btn-outline-secondary:active, .btn-outline-gray:active,
+        .btn-outline-secondary:focus, .btn-outline-gray:focus {
+            color: #111827 !important;
+            background-color: #f3f4f6 !important;
+            border-color: #9ca3af !important;
+        }
+
+        .btn-outline-info {
+            color: #0284c7 !important;
+            background-color: transparent !important;
+            border: 1px solid #0284c7 !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-outline-info:hover, .btn-outline-info:active, .btn-outline-info:focus {
+            color: #ffffff !important;
+            background-color: #0284c7 !important;
+            border-color: #0369a1 !important;
+        }
+
+        .btn-outline-dark {
+            color: #1f2937 !important;
+            background-color: transparent !important;
+            border: 1px solid #1f2937 !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-outline-dark:hover, .btn-outline-dark:active, .btn-outline-dark:focus {
+            color: #ffffff !important;
+            background-color: #1f2937 !important;
+            border-color: #111827 !important;
+        }
+
+        .btn-outline-neutral-300:disabled, .btn-outline-neutral-300[disabled] {
+            color: #9ca3af !important;
+            background-color: #f3f4f6 !important;
+            border: 1px solid #e5e7eb !important;
+            opacity: 0.8 !important;
+            cursor: not-allowed !important;
+        }
+
+        /* Modern SweetAlert2 UI Enhancement */
+        .swal2-popup {
+            font-family: inherit !important;
+            border-radius: 16px !important;
+            padding: 24px !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        }
+        .swal2-title {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            color: #111827 !important;
+        }
+        .swal2-html-container {
+            font-size: 0.95rem !important;
+            color: #4b5563 !important;
+        }
+        .swal2-confirm {
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            padding: 10px 24px !important;
+        }
+        .swal2-cancel {
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            padding: 10px 20px !important;
+        }
+    </style>
+
 </head> 
 <body>
     

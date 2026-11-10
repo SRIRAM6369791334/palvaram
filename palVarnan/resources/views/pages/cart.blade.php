@@ -442,11 +442,12 @@ if (applyCouponBtn) {
         const input = document.getElementById('coupon-code-input');
         const code = input ? input.value.trim() : '';
         if (!code) {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({ icon: 'warning', title: 'Enter Coupon', text: 'Please enter a coupon code.', confirmButtonColor: '#28a745' });
-            } else {
-                alert('Please enter a coupon code.');
-            }
+            Swal.fire({ 
+                icon: 'warning', 
+                title: 'Enter Coupon', 
+                text: 'Please enter a coupon code.', 
+                confirmButtonColor: '#1c799b' 
+            });
             return;
         }
 
@@ -461,9 +462,12 @@ if (applyCouponBtn) {
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({ icon: 'success', title: 'Coupon Applied!', text: data.message, confirmButtonColor: '#28a745' });
-                }
+                Swal.fire({ 
+                    icon: 'success', 
+                    title: 'Coupon Applied!', 
+                    text: data.message, 
+                    confirmButtonColor: '#1c799b' 
+                });
                 let discRow = document.getElementById('cart-sidebar-discount-row');
                 if (!discRow) {
                     const subRow = document.getElementById('cart-sidebar-subtotal')?.parentElement;
@@ -481,18 +485,22 @@ if (applyCouponBtn) {
                 }
                 updateCartTotal();
             } else {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({ icon: 'error', title: 'Coupon Error', text: data.message, confirmButtonColor: '#d33' });
-                } else {
-                    alert(data.message);
-                }
+                Swal.fire({ 
+                    icon: 'error', 
+                    title: 'Coupon Error', 
+                    text: data.message, 
+                    confirmButtonColor: '#ef4444' 
+                });
             }
         })
         .catch(err => {
             console.error('Coupon error:', err);
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to process coupon request.', confirmButtonColor: '#d33' });
-            }
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'Error', 
+                text: 'Failed to process coupon request.', 
+                confirmButtonColor: '#ef4444' 
+            });
         });
     });
 }

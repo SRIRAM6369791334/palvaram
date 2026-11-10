@@ -136,9 +136,9 @@
                                             <button type="button" class="addr-edit-btn" onclick="toggleEdit({{ $addr->id }})">
                                                 <i class="ph ph-pencil-simple"></i> Edit
                                             </button>
-                                            <form action="{{ route('address.destroy', $addr->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this address?');">
+                                            <form action="{{ route('address.destroy', $addr->id) }}" method="POST" class="d-inline delete-address-form">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="addr-edit-btn text-danger" style="color: #ef4444;" title="Delete Address">
+                                                <button type="button" class="addr-edit-btn text-danger delete-address-btn" style="color: #ef4444;" title="Delete Address">
                                                     <i class="ph ph-trash"></i> Delete
                                                 </button>
                                             </form>
@@ -917,7 +917,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (loadingEl) {
             loadingEl.innerHTML = '<span class="text-gray-500 text-sm"><i class="ph ph-map-pin me-2"></i> Please add and save your delivery address above to see available courier delivery partners.</span>';
         }
-    }
+    document.querySelectorAll('.delete-address-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            Swal.fire({
+                title: 'Delete Address?',
+                text: 'Are you sure you want to delete this address? This cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="ph ph-trash me-1"></i> Yes, Delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
 });
 </script>
 
