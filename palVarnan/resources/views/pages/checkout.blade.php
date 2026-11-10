@@ -917,6 +917,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (loadingEl) {
             loadingEl.innerHTML = '<span class="text-gray-500 text-sm"><i class="ph ph-map-pin me-2"></i> Please add and save your delivery address above to see available courier delivery partners.</span>';
         }
+    }
+
     document.querySelectorAll('.delete-address-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
