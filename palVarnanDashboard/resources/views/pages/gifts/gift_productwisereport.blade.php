@@ -125,7 +125,11 @@
                 const to = $('#to-date').val();
 
                 if (!from || !to) {
-                    alert("Please select both From and To dates.");
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Date Range Required',
+                        text: 'Please select both From and To dates.'
+                    });
                     return;
                 }
 

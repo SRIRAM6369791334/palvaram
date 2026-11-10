@@ -342,8 +342,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     // $("#cancellationtxt").hide();
     $(document).on("click", ".rejection_but", function () {
-        var order = $(".rejection_but"  ).data("ogmilkorderid1");
-        alert(order);
+        var order = $(this).data("ogmilkorderid1");
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: "btn btn-danger ms-2",

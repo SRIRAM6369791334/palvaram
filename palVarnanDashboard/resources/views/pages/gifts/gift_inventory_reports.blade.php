@@ -600,7 +600,11 @@ function populateSelect(selector, items, valKey, textKey, placeholder) {
     $(document).on('click', '.reorder-btn', function () {
         const id = $(this).data('id');
         // Hook into your reorder route here
-        alert('Reorder triggered for stock ID: ' + id);
+        Swal.fire({
+            icon: 'info',
+            title: 'Reorder Stock',
+            text: 'Reorder triggered for stock ID: ' + id
+        });
     });
 
 });

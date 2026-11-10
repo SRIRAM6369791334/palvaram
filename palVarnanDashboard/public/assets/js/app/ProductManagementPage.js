@@ -135,7 +135,7 @@ document.getElementById('btnCancelResolve').addEventListener('click', () => {
 
 document.getElementById('btnSubmitReturn').addEventListener('click', () => {
     const selected = document.querySelector('#returnResolutionOpts .res-opt.selected');
-    if (!selected) { alert('Please select a resolution type.'); return; }
+    if (!selected) { Swal.fire('Resolution Required', 'Please select a resolution type.', 'warning'); return; }
     const resolution = selected.dataset.res;
 
     const payload = {
@@ -156,13 +156,13 @@ document.getElementById('btnSubmitReturn').addEventListener('click', () => {
     .then(r => r.json())
     .then(res => {
         if (res.success) {
-            alert('Return resolved successfully!');
+            Swal.fire('Success', 'Return resolved successfully!', 'success');
             document.getElementById('returnResolveForm').style.display = 'none';
         } else {
-            alert('Error: ' + (res.message ?? 'Something went wrong'));
+            Swal.fire('Error', res.message ?? 'Something went wrong', 'error');
         }
     })
-    .catch(() => alert('Network error. Please try again.'));
+    .catch(() => Swal.fire('Error', 'Network error. Please try again.', 'error'));
 });
 
 // ═══════════════════════════════════════════════════════════════════
@@ -245,9 +245,13 @@ document.getElementById('btnConfirmCancel').addEventListener('click', () => {
     .then(r => r.json())
     .then(res => {
         bootstrap.Modal.getInstance(document.getElementById('cancelOrderModal')).hide();
-        alert(res.success ? 'Order cancelled successfully!' : 'Error: ' + res.message);
+        if (res.success) {
+            Swal.fire('Success', 'Order cancelled successfully!', 'success');
+        } else {
+            Swal.fire('Error', res.message ?? 'Failed to cancel order', 'error');
+        }
     })
-    .catch(() => alert('Network error.'));
+    .catch(() => Swal.fire('Error', 'Network error. Please try again.', 'error'));
 });
 
 // ═══════════════════════════════════════════════════════════════════
@@ -312,7 +316,7 @@ document.getElementById('btnCancelDamagedResolve').addEventListener('click', () 
 document.getElementById('btnSubmitDamaged').addEventListener('click', () => {
     const qty = document.getElementById('damagedQty').value;
     const reason = document.getElementById('damagedReason').value;
-    if (!qty || !reason) { alert('Please fill Damaged Qty and Reason.'); return; }
+    if (!qty || !reason) { Swal.fire('Missing Fields', 'Please fill Damaged Qty and Reason.', 'warning'); return; }
 
     const selected = document.querySelector('#panel-damaged .res-opt.selected');
     const resolution = selected?.dataset.res ?? 'none';
@@ -330,10 +334,14 @@ document.getElementById('btnSubmitDamaged').addEventListener('click', () => {
     })
     .then(r => r.json())
     .then(res => {
-        alert(res.success ? 'Damage logged and stock deducted!' : 'Error: ' + res.message);
-        if (res.success) document.getElementById('damagedResolveForm').style.display = 'none';
+        if (res.success) {
+            Swal.fire('Success', 'Damage logged and stock deducted!', 'success');
+            document.getElementById('damagedResolveForm').style.display = 'none';
+        } else {
+            Swal.fire('Error', res.message ?? 'Failed to log damage', 'error');
+        }
     })
-    .catch(() => alert('Network error.'));
+    .catch(() => Swal.fire('Error', 'Network error. Please try again.', 'error'));
 });
 
 // ═══════════════════════════════════════════════════════════════════
@@ -389,7 +397,7 @@ document.getElementById('btnCancelExpiredResolve').addEventListener('click', () 
 
 document.getElementById('btnSubmitExpired').addEventListener('click', () => {
     const qty = document.getElementById('expiredQty').value;
-    if (!qty) { alert('Please enter the qty to write off.'); return; }
+    if (!qty) { Swal.fire('Missing Qty', 'Please enter the qty to write off.', 'warning'); return; }
 
     const selected = document.querySelector('#panel-expired .res-opt.selected');
     const resolution = selected?.dataset.res ?? 'none';
@@ -406,10 +414,14 @@ document.getElementById('btnSubmitExpired').addEventListener('click', () => {
     })
     .then(r => r.json())
     .then(res => {
-        alert(res.success ? 'Batch written off and stock deducted!' : 'Error: ' + res.message);
-        if (res.success) document.getElementById('expiredResolveForm').style.display = 'none';
+        if (res.success) {
+            Swal.fire('Success', 'Batch written off and stock deducted!', 'success');
+            document.getElementById('expiredResolveForm').style.display = 'none';
+        } else {
+            Swal.fire('Error', res.message ?? 'Write-off failed', 'error');
+        }
     })
-    .catch(() => alert('Network error.'));
+    .catch(() => Swal.fire('Error', 'Network error. Please try again.', 'error'));
 });
 
 // ─── Shared GridJS style helper ──────────────────────────────────────────────

@@ -1243,7 +1243,11 @@ if (fromleadin) {
     fromleadin.addEventListener('change', function () {
         if (this.value > todayleadin) {
             this.value = '';
-            alert('Please select a date in the past or present.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Invalid Date',
+                text: 'Please select a date in the past or present.'
+            });
         }
     });
 }
@@ -1256,7 +1260,11 @@ if (toinputle) {
     toinputle.addEventListener('change', function () {
         if (this.value > todayinputs) {
             this.value = '';
-            alert('Please select a date in the past or present.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Invalid Date',
+                text: 'Please select a date in the past or present.'
+            });
         }
     });
 }

@@ -188,10 +188,10 @@
                                                     <i class="mdi mdi-eye-outline me-1"></i> View
                                                 </button>
                                                 
-                                                <form action="{{ route('contacts.destroy', $contact->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this inquiry?');" class="d-inline">
+                                                <form action="{{ route('contacts.destroy', $contact->id) }}" method="POST" class="d-inline delete-inquiry-form">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Inquiry">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger btn-delete-inquiry" title="Delete Inquiry">
                                                         <i class="mdi mdi-trash-can-outline"></i>
                                                     </button>
                                                 </form>
@@ -309,6 +309,28 @@
                     document.getElementById('modalWhatsAppBtn').href = 'https://wa.me/' + cleanPhone + '?text=Hello ' + encodeURIComponent(name) + ', regarding your inquiry on Pal Varnan...';
                 });
             }
+
+            // Delete Inquiry Confirmation with SweetAlert
+            document.querySelectorAll('.btn-delete-inquiry').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('form');
+                    Swal.fire({
+                        title: 'Delete Inquiry?',
+                        text: 'Are you sure you want to delete this customer inquiry? This cannot be undone.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ef4444',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, Delete',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
 
             // Realtime Search & Subject Filter
             const searchInput = document.getElementById('inquirySearch');

@@ -1043,7 +1043,11 @@ $(document).on("input", "[name='low_stock[]']", function () {
     });
 
     if (totalStock > 0 && lowStock >= totalStock) {
-        alert("Low stock must be less than the total stock (" + totalStock + ").");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Invalid Stock Threshold',
+            text: "Low stock alert threshold must be less than the total stock (" + totalStock + ")."
+        });
         $(this).val("");
     }
 });
