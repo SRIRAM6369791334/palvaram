@@ -1,3 +1,9 @@
+$.ajaxSetup({
+    headers: {
+        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+    },
+});
+
 const gridNew = new gridjs.Grid({
     columns: [
         "S.NO",
