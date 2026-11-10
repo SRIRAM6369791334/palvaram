@@ -1283,8 +1283,9 @@
                                                                     aria-selected="{{ $loop->first ? 'true' : 'false' }}"
                                                                     data-variant-id="{{ $v->id }}"
                                                                     data-offer="{{ $v->offer_price }}"
-                                                                    data-mrp="{{ $v->mrp_price }}">
-                                                                    <span class="opt-size">{{ $vLabel }}</span>
+                                                                    data-mrp="{{ $v->mrp_price }}"
+                                                                    data-stock="{{ (int)($v->product_qty ?? 0) }}">
+                                                                    <span class="opt-size">{{ $vLabel }}@if(($v->product_qty ?? 0) <= 0) <small class="text-danger-600 fw-bold ms-1" style="font-size:10px;">(Out)</small>@endif</span>
                                                                     <span class="opt-price">
                                                                         @if($v->mrp_price && $v->mrp_price > $v->offer_price)
                                                                             <span class="opt-mrp">₹{{ $v->mrp_price }}</span>
@@ -1330,10 +1331,15 @@
                                         @php
                                             $inCart   = $variant ? in_array($variant->id, $cartProductIds) : false;
                                             $cartItem = $variant ? $cartItems->where('product_varient_id', $variant->id)->first() : null;
+                                            $isOutOfStock = ($variant ? (int)($variant->product_qty ?? 0) : 0) <= 0;
                                         @endphp
 
                                         <div class="cart-control mt-8" data-product-id="{{ $product->id }}" data-variant-id="{{ $variant->id ?? '' }}">
-                                            @if($inCart)
+                                            @if($isOutOfStock)
+                                                <button type="button" class="btn btn-outline-neutral-300 py-10 px-16 rounded-pill w-100 justify-content-center text-sm fw-semibold text-neutral-400" disabled>
+                                                    Out of Stock
+                                                </button>
+                                            @elseif($inCart)
                                                 <div class="qty-box">
                                                     <button type="button" class="quantity__minus">−</button>
                                                     <div class="d-flex align-items-center gap-4">
@@ -1568,8 +1574,18 @@ function syncCart(variantId, quantity, input) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
         body: JSON.stringify({ product_varient_id: variantId, quantity: quantity })
-    }).then(r => r.json()).then(data => {
-        if (data.success) input.value = quantity;
+    }).then(async r => {
+        const data = await r.json();
+        if (r.ok && data.success) {
+            input.value = data.quantity !== undefined ? data.quantity : quantity;
+            if (data.clamped) {
+                Swal.fire({ icon: 'info', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+            }
+        } else {
+            Swal.fire({ icon: 'warning', title: data.message || 'Could not update quantity', toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+        }
+    }).catch(() => {
+        Swal.fire({ icon: 'error', title: 'Network error', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
     });
 }
 
@@ -1590,12 +1606,27 @@ function attachAddToCartEvent(controlDiv) {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ product_id: productId, product_varient_id: variantId, quantity: 1 })
-        }).then(r => r.json()).then(data => {
-            showQtyBox(controlDiv, 1);
+        }).then(async r => {
+            const data = await r.json();
+            if (r.ok && data.status !== 'error') {
+                showQtyBox(controlDiv, 1);
+                Swal.fire({
+                    icon: 'success', title: data.message || 'Added to cart successfully!',
+                    toast: true, position: 'top-end',
+                    showConfirmButton: false, timer: 2000, timerProgressBar: true
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning', title: data.message || 'This product variant is currently unavailable.',
+                    toast: true, position: 'top-end',
+                    showConfirmButton: false, timer: 3000, timerProgressBar: true
+                });
+            }
+        }).catch(() => {
             Swal.fire({
-                icon: 'success', title: data.message || 'Added to cart successfully!',
+                icon: 'error', title: 'Network error',
                 toast: true, position: 'top-end',
-                showConfirmButton: false, timer: 2000, timerProgressBar: true
+                showConfirmButton: false, timer: 2000
             });
         });
     });
@@ -1676,7 +1707,13 @@ function applyVariant(select, option, options) {
         const control = card.querySelector('.cart-control');
         if (control) {
             control.dataset.variantId = variantId;
-            if (control.querySelector('.qty-box')) {
+            const stock = parseInt(option.dataset.stock !== undefined ? option.dataset.stock : 99);
+            if (stock <= 0) {
+                control.innerHTML = `
+                    <button type="button" class="btn btn-outline-neutral-300 py-10 px-16 rounded-pill w-100 justify-content-center text-sm fw-semibold text-neutral-400" disabled>
+                        Out of Stock
+                    </button>`;
+            } else {
                 control.innerHTML = `
                     <button type="button"
                         class="add-to-cart-btn product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">

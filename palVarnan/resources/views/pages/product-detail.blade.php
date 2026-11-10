@@ -1333,8 +1333,18 @@ function syncCart(variantId, quantity, input) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
         body: JSON.stringify({ product_varient_id: variantId, quantity: quantity })
-    }).then(r => r.json()).then(data => {
-        if (data.success) input.value = quantity;
+    }).then(async r => {
+        const data = await r.json();
+        if (r.ok && data.success) {
+            input.value = data.quantity !== undefined ? data.quantity : quantity;
+            if (data.clamped) {
+                Swal.fire({ icon: 'info', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+            }
+        } else {
+            Swal.fire({ icon: 'warning', title: data.message || 'Could not update quantity', toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+        }
+    }).catch(() => {
+        Swal.fire({ icon: 'error', title: 'Network error', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
     });
 }
 
@@ -1443,11 +1453,17 @@ function attachAddToCartEvent(controlDiv) {
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
             body: JSON.stringify({ product_id: productId, product_varient_id: variantId, quantity: 1 })
         })
-        .then(r => r.json())
-        .then(data => {
-            showQtyBox(controlDiv, 1);
-            updateCartCount(1);
-            Swal.fire({ icon: 'success', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+        .then(async r => {
+            const data = await r.json();
+            if (r.ok && data.status !== 'error') {
+                showQtyBox(controlDiv, 1);
+                updateCartCount(1);
+                Swal.fire({ icon: 'success', title: data.message || 'Added to cart successfully!', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+            } else {
+                Swal.fire({ icon: 'warning', title: data.message || 'This product variant is currently unavailable.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true });
+            }
+        }).catch(() => {
+            Swal.fire({ icon: 'error', title: 'Network error', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
         });
     });
 }
