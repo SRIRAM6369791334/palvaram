@@ -320,7 +320,7 @@ class CheckoutController extends Controller
         DB::beginTransaction();
         try {
             // 1. Table: product_orders (Master)
-            $order = ProductOrder::create([
+            $orderData = [
                 'user_id' => $userId,
                 'country_id' => session('country_id') ?? $user->country_id ?? 243,
                 'order_number' => $orderNumber,
@@ -346,15 +346,20 @@ class CheckoutController extends Controller
                 'subtotal' => $subtotal,
                 'gst_amount' => $gstAmount,
                 'shipping_charge' => $shipping,
-                'coupon_discount' => $discount,
                 'total_amount' => $total,
-                'courier_name' => $request->selected_courier_name,
+                'courier_name' => $request->selected_courier_name ?? 'Standard Delivery',
                 'status' => 'Order Placed',
                 'payment_method' => $request->payment_method,
                 'payment_status' => ($request->payment_method === 'Online Payment') ? 'Paid' : 'Pending',
                 'razorpay_order_id' => $request->razorpay_order_id,
                 'razorpay_payment_id' => $request->razorpay_payment_id,
-            ]);
+            ];
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn('product_orders', 'coupon_discount')) {
+                $orderData['coupon_discount'] = $discount;
+            }
+
+            $order = ProductOrder::create($orderData);
 
             // 2. Table: product_order_user_addresses
             ProductOrderUserAddress::create([
