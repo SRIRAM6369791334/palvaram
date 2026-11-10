@@ -204,12 +204,12 @@
                                                     </td>
                                                     <td class="py-16 px-16 text-center text-nowrap">
                                                         @if(in_array(strtolower($status), ['order placed', 'pending']))
-                                                            <button type="button" class="btn btn-sm btn-outline-danger py-4 px-12 rounded-pill text-xs fw-semibold cancel-order-btn" data-order="{{ $order->order_number }}" style="border: 1px solid #ef4444; color: #ef4444;">
-                                                                <i class="ph ph-x-circle me-2"></i> Cancel
+                                                            <button type="button" class="cancel-order-btn" data-order="{{ $order->order_number }}">
+                                                                <i class="ph ph-x-circle me-1"></i> Cancel
                                                             </button>
                                                         @elseif(strtolower($status) === 'delivered')
-                                                            <button type="button" class="btn btn-sm btn-outline-warning py-4 px-12 rounded-pill text-xs fw-semibold return-order-btn" data-order="{{ $order->order_number }}" style="border: 1px solid #f59e0b; color: #d97706;">
-                                                                <i class="ph ph-arrow-u-up-left me-2"></i> Return
+                                                            <button type="button" class="return-order-btn" data-order="{{ $order->order_number }}">
+                                                                <i class="ph ph-arrow-u-up-left me-1"></i> Return
                                                             </button>
                                                         @else
                                                             <span class="text-xs text-gray-400">—</span>
@@ -447,10 +447,10 @@
                                                     <button type="button" class="btn btn-sm btn-outline-main py-4 px-10 rounded-6 text-xs flex-align gap-4" onclick="toggleAccountEdit({{ $addr->id }})">
                                                         <i class="ph ph-pencil-simple"></i> Edit
                                                     </button>
-                                                    <form action="{{ route('address.destroy', $addr->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this address?');">
+                                                    <form action="{{ route('address.destroy', $addr->id) }}" method="POST" class="d-inline delete-address-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger py-4 px-8 rounded-6 text-xs" title="Delete Address">
+                                                        <button type="button" class="btn btn-sm btn-outline-danger py-4 px-8 rounded-6 text-xs delete-address-btn" title="Delete Address">
                                                             <i class="ph ph-trash"></i>
                                                         </button>
                                                     </form>
@@ -873,6 +873,74 @@
     .cart-table td {
         vertical-align: middle;
     }
+
+    .return-order-btn {
+        background-color: #f59e0b !important;
+        color: #ffffff !important;
+        border: 1px solid #d97706 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        padding: 5px 14px !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        border-radius: 9999px !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 1px 2px 0 rgba(245, 158, 11, 0.25) !important;
+        cursor: pointer !important;
+        line-height: 1.2 !important;
+        text-decoration: none !important;
+    }
+    .return-order-btn:hover {
+        background-color: #d97706 !important;
+        color: #ffffff !important;
+        border-color: #b45309 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px -1px rgba(245, 158, 11, 0.4) !important;
+    }
+    .return-order-btn:active {
+        transform: translateY(0) !important;
+        box-shadow: 0 1px 2px 0 rgba(245, 158, 11, 0.2) !important;
+    }
+    .return-order-btn i {
+        color: #ffffff !important;
+        font-size: 13px !important;
+    }
+
+    .cancel-order-btn {
+        background-color: #ef4444 !important;
+        color: #ffffff !important;
+        border: 1px solid #dc2626 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        padding: 5px 14px !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        border-radius: 9999px !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 1px 2px 0 rgba(239, 68, 68, 0.25) !important;
+        cursor: pointer !important;
+        line-height: 1.2 !important;
+        text-decoration: none !important;
+    }
+    .cancel-order-btn:hover {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        border-color: #b91c1c !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px -1px rgba(239, 68, 68, 0.4) !important;
+    }
+    .cancel-order-btn:active {
+        transform: translateY(0) !important;
+        box-shadow: 0 1px 2px 0 rgba(239, 68, 68, 0.2) !important;
+    }
+    .cancel-order-btn i {
+        color: #ffffff !important;
+        font-size: 13px !important;
+    }
 </style>
 
 @endsection
@@ -1077,64 +1145,174 @@
         if (subtotalEl) subtotalEl.textContent = '₹' + subtotal.toFixed(2);
         if (totalEl)    totalEl.textContent    = '₹' + subtotal.toFixed(2);
     }
-    // Cancel Order handler
+    // Cancel Order handler (SweetAlert2)
     document.querySelectorAll(".cancel-order-btn").forEach(btn => {
         btn.addEventListener("click", function() {
             const orderNum = this.dataset.order;
-            const reason = prompt("Please provide a reason for cancelling order #" + orderNum + ":", "Ordered by mistake");
-            if (reason === null) return;
-            this.disabled = true;
-            this.innerHTML = "<span class=\"spinner-border spinner-border-sm me-4\"></span> Cancelling...";
-            fetch("/myaccount/order/" + encodeURIComponent(orderNum) + "/cancel", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": CSRF, "Accept": "application/json" },
-                body: JSON.stringify({ reason: reason })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    window.location.reload();
-                } else {
-                    alert(data.message || "Failed to cancel order.");
-                    this.disabled = false;
-                    this.innerHTML = "<i class=\"ph ph-x-circle me-2\"></i> Cancel";
+            Swal.fire({
+                title: 'Cancel Order',
+                html: `
+                    <div class="text-start">
+                        <p class="text-muted text-sm mb-2">Order: <strong class="text-dark">#${orderNum}</strong></p>
+                        <label class="form-label text-sm fw-semibold text-gray-700 mb-1">Reason for cancellation:</label>
+                        <textarea id="swal-cancel-reason" class="form-control" rows="3" placeholder="e.g. Ordered by mistake, changed mind...">Ordered by mistake</textarea>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="ph ph-x-circle me-1"></i> Cancel Order',
+                cancelButtonText: 'Keep Order',
+                focusConfirm: false,
+                preConfirm: () => {
+                    const reason = document.getElementById('swal-cancel-reason').value.trim();
+                    if (!reason) {
+                        Swal.showValidationMessage('Please provide a cancellation reason');
+                        return false;
+                    }
+                    return reason;
                 }
-            })
-            .catch(() => {
-                alert("Network error. Please try again.");
-                this.disabled = false;
-                this.innerHTML = "<i class=\"ph ph-x-circle me-2\"></i> Cancel";
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    Swal.fire({
+                        title: 'Cancelling Order...',
+                        text: 'Please wait a moment',
+                        allowOutsideClick: false,
+                        didOpen: () => { Swal.showLoading(); }
+                    });
+
+                    fetch("/myaccount/order/" + encodeURIComponent(orderNum) + "/cancel", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": CSRF, "Accept": "application/json" },
+                        body: JSON.stringify({ reason: result.value })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Order Cancelled',
+                                text: data.message || 'Your order has been cancelled successfully.',
+                                confirmButtonColor: '#1c799b'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Cancellation Failed',
+                                text: data.message || 'Failed to cancel order.',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Network Error',
+                            text: 'Something went wrong. Please check your internet connection.',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    });
+                }
             });
         });
     });
 
-    // Return Order handler
+    // Return Order handler (SweetAlert2)
     document.querySelectorAll(".return-order-btn").forEach(btn => {
         btn.addEventListener("click", function() {
             const orderNum = this.dataset.order;
-            const reason = prompt("Please describe the issue or reason for return request for #" + orderNum + ":", "Damaged product or wrong item");
-            if (reason === null) return;
-            this.disabled = true;
-            this.innerHTML = "<span class=\"spinner-border spinner-border-sm me-4\"></span> Submitting...";
-            fetch("/myaccount/order/" + encodeURIComponent(orderNum) + "/return", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": CSRF, "Accept": "application/json" },
-                body: JSON.stringify({ reason: reason })
-            })
-            .then(r => r.json())
-            .then(data => {
-                alert(data.message || (data.success ? "Return request submitted." : "Failed"));
-                if (data.success) window.location.reload();
-                else {
-                    this.disabled = false;
-                    this.innerHTML = "<i class=\"ph ph-arrow-u-up-left me-2\"></i> Return";
+            Swal.fire({
+                title: 'Request Return',
+                html: `
+                    <div class="text-start">
+                        <p class="text-muted text-sm mb-2">Order: <strong class="text-dark">#${orderNum}</strong></p>
+                        <label class="form-label text-sm fw-semibold text-gray-700 mb-1">Reason for return request:</label>
+                        <textarea id="swal-return-reason" class="form-control" rows="3" placeholder="e.g. Damaged product, wrong item received...">Damaged product or wrong item</textarea>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#f59e0b',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="ph ph-arrow-u-up-left me-1"></i> Submit Return Request',
+                cancelButtonText: 'Cancel',
+                focusConfirm: false,
+                preConfirm: () => {
+                    const reason = document.getElementById('swal-return-reason').value.trim();
+                    if (!reason) {
+                        Swal.showValidationMessage('Please describe the issue or reason for return');
+                        return false;
+                    }
+                    return reason;
                 }
-            })
-            .catch(() => {
-                alert("Network error. Please try again.");
-                this.disabled = false;
-                this.innerHTML = "<i class=\"ph ph-arrow-u-up-left me-2\"></i> Return";
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    Swal.fire({
+                        title: 'Submitting Return Request...',
+                        text: 'Please wait a moment',
+                        allowOutsideClick: false,
+                        didOpen: () => { Swal.showLoading(); }
+                    });
+
+                    fetch("/myaccount/order/" + encodeURIComponent(orderNum) + "/return", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": CSRF, "Accept": "application/json" },
+                        body: JSON.stringify({ reason: result.value })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Return Request Submitted!',
+                                text: data.message || 'Your return request has been submitted successfully.',
+                                confirmButtonColor: '#1c799b'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Request Failed',
+                                text: data.message || 'Failed to submit return request.',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Network Error',
+                            text: 'Something went wrong. Please check your internet connection.',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    });
+                }
+            });
+        });
+    });
+
+    // Delete Address Confirmation (SweetAlert2)
+    document.querySelectorAll('.delete-address-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            Swal.fire({
+                title: 'Delete Address?',
+                text: 'Are you sure you want to delete this address? This cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="ph ph-trash me-1"></i> Yes, Delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
             });
         });
     });
