@@ -205,7 +205,11 @@ public function subtotal()
         }
 
         // TC-C11: Strict prepared lookup prevents SQLi
-        $coupon = Coupon::where('codename', $code)->where('coupon_status', 1)->first();
+        $coupon = Coupon::where('codename', $code)
+            ->where(function ($q) {
+                $q->where('coupon_status', 1)->orWhereNull('coupon_status');
+            })
+            ->first();
 
         if (!$coupon) {
             return response()->json(['success' => false, 'message' => 'Invalid or inactive coupon code.'], 404);
