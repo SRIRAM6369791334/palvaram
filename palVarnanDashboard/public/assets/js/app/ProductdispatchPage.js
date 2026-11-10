@@ -156,8 +156,8 @@ function gridjsReRender(productDispaths) {
                             data-orderedDate1="${productDispath.date_ordered_on}"
 
 
-                            data-customername1= "${productDispath.order_address.firstname}"
-                            data-customerid1= "${productDispath.customer.user_id}"
+                            data-customername1= "${productDispath.order_address ? productDispath.order_address.firstname : (productDispath.billing_name || 'N/A')}"
+                            data-customerid1= "${productDispath.customer ? productDispath.customer.user_id : 'N/A'}"
 
                             data-deliverypersonid1 ="${productDispath.delivery_person_id}"
                         data-bs-target="#DispatchModal"  class="btn btn-secondary edit_btns1 ">Change</button>`
