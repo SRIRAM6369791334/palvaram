@@ -25,26 +25,46 @@ class AuthController extends Controller
             'password'     => 'required|min:6',
         ]);
 
-       
-        $countryId = session('country_id');
+        try {
+            $countryId = session('country_id') ?? 243;
+            $currentYear = date('y');
+            $lastUserId = User::max('id') ?? 0;
+            $newUserId = sprintf('HG-%s-%05d', $currentYear, $lastUserId + 1);
 
- 
+            $fullName = trim($request->name . ' ' . $request->last_name);
 
-        User::create([
+            $user = User::create([
+                'user_id'      => $newUserId,
+                'country_id'   => $countryId,
+                'name'         => $fullName,
+                'first_name'   => $request->name,
+                'last_name'    => $request->last_name,
+                'email'        => strtolower(trim($request->email)),
+                'phone_number' => $request->phone_number,
+                'password'     => Hash::make($request->password),
+            ]);
 
-            'country_id'   => $countryId,
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success'      => true,
+                    'message'      => 'Account created successfully! You can now log in.',
+                    'redirect_url' => route('login')
+                ]);
+            }
 
-            'name'         => $request->name,
-            'email'        => $request->email,
-            'phone_number' => $request->phone_number,
+            return redirect('/login')->with('success', 'Registered Successfully');
+        } catch (\Exception $e) {
+            Log::error('Registration failed: ' . $e->getMessage());
 
-            'last_name'    => $request->last_name,
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Registration failed: ' . $e->getMessage()
+                ], 500);
+            }
 
-            'password'     => Hash::make($request->password),
-        ]);
-
-        return redirect('/login')
-            ->with('success', 'Registered Successfully');
+            return back()->withInput()->with('error', 'Registration failed: ' . $e->getMessage());
+        }
     }
 
   
