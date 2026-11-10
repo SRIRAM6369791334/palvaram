@@ -29,6 +29,20 @@
     <!-- Global High-Contrast Button & SweetAlert2 Styling -->
     <style>
         /* WCAG 2.1 AA Button Contrast Overrides */
+        .btn-outline-primary {
+            color: #1c799b !important;
+            background-color: transparent !important;
+            border: 1px solid #1c799b !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-outline-primary:hover, .btn-outline-primary:active, .btn-outline-primary:focus {
+            color: #ffffff !important;
+            background-color: #1c799b !important;
+            border-color: #155d77 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(28, 121, 155, 0.25) !important;
+        }
+
         .btn-outline-danger {
             color: #ef4444 !important;
             background-color: transparent !important;
@@ -107,6 +121,18 @@
             color: #ffffff !important;
             background-color: #1f2937 !important;
             border-color: #111827 !important;
+        }
+
+        .btn-outline-neutral-100, .btn-outline-neutral-200 {
+            color: #374151 !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e5e7eb !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .btn-outline-neutral-100:hover, .btn-outline-neutral-200:hover {
+            color: #1c799b !important;
+            border-color: #1c799b !important;
+            background-color: #f0f7fa !important;
         }
 
         .btn-outline-neutral-300:disabled, .btn-outline-neutral-300[disabled] {
