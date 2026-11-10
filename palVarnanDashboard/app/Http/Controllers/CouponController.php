@@ -28,8 +28,9 @@ class CouponController extends Controller
 
     ]);
 
-    // Set default value for default_id
+    // Set default value for default_id and coupon_status
     $validated['default_id'] = 0;
+    $validated['coupon_status'] = 1;
 
     Coupon::create($validated);
 
