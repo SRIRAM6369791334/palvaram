@@ -117,6 +117,28 @@
             cursor: not-allowed !important;
         }
 
+        /* Country Modal Selection Cards */
+        .country-select-btn {
+            border: 2px solid #e5e7eb !important;
+            background-color: #ffffff !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .country-select-btn:hover {
+            border-color: #1c799b !important;
+            background-color: #f0f7fa !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(28, 121, 155, 0.12) !important;
+        }
+        .country-select-btn.active-country {
+            border-color: #1c799b !important;
+            background-color: #eef8fb !important;
+        }
+        .country-select-btn .country-title {
+            color: #111827 !important;
+            font-weight: 700 !important;
+        }
+
         /* Modern SweetAlert2 UI Enhancement */
         .swal2-popup {
             font-family: inherit !important;
