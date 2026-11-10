@@ -409,13 +409,13 @@ $('#country_id').change(function () {
 
     $.get('/get-suppliers', { country_id: id, is_gift: 1 }, function (suppliers) {
         if (suppliers.length === 0) {
-            $('#supplier_id').html('<option value="">No suppliers for this country</option>').prop('disabled', true);
+            $('#supplier_id').html('<option value="">No suppliers for this country</option>').prop('disabled', true).trigger('change');
         } else {
             let options = '<option value="">Select Supplier</option>';
             suppliers.forEach(s => {
                 options += `<option value="${s.id}">${s.name}</option>`;
             });
-            $('#supplier_id').html(options).prop('disabled', false);
+            $('#supplier_id').html(options).prop('disabled', false).trigger('change');
         }
     });
 
@@ -424,6 +424,7 @@ $('#country_id').change(function () {
         data.forEach(w => {
             $('#warehouse_id').append(`<option value="${w.id}">${w.warehouse_name}</option>`);
         });
+        $('#warehouse_id').trigger('change');
     });
 });
 

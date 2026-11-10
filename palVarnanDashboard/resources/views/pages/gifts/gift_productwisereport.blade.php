@@ -180,10 +180,7 @@
                     loadReport(filter);
                 }
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
+
             loadReport('this_month'); // Load this month data on page load
         });
     </script>
