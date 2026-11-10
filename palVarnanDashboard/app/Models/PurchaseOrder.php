@@ -35,7 +35,7 @@ class PurchaseOrder extends Model
 
     public function warehouse()
     {
-        return $this->belongsTo(Warehouse::class);
+        return $this->belongsTo(WareHouse::class, 'warehouse_id');
     }
 
     public function branch()
