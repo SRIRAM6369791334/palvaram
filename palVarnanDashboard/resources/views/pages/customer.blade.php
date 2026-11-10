@@ -878,5 +878,5 @@
     </script>
     <script src="{{ URL::asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
 
-    <script src="{{ URL::asset('assets/js/app/CustomersPage.js') }}"></script>
+    <script src="{{ URL::asset('assets/js/app/CustomersPage.js') }}?v={{ time() }}"></script>
 @endsection

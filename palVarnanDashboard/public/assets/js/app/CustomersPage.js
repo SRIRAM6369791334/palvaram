@@ -1236,49 +1236,55 @@ $('#myusername').on("change", function () {
 })
 
 const fromleadin = document.getElementById('from-date2');
-const todayleadin = new Date().toISOString().split('T')[0];
-fromleadin.setAttribute('max', todayleadin);
+if (fromleadin) {
+    const todayleadin = new Date().toISOString().split('T')[0];
+    fromleadin.setAttribute('max', todayleadin);
 
-fromleadin.addEventListener('change', function () {
-    if (this.value > todayleadin) {
-        this.value = '';
-        alert('Please select a date in the past or present.');
-    }
-}); const toinputle = document.getElementById('to-date2');
-const todayinputs = new Date().toISOString().split('T')[0];
-toinputle.setAttribute('max', todayinputs);
-
-toinputle.addEventListener('change', function () {
-    if (this.value > todayinputs) {
-        this.value = '';
-        alert('Please select a date in the past or present.');
-    }
-});
-
-const addValidators = new JustValidate("#customerForm", {
-    validateBeforeSubmitting: true,
-});
-
-addValidators
-
-    .addField(".fromdate", [
-        {
-            rule: "required",
-            errorMessage: "*From Date Field is required",
-        },
-    ])
-
-    .addField(".todate", [
-        {
-            rule: "required",
-            errorMessage: "*To Date Field is required",
-        },
-    ])
-    .onSuccess((event) => {
-        $(".user_submit_btn").attr("disabled", "true");
-        $(".user_submit_btn").html("Uploading.....");
-        customerFormSubmit(event);
+    fromleadin.addEventListener('change', function () {
+        if (this.value > todayleadin) {
+            this.value = '';
+            alert('Please select a date in the past or present.');
+        }
     });
+}
+
+const toinputle = document.getElementById('to-date2');
+if (toinputle) {
+    const todayinputs = new Date().toISOString().split('T')[0];
+    toinputle.setAttribute('max', todayinputs);
+
+    toinputle.addEventListener('change', function () {
+        if (this.value > todayinputs) {
+            this.value = '';
+            alert('Please select a date in the past or present.');
+        }
+    });
+}
+
+if (document.querySelector("#customerForm") && document.querySelector(".fromdate")) {
+    const addValidators = new JustValidate("#customerForm", {
+        validateBeforeSubmitting: true,
+    });
+
+    addValidators
+        .addField(".fromdate", [
+            {
+                rule: "required",
+                errorMessage: "*From Date Field is required",
+            },
+        ])
+        .addField(".todate", [
+            {
+                rule: "required",
+                errorMessage: "*To Date Field is required",
+            },
+        ])
+        .onSuccess((event) => {
+            $(".user_submit_btn").attr("disabled", "true");
+            $(".user_submit_btn").html("Uploading.....");
+            customerFormSubmit(event);
+        });
+}
 
 
 function customerFormSubmit(event) {
@@ -1422,14 +1428,16 @@ async function lookupCustomerAddress(pincode, isEdit) {
 }
 
 $(document).ready(function () {
-    $("#pin_code_type").on("input", function () {
+    $(document).on("input", "#pin_code_type", function () {
+        this.value = this.value.replace(/\D/g, "");
         var pin = $(this).val().trim();
         if (pin.length >= 5 && pin.length <= 6) {
             lookupCustomerAddress(pin, false);
         }
     });
 
-    $("#pin_code_type1").on("input", function () {
+    $(document).on("input", "#pin_code_type1", function () {
+        this.value = this.value.replace(/\D/g, "");
         var pin = $(this).val().trim();
         if (pin.length >= 5 && pin.length <= 6) {
             lookupCustomerAddress(pin, true);
