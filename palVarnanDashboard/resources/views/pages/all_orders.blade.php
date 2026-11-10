@@ -47,5 +47,5 @@
     window.productOrders = @json($productOrders);
 </script>
 
-<script src="{{ URL::asset('assets/js/app/AllOrdersPage.js') }}"></script>
+<script src="{{ URL::asset('assets/js/app/AllOrdersPage.js') }}?v={{ time() }}"></script>
 @endsection

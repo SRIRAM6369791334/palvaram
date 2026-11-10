@@ -1,21 +1,30 @@
 // ===============================
-// STATUS BADGE (uses delivery_status)
+// STATUS BADGE (supports delivery_status and order.status string)
 // ===============================
-const getStatusBadge = (status) => {
-    switch (status) {
-        case 0:
-            return `<span class="badge bg-warning text-dark">Pending</span>`;
-        case 1:
-            return `<span class="badge bg-primary">Processing</span>`;
-        case 2:
-            return `<span class="badge bg-info">Shipped</span>`;
-        case 3:
-            return `<span class="badge bg-secondary">Out for Delivery</span>`;
-        case 4:
-            return `<span class="badge bg-success">Delivered</span>`;
-        default:
-            return `<span class="badge bg-dark">Unknown</span>`;
+const getStatusBadge = (deliveryStatus, orderStatus) => {
+    const s = String(orderStatus || '').toLowerCase().trim();
+    if (s === 'cancelled' || deliveryStatus === 5 || deliveryStatus === '5') {
+        return `<span class="badge bg-danger">Cancelled</span>`;
     }
+    if (s === 'delivered' || deliveryStatus === 4 || deliveryStatus === '4') {
+        return `<span class="badge bg-success">Delivered</span>`;
+    }
+    if (s === 'out for delivery' || deliveryStatus === 3 || deliveryStatus === '3') {
+        return `<span class="badge bg-secondary">Out for Delivery</span>`;
+    }
+    if (s === 'shipped' || deliveryStatus === 2 || deliveryStatus === '2') {
+        return `<span class="badge bg-info">Shipped</span>`;
+    }
+    if (s === 'processing' || deliveryStatus === 1 || deliveryStatus === '1') {
+        return `<span class="badge bg-primary">Processing</span>`;
+    }
+    if (s === 'pending' || s === 'order placed' || deliveryStatus === 0 || deliveryStatus === '0') {
+        return `<span class="badge bg-warning text-dark">Pending</span>`;
+    }
+    if (s) {
+        return `<span class="badge bg-secondary">${orderStatus}</span>`;
+    }
+    return `<span class="badge bg-dark">Unknown</span>`;
 };
 
 // ===============================
@@ -76,7 +85,7 @@ const gridAll = new gridjs.Grid({
         gridjs.html(getPaymentBadge(order.payment_status)),
 
         // STATUS
-        gridjs.html(getStatusBadge(order.delivery_status)),
+        gridjs.html(getStatusBadge(order.delivery_status, order.status)),
 
         // ACTION
         gridjs.html(`
