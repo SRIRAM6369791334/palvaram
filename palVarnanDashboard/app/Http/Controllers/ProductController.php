@@ -861,6 +861,8 @@ public function store(Request $request)
 
    public function viewProductInvoice($orderId = null)
 {
+    $order = ProductOrder::where("order_id", $orderId)->first();
+
     $products = ProductSlot::query()
         ->where("order_id", $orderId)
         ->where("is_cancelled", "!=", 1)
@@ -869,7 +871,12 @@ public function store(Request $request)
 
     $addresses = \App\Models\ProductOrderUserAddress::where("order_id", $orderId)->get();
 
-    return view("invoicePages.product_orders_invoice", compact("products", "addresses"));
+    $discount = $order->coupon_discount ?? 0;
+    $shipping = $order->shipping_charge ?? 0;
+    $shippingtype = $order->shipping_type ?? 'standard';
+    $total = $order->total_amount ?? ($products->sum('product_total') + $shipping - $discount);
+
+    return view("invoicePages.product_orders_invoice", compact("products", "addresses", "order", "orderId", "discount", "shipping", "shippingtype", "total"));
 }
 
 

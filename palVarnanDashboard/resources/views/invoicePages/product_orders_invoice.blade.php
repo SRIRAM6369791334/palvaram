@@ -1,5 +1,11 @@
 @php
     use Carbon\Carbon;
+    $discount = $discount ?? 0;
+    $shipping = $shipping ?? 0;
+    $shippingtype = $shippingtype ?? 'standard';
+    $total = $total ?? 0;
+    $currentOrderId = $products[0]->order_id ?? ($order->order_id ?? ($orderId ?? ''));
+    $currentOrderDate = isset($products[0]->delivery_date) ? Carbon::parse($products[0]->delivery_date)->format('d-m-Y') : (isset($order->created_at) ? Carbon::parse($order->created_at)->format('d-m-Y') : date('d-m-Y'));
 @endphp
 
 {{-- @dd($products); --}}
@@ -38,9 +44,9 @@
                         <div class="tm_card_note tm_mobile_hide"></div>
                         <div class="tm_invoice_info_list tm_white_color">
 
-                            <p class="tm_invoice_number tm_m0">Order No: <b>{{ $products[0]->order_id }}</b></p>
+                            <p class="tm_invoice_number tm_m0">Order No: <b>{{ $currentOrderId }}</b></p>
                             <p class="tm_invoice_date tm_m0">Date:
-                                <b>{{ Carbon::parse($products[0]->delivery_date)->format('d-m-Y') }}</b>
+                                <b>{{ $currentOrderDate }}</b>
                             </p>
 
                         </div>
