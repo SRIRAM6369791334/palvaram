@@ -55,7 +55,7 @@ class User extends Authenticatable
 
     public function user_addresses(): HasMany
     {
-        return $this->hasMany(UserAddress::class, "user_id", "user_id");
+        return $this->hasMany(UserAddress::class, "user_id", "id");
     }
 
 

@@ -866,7 +866,7 @@ public function store(Request $request)
     $products = ProductSlot::query()
         ->where("order_id", $orderId)
         ->where("is_cancelled", "!=", 1)
-        ->with("productVarient", "productOrder.customer.user_addresses", "productOrder.orderAddress", "product.productvari")
+        ->with(["productVarient.unit", "product"])
         ->get();
 
     $addresses = \App\Models\ProductOrderUserAddress::where("order_id", $orderId)->get();

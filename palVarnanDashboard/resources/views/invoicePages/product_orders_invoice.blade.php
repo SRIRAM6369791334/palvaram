@@ -1,9 +1,12 @@
 @php
     use Carbon\Carbon;
     $discount = $discount ?? 0;
+    $discounttyp = $discounttyp ?? '';
     $shipping = $shipping ?? 0;
     $shippingtype = $shippingtype ?? 'standard';
+    $tax = $tax ?? 0;
     $total = $total ?? 0;
+    $grandTotal = 0;
     $currentOrderId = $products[0]->order_id ?? ($order->order_id ?? ($orderId ?? ''));
     $currentOrderDate = isset($products[0]->delivery_date) ? Carbon::parse($products[0]->delivery_date)->format('d-m-Y') : (isset($order->created_at) ? Carbon::parse($order->created_at)->format('d-m-Y') : date('d-m-Y'));
 @endphp
@@ -166,15 +169,18 @@
 
 
                                             @php
-                                                $subtotal = $product->product_total;
+                                                $subtotal = $product->product_total ?? 0;
                                                 $grandTotal += $subtotal;
 
-                                                $discount = $product->productOrder->discount_amount;
-                                                $discounttyp = $product->productOrder->discounttype;
-                                                $shipping = $product->productOrder->delivery_charge;
-                                                $shippingtype = $product->productOrder->shipcharge_type;
-                                                $tax = $product->productOrder->gst_amount;
-                                                $total = $product->productOrder->grand_total_amount;
+                                                $po = $product->productOrder ?? ($order ?? null);
+                                                if ($po) {
+                                                    $discount = $po->discount_amount ?? ($po->coupon_discount ?? $discount);
+                                                    $discounttyp = $po->discounttype ?? $discounttyp;
+                                                    $shipping = $po->delivery_charge ?? ($po->shipping_charge ?? $shipping);
+                                                    $shippingtype = $po->shipcharge_type ?? ($po->shipping_type ?? $shippingtype);
+                                                    $tax = $po->gst_amount ?? ($po->tax ?? $tax);
+                                                    $total = $po->grand_total_amount ?? ($po->total_amount ?? $total);
+                                                }
                                             @endphp
                                         @endforeach
                                     </tbody>
