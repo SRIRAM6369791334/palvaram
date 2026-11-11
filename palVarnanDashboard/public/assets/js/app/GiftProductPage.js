@@ -218,23 +218,70 @@ function buildVariantHTML() {
 
 // ─── On Page Load ─────────────────────────────────────────────────────────────
 
+function initGiftProductSelect2() {
+    if (!$.fn.select2) return;
+
+    // Ensure size, color, gst stay as native HTML selects (NOT select2)
+    ['#add_size_select', '#add_color_select', '#add_product_gst'].forEach(sel => {
+        if ($(sel).hasClass('select2-hidden-accessible')) {
+            $(sel).select2('destroy');
+        }
+        $(sel).removeClass('select2');
+    });
+
+    $('#add_country_select').select2({
+        placeholder: 'Select Country',
+        allowClear: true,
+        multiple: true,
+        width: '100%',
+        dropdownParent: $('#addProductModal'),
+    });
+
+    $('#add_category_select').select2({
+        placeholder: 'Select Category',
+        width: '100%',
+        dropdownParent: $('#addProductModal'),
+    });
+
+    $('#add_subcategory_select').select2({
+        placeholder: 'Select Sub Category',
+        width: '100%',
+        dropdownParent: $('#addProductModal'),
+    });
+
+    $('#edit_country_select').select2({
+        placeholder: 'Select Country',
+        allowClear: true,
+        multiple: true,
+        width: '100%',
+        dropdownParent: $('#editProductModal'),
+    });
+
+    $('#edit_category_select').select2({
+        placeholder: 'Select Category',
+        width: '100%',
+        dropdownParent: $('#editProductModal'),
+    });
+
+    $('#edit_subcategory_select').select2({
+        placeholder: 'Select Sub Category',
+        width: '100%',
+        dropdownParent: $('#editProductModal'),
+    });
+}
+
 $(document).ready(function () {
 
-    // Initialize Select2 for country selects if available
-    if ($.fn.select2) {
-        $('#add_country_select').select2({
-            placeholder: 'Select Country',
-            allowClear: true,
-            multiple: true,
-            dropdownParent: $('#addProductModal'),
-        });
-        $('#edit_country_select').select2({
-            placeholder: 'Select Country',
-            allowClear: true,
-            multiple: true,
-            dropdownParent: $('#editProductModal'),
-        });
-    }
+    // Initialize Select2 for product modals
+    initGiftProductSelect2();
+
+    $('#addProductModal').on('shown.bs.modal', function () {
+        initGiftProductSelect2();
+    });
+
+    $('#editProductModal').on('shown.bs.modal', function () {
+        initGiftProductSelect2();
+    });
 
     // Auto-select country for single-country users
     if (window.allowedCountryIds && window.allowedCountryIds.length === 1) {
@@ -411,6 +458,10 @@ $(document).ready(function () {
     $("#addProductModal").on("hidden.bs.modal", function () {
         $("#addProductForm")[0].reset();
         $("#add_preview_container").html(addProdPreviewBackup);
+        $("#add_varient_preview").html('<div class="text-center"><i class="display-4 text-muted mdi mdi-cloud-upload"></i><span class="d-block">Upload Variant Image</span></div>');
+        $("#add_size_select").val("");
+        $("#add_color_select").val("");
+        $("#add_product_gst").val("");
         $("#gift-variants-wrapper").empty();
         variantIndex = 0;
         $("#add_subcategory_select").html('<option value="" disabled selected>Select Sub Category</option>');

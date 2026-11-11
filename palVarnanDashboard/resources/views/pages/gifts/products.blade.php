@@ -193,7 +193,7 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">Size</label>
-                                        <select class="form-select select2" name="size_id" id="add_size_select">
+                                        <select class="form-select" name="size_id" id="add_size_select">
                                             <option value="">Select Size</option>
                                             @foreach($sizes as $size)
                                                 <option value="{{ $size->id }}">{{ $size->size }}</option>
@@ -204,7 +204,7 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">Color</label>
-                                        <select class="form-select select2" name="color_id" id="add_color_select">
+                                        <select class="form-select" name="color_id" id="add_color_select">
                                             <option value="">Select Color</option>
                                             @foreach($colors as $color)
                                                 <option value="{{ $color->id }}">{{ $color->color }}</option>
@@ -257,7 +257,7 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">Product GST</label>
-                                        <select class="form-select select2" name="product_gst">
+                                        <select class="form-select" name="product_gst" id="add_product_gst">
                                             <option value="" selected>Select GST</option>
                                             <option value="0">0 (GST Included)</option>
                                             <option value="5">5</option>
@@ -439,7 +439,6 @@
 
 @section('script')
     <script src="{{ URL::asset('assets/libs/gridjs/gridjs.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ URL::asset('assets/js/app.js') }}"></script>
     <script>
         window.products          = @json($products);
