@@ -1358,6 +1358,11 @@ function attachDetailAddToCart() {
     if (!btn) return;
 
     btn.addEventListener('click', function () {
+        if (btn.disabled) return;
+        btn.disabled = true;
+        const origText = btn.innerHTML;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status"></span> Adding...`;
+
         const productId = control.dataset.productId;
         const variantId = control.dataset.variantId;
 
@@ -1369,6 +1374,8 @@ function attachDetailAddToCart() {
         .then(r => r.json())
         .then(data => {
             if (data.status === 'error') {
+                btn.disabled = false;
+                btn.innerHTML = origText;
                 Swal.fire({ icon: 'error', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
                 return;
             }
@@ -1382,6 +1389,11 @@ function attachDetailAddToCart() {
             attachDetailQtyEvents();
             updateCartCount(1);
             Swal.fire({ icon: 'success', title: data.message || 'Added to Cart', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+        })
+        .catch(() => {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+            Swal.fire({ icon: 'error', title: 'Network error', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
         });
     });
 }
@@ -1661,16 +1673,17 @@ function initVariantDropdowns() {
                 const mrpPrice   = this.dataset.mrp;
                 const sizeText   = this.querySelector('.opt-size').textContent;
 
+                const activeCurrency = '{{ $currencySymbol ?? "₹" }}';
                 select.querySelector('.variant-label').textContent = sizeText;
-                select.querySelector('.variant-price-tag').textContent = '₹' + offerPrice;
+                select.querySelector('.variant-price-tag').textContent = activeCurrency + offerPrice;
                 options.forEach(o => o.classList.remove('selected'));
                 this.classList.add('selected');
                 select.classList.remove('open');
 
                 const card = select.closest('.product-card__content');
                 card.querySelector('.product-card__price').innerHTML = `
-                    <span class="text-heading text-md fw-bold">₹${offerPrice}</span>
-                    ${mrpPrice ? `<span class="text-gray-400 text-xs fw-medium text-decoration-line-through ms-6">₹${mrpPrice}</span>` : ''}
+                    <span class="text-heading text-md fw-bold">${activeCurrency}${offerPrice}</span>
+                    ${mrpPrice ? `<span class="text-gray-400 text-xs fw-medium text-decoration-line-through ms-6">${activeCurrency}${mrpPrice}</span>` : ''}
                 `;
 
                 const wishlistBtn = select.closest('.product-card').querySelector('.wishlist-btn-related');

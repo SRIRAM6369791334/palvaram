@@ -36,9 +36,10 @@ class AppServiceProvider extends ServiceProvider
             $cartSubtotal  = 0;
 
             if (Auth::check()) {
-                $cartItems = Cart::with('variant')
+                $cartItems = Cart::with(['variant', 'product'])
                     ->where('user_id', Auth::id())
-                    ->whereHas('variant') 
+                    ->whereHas('variant')
+                    ->whereHas('product')
                     ->get();
 
                 $cartCount = $cartItems
@@ -55,10 +56,11 @@ class AppServiceProvider extends ServiceProvider
                 
                 $guestToken = request()->cookie('guest_token') ?? request()->ip();
 
-                $cartItems = Cart::with('variant')
+                $cartItems = Cart::with(['variant', 'product'])
                     ->where('ip_addresscart', $guestToken)
                     ->whereNull('user_id')
-                    ->whereHas('variant') 
+                    ->whereHas('variant')
+                    ->whereHas('product')
                     ->get();
 
                 $cartCount = $cartItems

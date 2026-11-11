@@ -1319,7 +1319,7 @@
                                                         <div class="variant-selected-display" role="button" tabindex="0"
                                                             aria-haspopup="listbox" aria-expanded="false" aria-label="Select variant">
                                                             <span class="variant-label">{{ $firstLabel }}</span>
-                                                            <span class="variant-price-tag">₹{{ $first->offer_price }}</span>
+                                                            <span class="variant-price-tag">{{ $currencySymbol ?? '₹' }}{{ $first->offer_price }}</span>
                                                             <i class="ph ph-caret-down variant-arrow" aria-hidden="true"></i>
                                                         </div>
                                                         <ul class="variant-options-list" role="listbox" aria-label="Available variants">
@@ -1344,9 +1344,9 @@
                                                                     <span class="opt-size">{{ $vLabel }}@if(($v->product_qty ?? 0) <= 0) <small class="text-danger-600 fw-bold ms-1" style="font-size:10px;">(Out)</small>@endif</span>
                                                                     <span class="opt-price">
                                                                         @if($v->mrp_price && $v->mrp_price > $v->offer_price)
-                                                                            <span class="opt-mrp">₹{{ $v->mrp_price }}</span>
+                                                                            <span class="opt-mrp">{{ $currencySymbol ?? '₹' }}{{ $v->mrp_price }}</span>
                                                                         @endif
-                                                                        <span class="opt-offer">₹{{ $v->offer_price }}</span>
+                                                                        <span class="opt-offer">{{ $currencySymbol ?? '₹' }}{{ $v->offer_price }}</span>
                                                                     </span>
                                                                 </li>
                                                             @endforeach
@@ -1368,17 +1368,17 @@
                                         <div class="product-card__price d-flex align-items-center justify-content-center flex-wrap gap-8 my-10 text-center w-100">
                                             <div class="d-flex align-items-baseline justify-content-center gap-8">
                                                 <span class="text-heading text-lg fw-bold">
-                                                    ₹{{ $variant->offer_price ?? 0 }}
+                                                    {{ $currencySymbol ?? '₹' }}{{ $variant->offer_price ?? 0 }}
                                                 </span>
                                                 @if($variant && $variant->mrp_price && $variant->mrp_price > $variant->offer_price)
                                                     <span class="text-neutral-400 text-sm fw-medium text-decoration-line-through">
-                                                        ₹{{ $variant->mrp_price }}
+                                                        {{ $currencySymbol ?? '₹' }}{{ $variant->mrp_price }}
                                                     </span>
                                                 @endif
                                             </div>
                                             @if($variant && $variant->mrp_price && $variant->mrp_price > $variant->offer_price)
                                                 <span class="badge bg-success-50 text-success-700 text-xs px-6 py-2 rounded-6 fw-bold">
-                                                    Save ₹{{ $variant->mrp_price - $variant->offer_price }}
+                                                    Save {{ $currencySymbol ?? '₹' }}{{ $variant->mrp_price - $variant->offer_price }}
                                                 </span>
                                             @endif
                                         </div>
@@ -1658,6 +1658,12 @@ function attachAddToCartEvent(controlDiv) {
     btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
+
+        if (btn.disabled) return;
+        btn.disabled = true;
+        const origContent = btn.innerHTML;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Adding...`;
+
         const productId = controlDiv.dataset.productId;
         const variantId = controlDiv.dataset.variantId;
 
@@ -1681,6 +1687,8 @@ function attachAddToCartEvent(controlDiv) {
                     showConfirmButton: false, timer: 2000, timerProgressBar: true
                 });
             } else {
+                btn.disabled = false;
+                btn.innerHTML = origContent;
                 Swal.fire({
                     icon: 'warning', title: data.message || 'This product variant is currently unavailable.',
                     toast: true, position: 'top-end',
@@ -1688,6 +1696,8 @@ function attachAddToCartEvent(controlDiv) {
                 });
             }
         }).catch(() => {
+            btn.disabled = false;
+            btn.innerHTML = origContent;
             Swal.fire({
                 icon: 'error', title: 'Network error',
                 toast: true, position: 'top-end',
@@ -1738,9 +1748,11 @@ function applyVariant(select, option, options) {
     const mrpPrice   = option.dataset.mrp;
     const sizeText   = option.querySelector('.opt-size').textContent;
 
+    const activeCurr = '{{ $currencySymbol ?? "₹" }}';
+
     // Update selected display
     select.querySelector('.variant-label').textContent = sizeText;
-    select.querySelector('.variant-price-tag').textContent = '₹' + offerPrice;
+    select.querySelector('.variant-price-tag').textContent = activeCurr + offerPrice;
 
     // Mark selected
     options.forEach(function (o) {
@@ -1762,10 +1774,10 @@ function applyVariant(select, option, options) {
             const savings = hasDiscount ? (Number(mrpPrice) - Number(offerPrice)) : 0;
             priceBox.innerHTML = `
                 <div class="d-flex align-items-baseline justify-content-center gap-8">
-                    <span class="text-heading text-lg fw-bold">₹${offerPrice}</span>
-                    ${hasDiscount ? `<span class="text-neutral-400 text-sm fw-medium text-decoration-line-through">₹${mrpPrice}</span>` : ''}
+                    <span class="text-heading text-lg fw-bold">${activeCurr}${offerPrice}</span>
+                    ${hasDiscount ? `<span class="text-neutral-400 text-sm fw-medium text-decoration-line-through">${activeCurr}${mrpPrice}</span>` : ''}
                 </div>
-                ${hasDiscount ? `<span class="badge bg-success-50 text-success-700 text-xs px-6 py-2 rounded-6 fw-bold">Save ₹${savings}</span>` : ''}
+                ${hasDiscount ? `<span class="badge bg-success-50 text-success-700 text-xs px-6 py-2 rounded-6 fw-bold">Save ${activeCurr}${savings}</span>` : ''}
             `;
         }
 

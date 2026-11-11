@@ -208,7 +208,10 @@ class ProfileController extends Controller
             return response()->json(['success' => false, 'message' => 'Only delivered orders can be requested for return.'], 400);
         }
 
-        $reason = $request->input('reason', 'Return requested by customer');
+        $reason = trim($request->input('reason', ''));
+        if (empty($reason) || strlen($reason) < 3) {
+            return response()->json(['success' => false, 'message' => 'Please provide a valid reason for your return request.'], 422);
+        }
 
         $order->update([
             'status' => 'Return Requested',

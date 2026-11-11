@@ -309,16 +309,31 @@ class CheckoutController extends Controller
             $gstAmount += ($price * $quantity) * ($gstRate / 100);
         }
 
+        $gstAmount = round($gstAmount, 2);
         $shipping = max(0, floatval($request->shipping_charge ?? 0));
         // Security check: validate discount against authenticated session coupon to prevent client-side tampering (TC-CH01 / TC-CH11)
         $sessionDiscount = floatval(session('applied_coupon.discount', 0));
         $discount = min($sessionDiscount, max(0, floatval($request->coupon_discount ?? 0)));
-        $total = max(0, ($subtotal + $gstAmount + $shipping) - $discount);
+        $total = round(max(0, ($subtotal + $gstAmount + $shipping) - $discount), 2);
 
         $orderNumber = 'ORD-' . strtoupper(uniqid());
 
         DB::beginTransaction();
         try {
+            // Concurrency Stock Validation (Issue #91): Lock and verify stock availability before order insertion
+            foreach ($cartItems as $item) {
+                $checkVariant = ProductVarient::lockForUpdate()->find($item->product_varient_id);
+                $available = (int) ($checkVariant->product_qty ?? 0);
+                if (!$checkVariant || $available < $item->product_quantity) {
+                    DB::rollBack();
+                    $pName = $item->product->product_name ?? 'An item in your cart';
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => "Sorry, '{$pName}' is out of stock or does not have enough quantity available."
+                    ], 400);
+                }
+            }
+
             // 1. Table: product_orders (Master)
             $orderData = [
                 'user_id' => $userId,
@@ -451,7 +466,9 @@ class CheckoutController extends Controller
             }
 
             // 6. Clear Cart
-            Cart::where('user_id', $userId)->delete();
+            Cart::where('user_id', $userId)
+                ->orWhere('ip_addresscart', $request->ip())
+                ->delete();
             session()->forget('applied_coupon');
 
             DB::commit();
@@ -771,6 +788,6 @@ class CheckoutController extends Controller
                   ->whereNull('user_id');
         }
 
-        return $query->whereHas('variant')->get();
+        return $query->whereHas('variant')->whereHas('product')->get();
     }
 }

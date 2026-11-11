@@ -23,12 +23,22 @@ class SearchController extends Controller
             return response()->json([]);
         }
 
+        $safeQ = addcslashes($q, '%_\\');
+        $countryId = session('country_id');
+
         $results = [];
         $baseImageUrl = rtrim(env('MAIN_URL'), '/') . '/images/';
 
-        $products = Product::where('product_name', 'LIKE', "%{$q}%")
-            ->limit(5)
-            ->get();
+        $productQuery = Product::where('product_name', 'LIKE', "%{$safeQ}%");
+        if ($countryId) {
+            $productQuery->where(function ($sq) use ($countryId) {
+                $sq->whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+                  ->orWhere('country_id', $countryId)
+                  ->orWhereNull('country_id')
+                  ->orWhere('country_id', '');
+            });
+        }
+        $products = $productQuery->limit(5)->get();
 
         foreach ($products as $item) {
             $results[] = [

@@ -92,7 +92,13 @@ class AuthController extends Controller
 
         // Migrate Guest Cart to Logged-in User
         try {
-            $guestItems = Cart::where('ip_addresscart', $request->ip())
+            $guestToken = $request->cookie('guest_token');
+            $guestItems = Cart::where(function ($q) use ($request, $guestToken) {
+                    $q->where('ip_addresscart', $request->ip());
+                    if ($guestToken) {
+                        $q->orWhere('ip_addresscart', $guestToken);
+                    }
+                })
                 ->whereNull('user_id')
                 ->get();
 

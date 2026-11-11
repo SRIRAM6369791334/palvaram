@@ -74,18 +74,18 @@
                                     <td>
                                         <div class="table-product d-flex align-items-center gap-12">
 
-                                            <a href="/product/{{ $item->product->slug }}"
+                                            <a href="{{ !empty($item->product->slug) ? '/product/' . $item->product->slug : '#' }}"
                                             class="table-product__thumb border border-gray-100 rounded-8 flex-center">
 
-                                                <img src="{{ env('MAIN_URL') }}images/{{ $item->product->product_image }}"
-                                                alt="">
+                                                <img src="{{ env('MAIN_URL') }}images/{{ $item->product->product_image ?? 'default.png' }}"
+                                                alt="{{ $item->product->product_name ?? 'Product' }}">
 
                                             </a>
 
                                             <div class="table-product__content text-start">
                                                 <h6 class="title text-lg fw-semibold mb-4">
-                                                    <a href="/product/{{ $item->product->slug }}" class="link text-line-2">
-                                                        {{ $item->product->product_name }}
+                                                    <a href="{{ !empty($item->product->slug) ? '/product/' . $item->product->slug : '#' }}" class="link text-line-2">
+                                                        {{ $item->product->product_name ?? 'Product Unavailable' }}
                                                     </a>
                                                 </h6>
 

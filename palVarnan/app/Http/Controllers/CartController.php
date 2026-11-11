@@ -22,7 +22,7 @@ class CartController extends Controller
           ->whereNull('user_id');
         }
 
-        $cartItems = $query->whereHas('variant')->get();
+        $cartItems = $query->whereHas('variant')->whereHas('product')->get();
 
         $subtotal = 0;
 
@@ -181,7 +181,7 @@ class CartController extends Controller
 
 public function subtotal()
 {
-    $query = Cart::with('variant');
+    $query = Cart::with(['variant', 'product']);
 
     if (Auth::check()) {
         $query->where('user_id', Auth::id());
@@ -190,8 +190,17 @@ public function subtotal()
               ->whereNull('user_id');
     }
 
-    $subtotal = $query->whereHas('variant')->get()
+    $subtotal = $query->whereHas('variant')->whereHas('product')->get()
         ->sum(fn($item) => ($item->variant->offer_price ?? 0) * $item->product_quantity);
+
+    // Revalidate session coupon min_amt
+    $applied = session('applied_coupon');
+    if ($applied && !empty($applied['id'])) {
+        $coupon = Coupon::find($applied['id']);
+        if ($coupon && !empty($coupon->mini_amt) && $subtotal < $coupon->mini_amt) {
+            session()->forget('applied_coupon');
+        }
+    }
 
     return response()->json(['subtotal' => $subtotal]);
 }
@@ -204,8 +213,8 @@ public function subtotal()
             return response()->json(['success' => false, 'message' => 'Please enter a coupon code.'], 400);
         }
 
-        // TC-C11: Strict prepared lookup prevents SQLi
-        $coupon = Coupon::where('codename', $code)
+        // Case-insensitive lookup prevents case mismatch errors
+        $coupon = Coupon::whereRaw('LOWER(codename) = ?', [strtolower($code)])
             ->where(function ($q) {
                 $q->where('coupon_status', 1)->orWhereNull('coupon_status');
             })
@@ -215,19 +224,19 @@ public function subtotal()
             return response()->json(['success' => false, 'message' => 'Invalid or inactive coupon code.'], 404);
         }
 
-        // TC-C12: Expiry check
+        // Expiry check
         if (!empty($coupon->end_date) && strtotime($coupon->end_date) < strtotime(date('Y-m-d'))) {
             return response()->json(['success' => false, 'message' => 'This coupon has expired.'], 400);
         }
 
         // Get subtotal
-        $query = Cart::with('variant');
+        $query = Cart::with(['variant', 'product']);
         if (Auth::check()) {
             $query->where('user_id', Auth::id());
         } else {
             $query->where('ip_addresscart', request()->cookie('guest_token') ?? request()->ip())->whereNull('user_id');
         }
-        $subtotal = $query->whereHas('variant')->get()
+        $subtotal = $query->whereHas('variant')->whereHas('product')->get()
             ->sum(fn($i) => ($i->variant->offer_price ?? 0) * $i->product_quantity);
 
         // TC-C13: Minimum cart amount check
