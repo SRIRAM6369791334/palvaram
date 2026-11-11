@@ -65,6 +65,17 @@ addValidator
         },
     ])
     .onSuccess((event) => {
+        if ($("#add_country_id").length) {
+            const selected = $("#add_country_id").val();
+            if (!selected || (Array.isArray(selected) && selected.length === 0)) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Country Required",
+                    text: "Please select at least one country for the gift category."
+                });
+                return false;
+            }
+        }
         if (invalidAddCategoryImage) {
             addValidator.showErrors({
                 "#add_categoryImage": "*Image resolution must be exactly 512 × 512",
@@ -88,6 +99,17 @@ editValidator
         },
     ])
     .onSuccess((event) => {
+        if ($("#edit_country_id").length) {
+            const selected = $("#edit_country_id").val();
+            if (!selected || (Array.isArray(selected) && selected.length === 0)) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Country Required",
+                    text: "Please select at least one country for the gift category."
+                });
+                return false;
+            }
+        }
         if (invalidEditCategoryImage) {
             editValidator.showErrors({
                 "#edit_categoryImage": "*Image resolution must be exactly 512 × 512",
@@ -181,8 +203,21 @@ function gridjsReRender(categories) {
 
 // ─── AJAX Form Submissions ────────────────────────────────────────────────────
 
+function parseGiftCategoryError(jqXHR, fallbackMsg) {
+    if (jqXHR && jqXHR.responseJSON) {
+        if (jqXHR.responseJSON.errors) {
+            return Object.values(jqXHR.responseJSON.errors).flat().join("<br>");
+        }
+        if (jqXHR.responseJSON.message) {
+            return jqXHR.responseJSON.message;
+        }
+    }
+    return fallbackMsg || "Something went wrong. Please try again.";
+}
+
 function addCategoriesFormSubmit(e) {
-    const formdata = new FormData(e.target);
+    const formEl = document.getElementById("addCategoriesForm");
+    const formdata = new FormData(formEl);
     $.ajax({
         url: giftUrls.store,
         method: "POST",
@@ -192,26 +227,31 @@ function addCategoriesFormSubmit(e) {
         contentType: false,
         success: function (response) {
             $(".add_submit_btn").removeAttr("disabled").html("Submit");
-            $("#addCategoriesForm")[0].reset();
+            formEl.reset();
+            if ($("#add_country_id").length) {
+                $("#add_country_id").val(null).trigger("change");
+            }
             $("#addCategoriesModal").modal('hide');
             $(".product_remove_btn").trigger("click");
             $(".modal-backdrop").remove();
             gridjsReRender(response.categories);
-            Swal.fire("Added", "Records Added Successfully.", "success");
+            Swal.fire({
+                icon: "success",
+                title: "Added",
+                text: response.message || "Gift category added successfully."
+            });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             $(".add_submit_btn").removeAttr("disabled").html("Submit");
-            let message = errorThrown;
-            if (jqXHR.responseJSON && jqXHR.responseJSON.errors) {
-                message = Object.values(jqXHR.responseJSON.errors).flat().join("<br>");
-            }
-            Swal.fire({ icon: "error", title: textStatus.toUpperCase(), html: message });
+            const message = parseGiftCategoryError(jqXHR, "Failed to add gift category. Please try again.");
+            Swal.fire({ icon: "error", title: "Error", html: message });
         },
     });
 }
 
 function editCategoriesFormSubmit(e) {
-    const formdata = new FormData(e.target);
+    const formEl = document.getElementById("editCategoriesForm");
+    const formdata = new FormData(formEl);
     $.ajax({
         url: giftUrls.update + "/" + $("#edit_categories_id").val(),
         method: "POST",
@@ -221,23 +261,34 @@ function editCategoriesFormSubmit(e) {
         contentType: false,
         success: function (response) {
             $(".edit_submit_btn").removeAttr("disabled").html("Update");
-            $("#editCategoriesForm")[0].reset();
+            formEl.reset();
             $("#editCategoriesModal").modal('hide');
             $(".modal-backdrop").remove();
             $(".edit_product_remove_btn").trigger("click");
             gridjsReRender(response.categories);
-            Swal.fire("Updated", "Records Updated Successfully.", "success");
+            Swal.fire({
+                icon: "success",
+                title: "Updated",
+                text: response.message || "Gift category updated successfully."
+            });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             $(".edit_submit_btn").removeAttr("disabled").html("Update");
-            let message = errorThrown;
-            if (jqXHR.responseJSON && jqXHR.responseJSON.errors) {
-                message = Object.values(jqXHR.responseJSON.errors).flat().join("<br>");
-            }
-            Swal.fire({ icon: "error", title: textStatus.toUpperCase(), html: message });
+            const message = parseGiftCategoryError(jqXHR, "Failed to update gift category. Please try again.");
+            Swal.fire({ icon: "error", title: "Error", html: message });
         },
     });
 }
+
+// Reset add modal state when opened
+$('#addCategoriesModal').on('show.bs.modal', function () {
+    const form = document.getElementById("addCategoriesForm");
+    if (form) form.reset();
+    if ($("#add_country_id").length) {
+        $("#add_country_id").val(null).trigger("change");
+    }
+    $(".product_remove_btn").trigger("click");
+});
 
 // ─── Event Handlers ───────────────────────────────────────────────────────────
 
@@ -283,7 +334,8 @@ $(function () {
                         Swal.fire("Deleted!", "Records Deleted Successfully.", "success");
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        Swal.fire(textStatus.toUpperCase(), errorThrown, "warning");
+                        const message = parseGiftCategoryError(jqXHR, "Failed to delete gift category.");
+                        Swal.fire({ icon: "error", title: "Delete Failed", html: message });
                     },
                 });
             }

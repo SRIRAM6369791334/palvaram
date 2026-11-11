@@ -66,7 +66,7 @@
                     <form class="needs-validation" id="addCategoriesForm" novalidate>
                         @csrf
                         <div class="row">
-                            @can('country.selection')
+                            @can('Country.selection')
                             <div class="col-md-12">
                                 <div class="mb-3">
                                 <label class="form-label">Country <span class="text-danger">*</span></label>
@@ -135,7 +135,7 @@
                         @csrf
                         <input type="hidden" id="edit_categories_id" />
                         <div class="row">
-                            @can('country.selection')
+                            @can('Country.selection')
                             <div class="col-md-12">
                                 <div class="mb-3">
                                 <label class="form-label">Country <span class="text-danger">*</span></label>

@@ -67,14 +67,25 @@ class GiftController extends Controller
             }
 
             $request->validate([
-                "category_name"  => "required",
-                "category_image" => "required|mimes:png,jpg,jpeg,webp",
-                "country_id"     => "required|array",
+                "category_name"  => "required|string|max:100",
+                "category_image" => "required|image|mimes:png,jpg,jpeg,webp|max:10240",
+                "country_id"     => "required|array|min:1",
+            ], [
+                "category_name.required"  => "Category Name is required.",
+                "category_image.required" => "Category Image is required.",
+                "category_image.image"    => "Category Image must be a valid image file.",
+                "country_id.required"     => "Please select at least one country.",
+                "country_id.min"          => "Please select at least one country.",
             ]);
 
-            foreach ($request->country_id as $cid) {
+            $submittedCountryIds = array_filter(array_map('intval', (array)$request->country_id), fn($id) => $id > 0);
+            if (empty($submittedCountryIds)) {
+                return response()->json(["message" => "Please select at least one valid country."], 422);
+            }
+
+            foreach ($submittedCountryIds as $cid) {
                 if (!in_array((int)$cid, $allowedCountryIds)) {
-                    return response()->json(["message" => "Unauthorized country selected"], 403);
+                    return response()->json(["message" => "Unauthorized country selected."], 403);
                 }
             }
 
@@ -84,8 +95,8 @@ class GiftController extends Controller
             }
 
             Category::create([
-                "country_id"      => implode(',', $request->country_id),
-                "category_name"   => $request->category_name,
+                "country_id"      => implode(',', $submittedCountryIds),
+                "category_name"   => trim($request->category_name),
                 "category_image"  => $categoryImagePath,
                 "is_gift"         => 1,
                 "category_banner" => null,
@@ -99,92 +110,127 @@ class GiftController extends Controller
 
             return response()->json(["message" => "Gift Category Added Successfully", "categories" => $categories]);
 
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Validation\ValidationException $ve) {
             return response()->json([
-                "message" => $e->getMessage(),
-                "line"    => $e->getLine(),
-                "file"    => $e->getFile(),
+                "message" => "Validation failed",
+                "errors"  => $ve->errors()
+            ], 422);
+        } catch (\Throwable $e) {
+            return response()->json([
+                "message" => "Failed to add gift category: " . $e->getMessage()
             ], 500);
         }
     }
 
     public function categoryUpdate(Request $request, $id)
     {
-        $allowedCountryIds = $this->getAllowedCountryIds();
+        try {
+            $allowedCountryIds = $this->getAllowedCountryIds();
 
-        $category = Category::where('is_gift', 1)->get()->first(function ($cat) use ($id, $allowedCountryIds) {
-            $ids = array_map('intval', explode(',', $cat->country_id ?? ''));
-            return $cat->id == $id && count(array_intersect($ids, $allowedCountryIds)) > 0;
-        });
+            $category = Category::where('is_gift', 1)->get()->first(function ($cat) use ($id, $allowedCountryIds) {
+                $ids = array_map('intval', explode(',', $cat->country_id ?? ''));
+                return $cat->id == $id && count(array_intersect($ids, $allowedCountryIds)) > 0;
+            });
 
-        if (!$category) abort(404);
-
-        $existingCountryIds  = array_map('intval', explode(',', $category->country_id ?? ''));
-        $preservedCountryIds = array_filter($existingCountryIds, fn($cid) => !in_array($cid, $allowedCountryIds));
-
-        $submittedCountryId = $request->country_id;
-        if (is_string($submittedCountryId) && !empty($submittedCountryId)) {
-            $submittedCountryId = array_map('trim', explode(',', $submittedCountryId));
-        }
-
-        if (empty($submittedCountryId) && count($allowedCountryIds) === 1) {
-            $submittedCountryId = [$allowedCountryIds[0]];
-        }
-
-        $request->validate([
-            "category_name"  => "required",
-            "category_image" => $request->hasFile("category_image") ? "mimes:png,jpg,jpeg,webp" : "nullable",
-        ]);
-
-        $updateData = ["category_name" => $request->category_name];
-
-        $allowedSubmitted = array_filter((array)$submittedCountryId, fn($cid) => in_array((int)$cid, $allowedCountryIds));
-        $finalCountryIds  = array_unique(array_merge(array_values($preservedCountryIds), array_values($allowedSubmitted)));
-
-        if (!empty($finalCountryIds)) {
-            $updateData["country_id"] = implode(',', $finalCountryIds);
-        }
-
-        if ($request->hasFile("category_image")) {
-            if ($category->category_image && Storage::disk('public')->exists($category->category_image)) {
-                Storage::disk('public')->delete($category->category_image);
+            if (!$category) {
+                return response()->json(["message" => "Gift Category not found or unauthorized."], 404);
             }
-            $updateData["category_image"] = $request->file("category_image")->store("category_images", "public");
+
+            $existingCountryIds  = array_map('intval', explode(',', $category->country_id ?? ''));
+            $preservedCountryIds = array_filter($existingCountryIds, fn($cid) => !in_array($cid, $allowedCountryIds));
+
+            $submittedCountryId = $request->country_id;
+            if (is_string($submittedCountryId) && !empty($submittedCountryId)) {
+                $submittedCountryId = array_map('trim', explode(',', $submittedCountryId));
+            }
+
+            if (empty($submittedCountryId) && count($allowedCountryIds) === 1) {
+                $submittedCountryId = [$allowedCountryIds[0]];
+            }
+
+            $request->validate([
+                "category_name"  => "required|string|max:100",
+                "category_image" => $request->hasFile("category_image") ? "image|mimes:png,jpg,jpeg,webp|max:10240" : "nullable",
+            ], [
+                "category_name.required" => "Category Name is required.",
+                "category_image.image"   => "Category Image must be a valid image file.",
+            ]);
+
+            $updateData = ["category_name" => trim($request->category_name)];
+
+            $allowedSubmitted = array_filter(array_map('intval', (array)$submittedCountryId), fn($cid) => in_array((int)$cid, $allowedCountryIds));
+            $finalCountryIds  = array_unique(array_merge(array_values($preservedCountryIds), array_values($allowedSubmitted)));
+
+            if (!empty($finalCountryIds)) {
+                $updateData["country_id"] = implode(',', $finalCountryIds);
+            }
+
+            if ($request->hasFile("category_image")) {
+                if ($category->category_image && Storage::disk('public')->exists($category->category_image)) {
+                    Storage::disk('public')->delete($category->category_image);
+                }
+                $updateData["category_image"] = $request->file("category_image")->store("category_images", "public");
+            }
+
+            $category->update($updateData);
+
+            $categories = $this->filterByCountry(
+                Category::where('is_gift', 1)->with('country')->get(),
+                $allowedCountryIds
+            );
+
+            return response()->json(["message" => "Gift Category Updated Successfully", "categories" => $categories]);
+
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            return response()->json([
+                "message" => "Validation failed",
+                "errors"  => $ve->errors()
+            ], 422);
+        } catch (\Throwable $e) {
+            return response()->json([
+                "message" => "Failed to update gift category: " . $e->getMessage()
+            ], 500);
         }
-
-        $category->update($updateData);
-
-        $categories = $this->filterByCountry(
-            Category::where('is_gift', 1)->with('country')->get(),
-            $allowedCountryIds
-        );
-
-        return response()->json(["message" => "Gift Category Updated Successfully", "categories" => $categories]);
     }
 
     public function categoryDestroy($id)
     {
-        $allowedCountryIds = $this->getAllowedCountryIds();
+        try {
+            $allowedCountryIds = $this->getAllowedCountryIds();
 
-        $category = Category::where('is_gift', 1)->get()->first(function ($cat) use ($id, $allowedCountryIds) {
-            $ids = array_map('intval', explode(',', $cat->country_id ?? ''));
-            return $cat->id == $id && count(array_intersect($ids, $allowedCountryIds)) > 0;
-        });
+            $category = Category::where('is_gift', 1)->get()->first(function ($cat) use ($id, $allowedCountryIds) {
+                $ids = array_map('intval', explode(',', $cat->country_id ?? ''));
+                return $cat->id == $id && count(array_intersect($ids, $allowedCountryIds)) > 0;
+            });
 
-        if (!$category) abort(404);
+            if (!$category) {
+                return response()->json(["message" => "Gift Category not found or unauthorized."], 404);
+            }
 
-        if ($category->category_image && Storage::disk('public')->exists($category->category_image)) {
-            Storage::disk('public')->delete($category->category_image);
+            if ($category->products()->count() > 0) {
+                return response()->json([
+                    "message" => "Cannot delete gift category because it is associated with existing gift products."
+                ], 422);
+            }
+
+            if ($category->category_image && Storage::disk('public')->exists($category->category_image)) {
+                Storage::disk('public')->delete($category->category_image);
+            }
+
+            $category->delete();
+
+            $categories = $this->filterByCountry(
+                Category::where('is_gift', 1)->with('country')->get(),
+                $allowedCountryIds
+            );
+
+            return response()->json(["message" => "Gift Category Deleted Successfully", "categories" => $categories]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                "message" => "Failed to delete gift category: " . $e->getMessage()
+            ], 500);
         }
-
-        $category->delete();
-
-        $categories = $this->filterByCountry(
-            Category::where('is_gift', 1)->with('country')->get(),
-            $allowedCountryIds
-        );
-
-        return response()->json(["message" => "Gift Category Deleted Successfully", "categories" => $categories]);
     }
 
 
