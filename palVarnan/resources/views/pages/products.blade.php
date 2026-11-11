@@ -1616,6 +1616,9 @@ function attachQtyEvents(controlDiv) {
                                 <span>Add To Cart</span> <i class="ph-bold ph-shopping-cart-simple text-base"></i>
                             </button>`;
                         attachAddToCartEvent(controlDiv);
+                        if (typeof updateCartCount === 'function') {
+                            updateCartCount(-1);
+                        }
                     }
                 });
             } else {
@@ -1634,6 +1637,9 @@ function syncCart(variantId, quantity, input) {
         const data = await r.json();
         if (r.ok && data.success) {
             input.value = data.quantity !== undefined ? data.quantity : quantity;
+            if (typeof refreshCartSubtotal === 'function') {
+                refreshCartSubtotal();
+            }
             if (data.clamped) {
                 Swal.fire({ icon: 'info', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
             }
@@ -1666,6 +1672,9 @@ function attachAddToCartEvent(controlDiv) {
             const data = await r.json();
             if (r.ok && data.status !== 'error') {
                 showQtyBox(controlDiv, 1);
+                if (typeof updateCartCount === 'function') {
+                    updateCartCount(1);
+                }
                 Swal.fire({
                     icon: 'success', title: data.message || 'Added to cart successfully!',
                     toast: true, position: 'top-end',

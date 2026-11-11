@@ -411,12 +411,14 @@ window.addEventListener('DOMContentLoaded', function () {
 
 <script>
 function updateCartCount(delta) {
+    const badges   = document.querySelectorAll('#cart-count, [data-cart-count]');
     const headerEl = document.getElementById('cart-count');
     const bar      = document.getElementById('floating-cart-bar');
     const badge    = document.getElementById('fcb-badge');
     const label    = document.getElementById('fcb-item-label');
 
-    let current = parseInt(headerEl?.textContent || 0) + delta;
+    let current = Math.max(0, parseInt(headerEl?.textContent || 0) + delta);
+    badges.forEach(el => el.textContent = current);
     if (headerEl) headerEl.textContent = current;
     if (badge)    badge.textContent = current;
     if (label)    label.textContent = current + (current > 1 ? ' items' : ' item') + ' in cart';
@@ -424,7 +426,12 @@ function updateCartCount(delta) {
     if (bar) bar.style.display = current <= 0 ? 'none' : 'flex';
 
     // Refresh subtotal from server
-    refreshCartSubtotal();
+    if (typeof refreshCartSubtotal === 'function') {
+        refreshCartSubtotal();
+    }
+
+    // Dispatch global event for other components
+    window.dispatchEvent(new CustomEvent('cart:updated', { detail: { count: current } }));
 }
 
 function refreshCartSubtotal() {
