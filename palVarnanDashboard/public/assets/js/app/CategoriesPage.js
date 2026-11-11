@@ -50,6 +50,18 @@ $("#edit_categoryImage").on("change", function () {
 });
 
 
+if ($("#add_country_id").length) {
+    addValidator.addField("#add_country_id", [
+        {
+            rule: "required",
+            errorMessage: "*Country Field is required",
+        },
+    ]);
+    $(document).on("change", "#add_country_id", function () {
+        addValidator.revalidateField("#add_country_id");
+    });
+}
+
 addValidator
     .addField("#add_categoriesname", [
         {
@@ -283,6 +295,9 @@ function addCategoriesFormSubmit(e) {
             $(".add_submit_btn").html("Submit");
             const updatedCategories = response.categories;
             $("#addCategoriesForm")[0].reset();
+            if ($("#add_country_id").length) {
+                $("#add_country_id").val(null).trigger("change");
+            }
             $("#addCategoriesModal").hide();
             $(".product_remove_btn").trigger("click");
             $(".modal-backdrop").remove();

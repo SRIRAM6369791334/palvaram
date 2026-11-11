@@ -70,8 +70,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                 <label class="form-label">Country <span class="text-danger">*</span></label>
-                                <select class="form-control select2" id="add_country_id" name="country_id[]" multiple>
-                                    <option value="">Select Country</option>
+                                <select class="form-control select2" id="add_country_id" name="country_id[]" multiple data-placeholder="Select Country">
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">
                                             {{ $country->name }} ({{ $country->currency }})
@@ -140,8 +139,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                 <label class="form-label">Country <span class="text-danger">*</span></label>
-                                <select class="form-control select2" id="edit_country_id" name="country_id[]" multiple>
-                                    <option value="">Select Country</option>
+                                <select class="form-control select2" id="edit_country_id" name="country_id[]" multiple data-placeholder="Select Country">
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">
                                             {{ $country->name }} ({{ $country->currency }})
@@ -210,31 +208,44 @@
         window.countries = @json($countries);
         window.allowedCountryIds = @json($allowedCountryIds);
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('assets/js/app/CategoriesPage.js') }}"></script>
     <script>
-        // Add modal select2
-        $('#addCategoriesModal').on('shown.bs.modal', function () {
-            if ($('#add_country_id').hasClass("select2-hidden-accessible")) {
-                $('#add_country_id').select2('destroy');
+        function initCategorySelect2() {
+            if (typeof $.fn.select2 !== 'function') return;
+
+            if ($('#add_country_id').length) {
+                if ($('#add_country_id').hasClass("select2-hidden-accessible")) {
+                    $('#add_country_id').select2('destroy');
+                }
+                $('#add_country_id').select2({
+                    placeholder: "Select Country",
+                    width: '100%',
+                    dropdownParent: $('#addCategoriesModal')
+                });
             }
-            $('#add_country_id').select2({
-                placeholder: "Select Countries",
-                width: '100%',
-                dropdownParent: $('#addCategoriesModal')
-            });
+
+            if ($('#edit_country_id').length) {
+                if ($('#edit_country_id').hasClass("select2-hidden-accessible")) {
+                    $('#edit_country_id').select2('destroy');
+                }
+                $('#edit_country_id').select2({
+                    placeholder: "Select Country",
+                    width: '100%',
+                    dropdownParent: $('#editCategoriesModal')
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            initCategorySelect2();
         });
 
-        // Edit modal select2
+        $('#addCategoriesModal').on('shown.bs.modal', function () {
+            initCategorySelect2();
+        });
+
         $('#editCategoriesModal').on('shown.bs.modal', function () {
-            if ($('#edit_country_id').hasClass("select2-hidden-accessible")) {
-                $('#edit_country_id').select2('destroy');
-            }
-            $('#edit_country_id').select2({
-                placeholder: "Select Countries",
-                width: '100%',
-                dropdownParent: $('#editCategoriesModal')
-            });
+            initCategorySelect2();
         });
     </script>
 @endsection
