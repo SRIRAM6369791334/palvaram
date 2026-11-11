@@ -2,6 +2,13 @@
 
 @section('main')
 
+@php
+    $currentCountryId = session('country_id');
+    $currentCountry = $currentCountryId ? \App\Models\Country::find($currentCountryId) : null;
+    $isMexico = ($currentCountry && strtolower($currentCountry->name) === 'mexico') || ($currentCountryId == 244);
+    $defaultCountry = $isMexico ? 'mexico' : 'india';
+@endphp
+
 <!-- ========================= Breadcrumb Start =============================== -->
 <div class="breadcrumb mb-0 py-26 bg-main-50">
     <div class="container container-lg">
@@ -70,22 +77,50 @@
                                 <div class="invalid-feedback text-danger text-xs mt-2" id="email_error"></div>
                             </div>
 
+                            <!-- Country / Region -->
+                            <div class="col-sm-6">
+                                <label for="contact_country" class="form-label text-sm fw-semibold text-heading mb-8">
+                                    Country / Region <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select bg-neutral-30 border border-neutral-100 rounded-12 py-14 px-18 text-sm text-heading shadow-none" 
+                                        id="contact_country" 
+                                        name="country" 
+                                        required>
+                                    <option value="india" {{ $defaultCountry === 'india' ? 'selected' : '' }}>
+                                        🇮🇳 India (+91)
+                                    </option>
+                                    <option value="mexico" {{ $defaultCountry === 'mexico' ? 'selected' : '' }}>
+                                        🇲🇽 Mexico (+52)
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback text-danger text-xs mt-2" id="country_error"></div>
+                            </div>
+
                             <!-- Phone Number -->
                             <div class="col-sm-6">
                                 <label for="phone" class="form-label text-sm fw-semibold text-heading mb-8">
                                     Phone Number <span class="text-danger">*</span>
+                                    <span class="text-neutral-500 fw-normal text-xs ms-1" id="phone_hint">
+                                        {{ $defaultCountry === 'mexico' ? '(10-digit Mexican number: 2-9)' : '(10-digit Indian number: 6,7,8,9)' }}
+                                    </span>
                                 </label>
-                                <input type="tel" 
-                                       class="form-control bg-neutral-30 border border-neutral-100 rounded-12 py-14 px-18 text-sm text-heading shadow-none" 
-                                       id="phone" 
-                                       name="phone" 
-                                       placeholder="+91 98765 43210" 
-                                       required>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border border-neutral-100 rounded-start-12 px-14 text-sm fw-bold text-main-600" id="phone_dial_code" style="border-right: 0;">
+                                        {{ $defaultCountry === 'mexico' ? '+52' : '+91' }}
+                                    </span>
+                                    <input type="tel" 
+                                           class="form-control bg-neutral-30 border border-neutral-100 rounded-end-12 py-14 px-18 text-sm text-heading shadow-none" 
+                                           id="phone" 
+                                           name="phone" 
+                                           placeholder="{{ $defaultCountry === 'mexico' ? '55 1234 5678' : '98765 43210' }}" 
+                                           maxlength="16" 
+                                           required>
+                                </div>
                                 <div class="invalid-feedback text-danger text-xs mt-2" id="phone_error"></div>
                             </div>
 
                             <!-- Subject / Topic -->
-                            <div class="col-sm-6">
+                            <div class="col-12">
                                 <label for="subject" class="form-label text-sm fw-semibold text-heading mb-8">
                                     Inquiry Subject <span class="text-danger">*</span>
                                 </label>
@@ -295,8 +330,12 @@
     color: #dc3545;
     font-weight: 500;
 }
-.contact-box .is-invalid ~ .invalid-feedback {
+.contact-box .is-invalid ~ .invalid-feedback,
+.contact-box .input-group:has(.is-invalid) ~ .invalid-feedback {
     display: block;
+}
+#phone_dial_code {
+    user-select: none;
 }
 </style>
 
@@ -304,6 +343,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     const contactForm = document.getElementById('contactForm');
     if (!contactForm) return;
+
+    const countrySelect = document.getElementById('contact_country');
+    const dialBadge = document.getElementById('phone_dial_code');
+    const phoneHint = document.getElementById('phone_hint');
+    const phoneInput = document.getElementById('phone');
 
     const fields = {
         name: {
@@ -330,17 +374,77 @@ document.addEventListener('DOMContentLoaded', function () {
                 return '';
             }
         },
+        country: {
+            el: countrySelect,
+            errorEl: document.getElementById('country_error'),
+            validate: function (val) {
+                val = (val || '').trim().toLowerCase();
+                if (!val || (val !== 'india' && val !== 'mexico')) {
+                    return 'Please select a valid country.';
+                }
+                return '';
+            }
+        },
         phone: {
-            el: document.getElementById('phone'),
+            el: phoneInput,
             errorEl: document.getElementById('phone_error'),
             validate: function (val) {
                 val = (val || '').trim();
                 if (!val) return 'Phone Number is required.';
+
+                const selectedCountry = countrySelect ? (countrySelect.value || 'india').toLowerCase() : 'india';
                 const digits = val.replace(/[^0-9]/g, '');
-                if (digits.length < 10) return 'Phone Number must contain at least 10 digits.';
-                if (digits.length > 15) return 'Phone Number cannot exceed 15 digits.';
-                // Must be valid phone format (optional leading +, followed by digits, spaces, hyphens)
-                if (!/^\+?[0-9\s\-\(\)]{10,20}$/.test(val)) return 'Please enter a valid phone number (e.g. +91 98765 43210).';
+
+                if (digits.length === 0) {
+                    return 'Please enter a valid phone number containing digits.';
+                }
+
+                if (selectedCountry === 'india') {
+                    // Normalize Indian number: strip leading 91 (if 12 digits) or 0 (if 11 digits)
+                    let national = digits;
+                    if (digits.length === 12 && digits.startsWith('91')) {
+                        national = digits.substring(2);
+                    } else if (digits.length === 11 && digits.startsWith('0')) {
+                        national = digits.substring(1);
+                    }
+
+                    if (national.length < 10) {
+                        return `Indian mobile number must be 10 digits (currently ${national.length} digits).`;
+                    }
+                    if (national.length > 10) {
+                        return `Indian mobile number cannot exceed 10 digits (entered ${national.length} digits).`;
+                    }
+                    if (!/^[6-9]/.test(national)) {
+                        return 'Indian mobile number must start with 6, 7, 8, or 9 (e.g. 98765 43210).';
+                    }
+                    if (/^([0-9])\1{9}$/.test(national)) {
+                        return 'Please enter a valid mobile number, not repeated identical digits.';
+                    }
+                    return '';
+                } else if (selectedCountry === 'mexico') {
+                    // Normalize Mexican number: strip leading 521 (if 13 digits) or 52 (if 12 digits)
+                    let national = digits;
+                    if (digits.length === 13 && digits.startsWith('521')) {
+                        national = digits.substring(3);
+                    } else if (digits.length === 12 && digits.startsWith('52')) {
+                        national = digits.substring(2);
+                    }
+
+                    if (national.length < 10) {
+                        return `Mexican phone number must be 10 digits (currently ${national.length} digits).`;
+                    }
+                    if (national.length > 10) {
+                        return `Mexican phone number cannot exceed 10 digits (entered ${national.length} digits).`;
+                    }
+                    if (!/^[2-9]/.test(national)) {
+                        return 'Mexican phone number must start with a valid area code (digits 2-9, e.g. 55 1234 5678).';
+                    }
+                    if (/^([0-9])\1{9}$/.test(national)) {
+                        return 'Please enter a valid phone number, not repeated identical digits.';
+                    }
+                    return '';
+                }
+
                 return '';
             }
         },
@@ -373,17 +477,50 @@ document.addEventListener('DOMContentLoaded', function () {
         const error = field.validate(field.el.value);
         if (error) {
             field.el.classList.add('is-invalid');
-            if (field.errorEl) field.errorEl.textContent = error;
+            if (field.errorEl) {
+                field.errorEl.textContent = error;
+                field.errorEl.style.display = 'block';
+            }
             return false;
         } else {
             field.el.classList.remove('is-invalid');
-            if (field.errorEl) field.errorEl.textContent = '';
+            if (field.errorEl) {
+                field.errorEl.textContent = '';
+                field.errorEl.style.display = 'none';
+            }
             return true;
         }
     }
 
-    // Block non-numeric keys on Phone field (prevent typing letters/text)
-    const phoneInput = document.getElementById('phone');
+    // Dynamic country UI switcher
+    function updateCountryUI(country) {
+        country = (country || 'india').toLowerCase();
+        if (country === 'mexico') {
+            if (dialBadge) dialBadge.textContent = '+52';
+            if (phoneHint) phoneHint.textContent = '(10-digit Mexican number: 2-9)';
+            if (phoneInput) phoneInput.placeholder = '55 1234 5678';
+        } else {
+            if (dialBadge) dialBadge.textContent = '+91';
+            if (phoneHint) phoneHint.textContent = '(10-digit Indian number: 6,7,8,9)';
+            if (phoneInput) phoneInput.placeholder = '98765 43210';
+        }
+
+        // Re-validate phone field immediately if user already typed something
+        if (phoneInput && phoneInput.value.trim().length > 0) {
+            validateField('phone');
+        }
+    }
+
+    if (countrySelect) {
+        countrySelect.addEventListener('change', function () {
+            updateCountryUI(this.value);
+            validateField('country');
+        });
+        // Run once on load to guarantee sync
+        updateCountryUI(countrySelect.value);
+    }
+
+    // Input restrictions on Phone field
     if (phoneInput) {
         phoneInput.setAttribute('inputmode', 'tel');
 
@@ -405,6 +542,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            // Allow spaces and hyphens for friendly formatting
+            if (e.key === ' ' || e.key === '-') {
+                return;
+            }
+
             // Block any non-digit key from being typed
             if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) {
                 e.preventDefault();
@@ -412,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         phoneInput.addEventListener('beforeinput', function (e) {
-            if (e.data && !/^[0-9+]+$/.test(e.data)) {
+            if (e.data && !/^[0-9+\s\-]+$/.test(e.data)) {
                 e.preventDefault();
             }
         });
@@ -420,8 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
         phoneInput.addEventListener('paste', function (e) {
             e.preventDefault();
             const text = (e.clipboardData || window.clipboardData).getData('text') || '';
-            const hasPlus = text.trim().startsWith('+');
-            const clean = (hasPlus ? '+' : '') + text.replace(/[^0-9]/g, '');
+            const clean = text.replace(/[^0-9+\s\-]/g, '');
             document.execCommand('insertText', false, clean.substring(0, 16));
         });
     }
@@ -453,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Live sanitization for phone
             if (key === 'phone') {
                 const hasPlus = this.value.startsWith('+');
-                this.value = (hasPlus ? '+' : '') + this.value.replace(/[^0-9]/g, '');
+                this.value = (hasPlus ? '+' : '') + this.value.replace(/[^0-9\s\-]/g, '');
             }
             if (this.classList.contains('is-invalid')) {
                 validateField(key);

@@ -47,7 +47,8 @@ class ContactController extends Controller
         $validated = $request->validate([
             'name'    => 'required|string|min:2|max:255',
             'email'   => 'required|email|max:255',
-            'phone'   => ['required', 'string', 'min:7', 'max:25', 'regex:/^\+?[0-9\s\-\(\)]{7,20}$/'],
+            'country' => 'nullable|string|in:india,mexico',
+            'phone'   => ['required', 'string', 'min:7', 'max:25'],
             'subject' => 'required|string|min:2|max:255',
             'message' => 'required|string|min:10|max:3000',
         ], [
@@ -56,16 +57,64 @@ class ContactController extends Controller
             'email.required'   => 'Email Address is required.',
             'email.email'      => 'Please enter a valid email address.',
             'phone.required'   => 'Phone Number is required.',
-            'phone.min'        => 'Phone Number must contain at least 7 digits.',
-            'phone.regex'      => 'Please enter a valid phone number.',
             'subject.required' => 'Please select an inquiry topic.',
             'message.required' => 'Your message is required.',
             'message.min'      => 'Message must be at least 10 characters long.',
         ]);
 
+        // Country-specific phone number validation
+        $country = strtolower($request->input('country', ''));
+        if (!in_array($country, ['india', 'mexico'])) {
+            $sessionCountryId = session('country_id');
+            $country = ($sessionCountryId == 244) ? 'mexico' : 'india';
+        }
+
+        $cleanPhone = preg_replace('/[^0-9]/', '', $validated['phone']);
+
+        if ($country === 'india') {
+            $national = $cleanPhone;
+            if (strlen($cleanPhone) === 12 && str_starts_with($cleanPhone, '91')) {
+                $national = substr($cleanPhone, 2);
+            } elseif (strlen($cleanPhone) === 11 && str_starts_with($cleanPhone, '0')) {
+                $national = substr($cleanPhone, 1);
+            }
+
+            if (!preg_match('/^[6-9]\d{9}$/', $national)) {
+                $err = 'Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9 (e.g. +91 98765 43210).';
+                return response()->json([
+                    'message' => $err,
+                    'errors'  => ['phone' => [$err]]
+                ], 422);
+            }
+            $validated['phone'] = '+91 ' . $national;
+        } else {
+            // Mexico
+            $national = $cleanPhone;
+            if (strlen($cleanPhone) === 13 && str_starts_with($cleanPhone, '521')) {
+                $national = substr($cleanPhone, 3);
+            } elseif (strlen($cleanPhone) === 12 && str_starts_with($cleanPhone, '52')) {
+                $national = substr($cleanPhone, 2);
+            }
+
+            if (!preg_match('/^[2-9]\d{9}$/', $national)) {
+                $err = 'Please enter a valid 10-digit Mexican phone number starting with area code 2-9 (e.g. +52 55 1234 5678).';
+                return response()->json([
+                    'message' => $err,
+                    'errors'  => ['phone' => [$err]]
+                ], 422);
+            }
+            $validated['phone'] = '+52 ' . $national;
+        }
+
         try {
             // Auto-heal schema if phone column is missing in production database
-            $payload = $validated;
+            $payload = [
+                'name'    => $validated['name'],
+                'email'   => $validated['email'],
+                'phone'   => $validated['phone'],
+                'subject' => $validated['subject'],
+                'message' => $validated['message'],
+            ];
             try {
                 if (\Illuminate\Support\Facades\Schema::hasTable('contacts')) {
                     if (!\Illuminate\Support\Facades\Schema::hasColumn('contacts', 'phone')) {
