@@ -18,6 +18,17 @@ addValidator
         },
     ])
     .onSuccess((event) => {
+        if ($("#add_country_id").length) {
+            const selected = $("#add_country_id").val();
+            if (!selected || (Array.isArray(selected) && selected.length === 0)) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Country Required",
+                    text: "Please select at least one country for the brand."
+                });
+                return false;
+            }
+        }
         $(".add_submit_btn").attr("disabled", true).html('<span class="spinner-border spinner-border-sm me-1"></span> Saving...');
         addBrandFormSubmit(event);
     });
@@ -28,8 +39,24 @@ editValidator
             rule: "required",
             errorMessage: "Brand Name is required",
         },
+        {
+            rule: "minLength",
+            value: 2,
+            errorMessage: "Name should be at least 2 characters",
+        },
     ])
     .onSuccess((event) => {
+        if ($("#edit_country_id").length) {
+            const selected = $("#edit_country_id").val();
+            if (!selected || (Array.isArray(selected) && selected.length === 0)) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Country Required",
+                    text: "Please select at least one country for the brand."
+                });
+                return false;
+            }
+        }
         $(".edit_submit_btn").attr("disabled", true).html('<span class="spinner-border spinner-border-sm me-1"></span> Updating...');
         editBrandFormSubmit(event);
     });
@@ -53,11 +80,11 @@ const gridBrands = new gridjs.Grid({
         return [
             index + 1,
             brand.country_id ? brand.country_id.toString().split(',')
-    .filter(id => !window.allowedCountryIds || window.allowedCountryIds.includes(parseInt(id)))
-    .map(id => {
-        const found = window.countries ? window.countries.find(c => c.id == id) : null;
-        return found ? found.name : id;
-    }).join(', ') : '-',
+                .filter(id => !window.allowedCountryIds || window.allowedCountryIds.includes(parseInt(id)))
+                .map(id => {
+                    const found = window.countries ? window.countries.find(c => c.id == id) : null;
+                    return found ? found.name : id;
+                }).join(', ') : '-',
             brand.brand_name,
             gridjs.html(`
                 <div class="d-flex justify-content-center">
@@ -87,11 +114,11 @@ function gridjsReRender(brands) {
             return [
                 index + 1,
                 brand.country_id ? brand.country_id.toString().split(',')
-    .filter(id => !window.allowedCountryIds || window.allowedCountryIds.includes(parseInt(id)))
-    .map(id => {
-        const found = window.countries ? window.countries.find(c => c.id == id) : null;
-        return found ? found.name : id;
-    }).join(', ') : '-',
+                    .filter(id => !window.allowedCountryIds || window.allowedCountryIds.includes(parseInt(id)))
+                    .map(id => {
+                        const found = window.countries ? window.countries.find(c => c.id == id) : null;
+                        return found ? found.name : id;
+                    }).join(', ') : '-',
                 brand.brand_name,
                 gridjs.html(`
                     <div class="d-flex justify-content-center">
@@ -109,8 +136,22 @@ function gridjsReRender(brands) {
     }).forceRender();
 }
 
+function parseAjaxError(jqXHR, fallbackMsg) {
+    if (jqXHR && jqXHR.responseJSON) {
+        if (jqXHR.responseJSON.errors) {
+            return Object.values(jqXHR.responseJSON.errors).flat().join('<br>');
+        }
+        if (jqXHR.responseJSON.message) {
+            return jqXHR.responseJSON.message;
+        }
+    }
+    return fallbackMsg || "Something went wrong. Please try again.";
+}
+
 function addBrandFormSubmit(e) {
-    const formdata = new FormData(e.target);
+    const formEl = document.getElementById("addBrandForm");
+    const formdata = new FormData(formEl);
+    
     $.ajax({
         url: "brands",
         method: "POST",
@@ -120,22 +161,36 @@ function addBrandFormSubmit(e) {
         contentType: false,
         success: function (response) {
             $(".add_submit_btn").removeAttr("disabled").html("Create Brand");
-            $("#addBrandForm")[0].reset();
+            formEl.reset();
+            if ($("#add_country_id").length) {
+                $("#add_country_id").val(null).trigger('change');
+            }
             $("#addBrandModal").modal('hide');
-            $("#brand-add-preview-container").html('<div class="text-center"><i class="display-4 text-muted mdi mdi-cloud-upload"></i><br><span>Preview Image</span></div>');
+            $("#brand-add-preview-container").html('<div class="flex justify-content-center"><div class="text-center"><i class="display-4 col-12 text-muted mdi mdi-cloud-upload"></i></div><div><span class="col-12 text-muted">Upload Image</span></div></div>');
             gridjsReRender(response.brands);
-            Swal.fire("Success", "Brand added successfully", "success");
+            Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: response.message || "Brand added successfully"
+            });
         },
         error: function (jqXHR) {
             $(".add_submit_btn").removeAttr("disabled").html("Create Brand");
-            Swal.fire("Error", "Something went wrong", "error");
+            const errorHtml = parseAjaxError(jqXHR, "Failed to add brand. Please try again.");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                html: errorHtml
+            });
         },
     });
 }
 
 function editBrandFormSubmit(e) {
-    const formdata = new FormData(e.target);
+    const formEl = document.getElementById("editBrandForm");
+    const formdata = new FormData(formEl);
     const id = $("#edit_brand_id").val();
+    
     $.ajax({
         url: "updateBrands/" + id,
         method: "POST",
@@ -147,14 +202,33 @@ function editBrandFormSubmit(e) {
             $(".edit_submit_btn").removeAttr("disabled").html("Update Brand");
             $("#editBrandModal").modal('hide');
             gridjsReRender(response.brands);
-            Swal.fire("Updated", "Brand updated successfully", "success");
+            Swal.fire({
+                icon: "success",
+                title: "Updated",
+                text: response.message || "Brand updated successfully"
+            });
         },
         error: function (jqXHR) {
             $(".edit_submit_btn").removeAttr("disabled").html("Update Brand");
-            Swal.fire("Error", "Update failed", "error");
+            const errorHtml = parseAjaxError(jqXHR, "Update failed. Please try again.");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                html: errorHtml
+            });
         },
     });
 }
+
+// Reset add modal state when opened
+$('#addBrandModal').on('show.bs.modal', function () {
+    const form = document.getElementById("addBrandForm");
+    if (form) form.reset();
+    if ($("#add_country_id").length) {
+        $("#add_country_id").val(null).trigger('change');
+    }
+    $("#brand-add-preview-container").html('<div class="flex justify-content-center"><div class="text-center"><i class="display-4 col-12 text-muted mdi mdi-cloud-upload"></i></div><div><span class="col-12 text-muted">Upload Image</span></div></div>');
+});
 
 // Preview Image logic
 $(document).on("change", "#add_brand_image", function () {
@@ -201,9 +275,20 @@ $(document).on("click", ".delete_brand_trigger", function () {
                 url: "destroyBrands/" + id,
                 method: "POST",
                 dataType: "json",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content') || $('input[name="_token"]').val()
+                },
                 success: function (response) {
                     gridjsReRender(response.brands);
-                    Swal.fire("Deleted", "Brand removed successfully", "success");
+                    Swal.fire("Deleted", response.message || "Brand removed successfully", "success");
+                },
+                error: function (jqXHR) {
+                    const errorHtml = parseAjaxError(jqXHR, "Failed to delete brand.");
+                    Swal.fire({
+                        icon: "error",
+                        title: "Delete Failed",
+                        html: errorHtml
+                    });
                 }
             });
         }

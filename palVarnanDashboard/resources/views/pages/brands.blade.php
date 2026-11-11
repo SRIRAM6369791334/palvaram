@@ -57,8 +57,7 @@
                         @can('Country.selection')
                             <div class="mb-3">
                                 <label class="form-label">Country <span class="text-danger">*</span></label>
-                                <select class="form-control select2" id="add_country_id" name="country_id[]" multiple>
-                                    <option value="">Select Country</option>
+                                <select class="form-control select2" id="add_country_id" name="country_id[]" multiple data-placeholder="Select Countries">
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">
                                             {{ $country->name }} ({{ $country->currency }})
@@ -113,12 +112,11 @@
                     <form class="needs-validation" id="editBrandForm" novalidate enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" id="edit_brand_id" name="brand_id">
-                        <input type="hidden" id="edit_country_id_hidden" name="country_id">
+                        <input type="hidden" id="edit_country_id_hidden">
                         @can('Country.selection')
                             <div class="mb-3">
                                 <label class="form-label">Country <span class="text-danger">*</span></label>
-                                <select class="form-control select2" id="edit_country_id" name="country_id[]" multiple>
-                                    <option value="">Select Country</option>
+                                <select class="form-control select2" id="edit_country_id" name="country_id[]" multiple data-placeholder="Select Countries">
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">
                                             {{ $country->name }} ({{ $country->currency }})
