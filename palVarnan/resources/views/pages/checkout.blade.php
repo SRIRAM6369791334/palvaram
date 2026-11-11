@@ -644,9 +644,15 @@ function showFormErrors(form, errors) {
 }
 
 async function submitAddressForm(form) {
+    const pinInput = form.querySelector('input[name="pincode"]');
+    const feedback = form.querySelector('.pincode-feedback');
+    const hasPinError = pinInput && (
+        pinInput.classList.contains('is-invalid') ||
+        feedback?.querySelector('.badge-error') !== null
+    );
+
     clearFormErrors(form);
 
-    const pinInput = form.querySelector('input[name="pincode"]');
     if (pinInput) {
         const pinVal = pinInput.value.trim();
         if (pinVal.length > 0 && pinVal.length !== 6) {
@@ -655,8 +661,9 @@ async function submitAddressForm(form) {
             pinInput.focus();
             return;
         }
-        if (pinInput.classList.contains('is-invalid')) {
+        if (hasPinError) {
             showToast('Please enter a valid Indian postal PIN code before saving.', 'error');
+            pinInput.classList.add('is-invalid');
             pinInput.focus();
             return;
         }
