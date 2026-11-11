@@ -747,6 +747,74 @@ class CheckoutController extends Controller
         ]);
     }
 
+    /**
+     * Real-time Pincode Lookup and Validation against India Post records.
+     */
+    public function lookupPincode(Request $request)
+    {
+        $pincode = trim($request->get('pincode', ''));
+
+        if (!preg_match('/^[1-9][0-9]{5}$/', $pincode)) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Please enter a valid 6-digit Indian PIN code.'
+            ], 422);
+        }
+
+        $cacheKey = "pincode_lookup_{$pincode}";
+        $data = \Illuminate\Support\Facades\Cache::get($cacheKey);
+
+        if (!$data) {
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(5)
+                    ->withoutVerifying()
+                    ->withHeaders([
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) PalVarnan/1.0',
+                        'Accept' => 'application/json'
+                    ])
+                    ->get("https://api.postalpincode.in/pincode/{$pincode}");
+
+                if ($response->successful()) {
+                    $body = $response->json();
+                    if (!empty($body[0]['Status']) && $body[0]['Status'] === 'Success' && !empty($body[0]['PostOffice'])) {
+                        $first = $body[0]['PostOffice'][0];
+                        $places = collect($body[0]['PostOffice'])->pluck('Name')->unique()->values()->all();
+                        $data = [
+                            'valid' => true,
+                            'district' => $first['District'] ?? '',
+                            'state' => $first['State'] ?? '',
+                            'places' => $places
+                        ];
+                        \Illuminate\Support\Facades\Cache::put($cacheKey, $data, 86400 * 30);
+                    } else {
+                        $data = [
+                            'valid' => false,
+                            'message' => "Pincode {$pincode} was not found in Indian postal records."
+                        ];
+                        \Illuminate\Support\Facades\Cache::put($cacheKey, $data, 3600);
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning("Pincode lookup error for {$pincode}: " . $e->getMessage());
+            }
+        }
+
+        if (!$data || empty($data['valid'])) {
+            return response()->json([
+                'valid' => false,
+                'message' => $data['message'] ?? "Pincode {$pincode} is not recognized as a valid Indian postal code."
+            ], 404);
+        }
+
+        return response()->json([
+            'valid' => true,
+            'city' => $data['district'],
+            'state' => $data['state'],
+            'places' => $data['places'] ?? [],
+            'message' => "Verified: {$data['district']}, {$data['state']}"
+        ]);
+    }
+
     private function validateAddress(Request $request): array
     {
         $countryId = Auth::user()->country_id ?? session('country_id', 243);
@@ -760,7 +828,7 @@ class CheckoutController extends Controller
             ? ['required', 'regex:/^[1-9][0-9]{5}$/']
             : ['required', 'regex:/^[0-9a-zA-Z \-]{3,10}$/'];
 
-        return $request->validate([
+        $validated = $request->validate([
             'first_name'               => ['required', 'string', 'max:100'],
             'last_name'                => ['required', 'string', 'max:100'],
             'phone_number'             => $phoneRule,
@@ -775,6 +843,62 @@ class CheckoutController extends Controller
             'phone_number.regex'       => 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
             'pincode.regex'            => 'Please enter a valid 6-digit postal pincode.',
         ]);
+
+        if ($isIndia && preg_match('/^[1-9][0-9]{5}$/', $validated['pincode'])) {
+            $pincode = $validated['pincode'];
+            $inputState = strtolower(preg_replace('/[^a-z]/', '', $validated['state']));
+
+            $cacheKey = "pincode_lookup_{$pincode}";
+            $pinData = \Illuminate\Support\Facades\Cache::get($cacheKey);
+
+            if (!$pinData) {
+                try {
+                    $response = \Illuminate\Support\Facades\Http::timeout(5)
+                        ->withoutVerifying()
+                        ->withHeaders([
+                            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) PalVarnan/1.0',
+                            'Accept' => 'application/json'
+                        ])
+                        ->get("https://api.postalpincode.in/pincode/{$pincode}");
+
+                    if ($response->successful()) {
+                        $body = $response->json();
+                        if (!empty($body[0]['Status']) && $body[0]['Status'] === 'Success' && !empty($body[0]['PostOffice'])) {
+                            $first = $body[0]['PostOffice'][0];
+                            $pinData = [
+                                'valid' => true,
+                                'district' => $first['District'] ?? '',
+                                'state' => $first['State'] ?? '',
+                            ];
+                            \Illuminate\Support\Facades\Cache::put($cacheKey, $pinData, 86400 * 30);
+                        } else {
+                            $pinData = ['valid' => false];
+                            \Illuminate\Support\Facades\Cache::put($cacheKey, $pinData, 3600);
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning("Pincode validation timeout/error: " . $e->getMessage());
+                }
+            }
+
+            if ($pinData && isset($pinData['valid']) && $pinData['valid'] === false) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'pincode' => "Pincode {$pincode} was not found in Indian postal records."
+                ]);
+            }
+
+            if ($pinData && !empty($pinData['state'])) {
+                $expectedState = strtolower(preg_replace('/[^a-z]/', '', $pinData['state']));
+                if ($inputState !== $expectedState && !str_contains($inputState, $expectedState) && !str_contains($expectedState, $inputState)) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'state' => "Pincode {$pincode} belongs to {$pinData['state']}, but '{$validated['state']}' was entered. Please enter {$pinData['state']}.",
+                        'pincode' => "Pincode {$pincode} does not match State '{$validated['state']}' (Expected: {$pinData['state']})."
+                    ]);
+                }
+            }
+        }
+
+        return $validated;
     }
 
     private function getCartItems()

@@ -78,6 +78,7 @@ Route::get('/wishlist/check-product', [WishlistController::class, 'checkProduct'
 Route::get('/product/{slug}', [ProductController::class, 'show']);
 Route::post('/product/{slug}/review', [ProductController::class, 'storeReview'])->name('product.review');
 Route::get('/cart/subtotal', [CartController::class, 'subtotal']);
+Route::get('/pincode-lookup', [CheckoutController::class, 'lookupPincode'])->name('pincode.lookup');
 
 Route::get('/myaccount', [ProfileController::class, 'index'])->name('account.index');
 

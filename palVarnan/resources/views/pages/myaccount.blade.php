@@ -403,7 +403,8 @@
                                     </div>
                                     <div class="col-sm-4">
                                         <label class="text-xs text-gray-700 mb-4 fw-semibold">Pincode <span class="text-danger">*</span></label>
-                                        <input type="text" name="pincode" placeholder="6-digit Pincode" maxlength="6" required class="common-input rounded-8 border-gray-200">
+                                        <input type="text" name="pincode" placeholder="6-digit Pincode" maxlength="6" autocomplete="postal-code" required class="common-input rounded-8 border-gray-200 pincode-input">
+                                        <div class="pincode-feedback"></div>
                                     </div>
                                     <div class="col-12">
                                         <label class="text-xs text-gray-700 mb-6 fw-semibold d-block">Address Type</label>
@@ -521,7 +522,8 @@
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <label class="text-xs text-gray-700 mb-2">Pincode</label>
-                                                        <input type="text" name="pincode" value="{{ $addr->pincode }}" maxlength="6" required class="common-input rounded-8 py-8 text-xs border-gray-200">
+                                                        <input type="text" name="pincode" value="{{ $addr->pincode }}" maxlength="6" autocomplete="postal-code" required class="common-input rounded-8 py-8 text-xs border-gray-200 pincode-input">
+                                                        <div class="pincode-feedback"></div>
                                                     </div>
                                                     <div class="col-12 mt-12 d-flex gap-8">
                                                         <button type="submit" class="btn btn-main py-8 px-20 rounded-6 text-xs">Save</button>
@@ -941,6 +943,43 @@
         color: #ffffff !important;
         font-size: 13px !important;
     }
+    @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+    .spin-loader { display: inline-block; animation: spinSlow 0.8s linear infinite; }
+    .pincode-feedback {
+        font-size: 12px;
+        line-height: 1.4;
+        min-height: 18px;
+        margin-top: 4px;
+        transition: all 0.2s ease;
+    }
+    .pincode-feedback .badge-verified {
+        color: #059669;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .pincode-feedback .badge-error {
+        color: #dc2626;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .pincode-feedback .badge-loading {
+        color: #2563eb;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .pincode-feedback .badge-hint {
+        color: #d97706;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
 </style>
 
 @endsection
@@ -1007,6 +1046,7 @@
         }
         if (isHidden) {
             wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            setTimeout(initAccountPincodeValidator, 50);
         }
     }
 
@@ -1017,6 +1057,9 @@
         const isEditing = edit.style.display !== 'none';
         edit.style.display = isEditing ? 'none' : 'block';
         view.style.display = isEditing ? 'block' : 'none';
+        if (!isEditing) {
+            setTimeout(initAccountPincodeValidator, 50);
+        }
     }
 
     // Password toggles
@@ -1316,5 +1359,108 @@
             });
         });
     });
+
+    // Real-time Pincode Validation & Auto-fill
+    function initAccountPincodeValidator() {
+        document.querySelectorAll('input[name="pincode"]').forEach(input => {
+            if (input.dataset.pincodeAttached) return;
+            input.dataset.pincodeAttached = 'true';
+
+            const form = input.closest('form');
+            if (!form) return;
+
+            let feedback = input.parentNode.querySelector('.pincode-feedback');
+            if (!feedback) {
+                feedback = document.createElement('div');
+                feedback.className = 'pincode-feedback';
+                input.parentNode.appendChild(feedback);
+            }
+
+            const cityInput = form.querySelector('input[name="city"]');
+            const stateInput = form.querySelector('input[name="state"]');
+            let debounceTimer = null;
+            let lastValidated = '';
+
+            input.addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '').slice(0, 6);
+                const val = this.value.trim();
+
+                if (val.length < 6) {
+                    this.classList.remove('is-invalid');
+                    if (val.length > 0) {
+                        feedback.innerHTML = '<span class="badge-hint"><i class="ph ph-info"></i> Enter 6 digits</span>';
+                    } else {
+                        feedback.innerHTML = '';
+                    }
+                    return;
+                }
+
+                if (val === lastValidated) return;
+
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    lookupAccountPin(val);
+                }, 250);
+            });
+
+            async function lookupAccountPin(pin) {
+                lastValidated = pin;
+                feedback.innerHTML = '<span class="badge-loading"><i class="ph ph-spinner-gap spin-loader"></i> Verifying postal code...</span>';
+
+                try {
+                    const res = await fetch(`/pincode-lookup?pincode=${pin}`);
+                    const data = await res.json();
+
+                    if (res.ok && data.valid) {
+                        input.classList.remove('is-invalid');
+                        feedback.innerHTML = `<span class="badge-verified"><i class="ph-bold ph-check-circle"></i> Verified: ${data.city}, ${data.state}</span>`;
+
+                        if (cityInput) {
+                            cityInput.value = data.city;
+                            cityInput.classList.remove('is-invalid');
+                        }
+
+                        if (stateInput) {
+                            stateInput.value = data.state;
+                            stateInput.classList.remove('is-invalid');
+                        }
+                    } else {
+                        input.classList.add('is-invalid');
+                        feedback.innerHTML = `<span class="badge-error"><i class="ph-bold ph-x-circle"></i> ${data.message || 'Invalid Indian PIN code'}</span>`;
+                    }
+                } catch (err) {
+                    feedback.innerHTML = '';
+                }
+            }
+
+            form.addEventListener('submit', function (e) {
+                const pin = input.value.trim();
+                if (pin.length > 0 && pin.length !== 6) {
+                    e.preventDefault();
+                    input.focus();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Invalid Pincode',
+                        text: 'Pincode must be exactly 6 digits.',
+                        confirmButtonColor: '#1c799b'
+                    });
+                    return false;
+                }
+                if (input.classList.contains('is-invalid')) {
+                    e.preventDefault();
+                    input.focus();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Pincode',
+                        text: 'Please enter a valid Indian postal PIN code before saving.',
+                        confirmButtonColor: '#ef4444'
+                    });
+                    return false;
+                }
+            });
+        });
+    }
+
+    initAccountPincodeValidator();
 </script>
 @endpush

@@ -86,6 +86,43 @@
 .app-toast--info i {
     color: #3b82f6;
 }
+@keyframes spinSlow { 100% { transform: rotate(360deg); } }
+.spin-loader { display: inline-block; animation: spinSlow 0.8s linear infinite; }
+.pincode-feedback {
+    font-size: 12px;
+    line-height: 1.4;
+    min-height: 18px;
+    margin-top: 4px;
+    transition: all 0.2s ease;
+}
+.pincode-feedback .badge-verified {
+    color: #059669;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.pincode-feedback .badge-error {
+    color: #dc2626;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.pincode-feedback .badge-loading {
+    color: #2563eb;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.pincode-feedback .badge-hint {
+    color: #d97706;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
 </style>
 
 <section class="checkout py-80 addr-premium">
@@ -219,9 +256,10 @@
                                         @if($isEditing) @error('state') <span class="invalid-text">{{ $message }}</span> @enderror @endif
                                     </div>
                                     <div class="col-sm-4">
-                                        <input type="text" name="pincode" placeholder="Pincode"
-                                               class="common-input border-gray-100 @error('pincode') is-invalid @enderror"
+                                        <input type="text" name="pincode" placeholder="6-digit Pincode" maxlength="6" autocomplete="postal-code"
+                                               class="common-input border-gray-100 pincode-input @error('pincode') is-invalid @enderror"
                                                value="{{ $isEditing ? old('pincode') : $addr->pincode }}">
+                                        <div class="pincode-feedback"></div>
                                         @if($isEditing) @error('pincode') <span class="invalid-text">{{ $message }}</span> @enderror @endif
                                     </div>
                                     <!-- <div class="col-12">
@@ -330,9 +368,10 @@
                                     @error('state') <span class="invalid-text">{{ $message }}</span> @enderror
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="pincode" placeholder="Pincode"
-                                           class="common-input border-gray-100 @error('pincode') is-invalid @enderror"
+                                    <input type="text" name="pincode" placeholder="6-digit Pincode" maxlength="6" autocomplete="postal-code"
+                                           class="common-input border-gray-100 pincode-input @error('pincode') is-invalid @enderror"
                                            value="{{ old('pincode') }}">
+                                    <div class="pincode-feedback"></div>
                                     @error('pincode') <span class="invalid-text">{{ $message }}</span> @enderror
                                 </div>
                                 <!-- <div class="col-12">
@@ -559,6 +598,7 @@ function toggleEdit(id) {
     const opening = edit.style.display === 'none';
     edit.style.display = opening ? 'block' : 'none';
     view.style.display = opening ? 'none' : 'block';
+    if (opening) setTimeout(initPincodeAutoValidator, 50);
 }
 
 function toggleAdd() {
@@ -567,6 +607,7 @@ function toggleAdd() {
     const opening = wrap.classList.contains('d-none');
     wrap.classList.toggle('d-none', !opening);
     toggle.classList.toggle('d-none', opening);
+    if (opening) setTimeout(initPincodeAutoValidator, 50);
 }
 
 function showToast(message, type = 'success') {
@@ -604,6 +645,23 @@ function showFormErrors(form, errors) {
 
 async function submitAddressForm(form) {
     clearFormErrors(form);
+
+    const pinInput = form.querySelector('input[name="pincode"]');
+    if (pinInput) {
+        const pinVal = pinInput.value.trim();
+        if (pinVal.length > 0 && pinVal.length !== 6) {
+            showToast('PIN code must be exactly 6 digits.', 'error');
+            pinInput.classList.add('is-invalid');
+            pinInput.focus();
+            return;
+        }
+        if (pinInput.classList.contains('is-invalid')) {
+            showToast('Please enter a valid Indian postal PIN code before saving.', 'error');
+            pinInput.focus();
+            return;
+        }
+    }
+
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     submitBtn.disabled = true;
@@ -909,7 +967,107 @@ async function submitFinalOrder(formData) {
     }
 }
 
+function initPincodeAutoValidator() {
+    document.querySelectorAll('input[name="pincode"]').forEach(input => {
+        if (input.dataset.pincodeAttached) return;
+        input.dataset.pincodeAttached = 'true';
+
+        const form = input.closest('form');
+        if (!form) return;
+
+        let feedback = input.parentNode.querySelector('.pincode-feedback');
+        if (!feedback) {
+            feedback = document.createElement('div');
+            feedback.className = 'pincode-feedback';
+            input.parentNode.appendChild(feedback);
+        }
+
+        const cityInput = form.querySelector('input[name="city"]');
+        const stateInput = form.querySelector('input[name="state"]');
+        let debounceTimer = null;
+        let lastValidated = '';
+
+        input.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 6);
+            const val = this.value.trim();
+
+            if (val.length < 6) {
+                this.classList.remove('is-invalid');
+                if (val.length > 0) {
+                    feedback.innerHTML = '<span class="badge-hint"><i class="ph ph-info"></i> Enter 6 digits</span>';
+                } else {
+                    feedback.innerHTML = '';
+                }
+                return;
+            }
+
+            if (val === lastValidated) return;
+
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                lookupPin(val);
+            }, 250);
+        });
+
+        async function lookupPin(pin) {
+            lastValidated = pin;
+            feedback.innerHTML = '<span class="badge-loading"><i class="ph ph-spinner-gap spin-loader"></i> Verifying postal code...</span>';
+
+            try {
+                const res = await fetch(`/pincode-lookup?pincode=${pin}`);
+                const data = await res.json();
+
+                if (res.ok && data.valid) {
+                    input.classList.remove('is-invalid');
+                    feedback.innerHTML = `<span class="badge-verified"><i class="ph-bold ph-check-circle"></i> Verified: ${data.city}, ${data.state}</span>`;
+
+                    const err = input.parentNode.querySelector('.invalid-text');
+                    if (err) err.remove();
+
+                    if (cityInput) {
+                        cityInput.value = data.city;
+                        cityInput.classList.remove('is-invalid');
+                        const cErr = cityInput.parentNode.querySelector('.invalid-text');
+                        if (cErr) cErr.remove();
+                    }
+
+                    if (stateInput) {
+                        stateInput.value = data.state;
+                        stateInput.classList.remove('is-invalid');
+                        const sErr = stateInput.parentNode.querySelector('.invalid-text');
+                        if (sErr) sErr.remove();
+                    }
+                } else {
+                    input.classList.add('is-invalid');
+                    feedback.innerHTML = `<span class="badge-error"><i class="ph-bold ph-x-circle"></i> ${data.message || 'Invalid Indian PIN code'}</span>`;
+                }
+            } catch (err) {
+                feedback.innerHTML = '';
+            }
+        }
+
+        // Cross-check state changes
+        if (stateInput) {
+            stateInput.addEventListener('change', function () {
+                const pin = input.value.trim();
+                const vBadge = feedback.querySelector('.badge-verified');
+                if (pin.length === 6 && vBadge) {
+                    const normEntered = this.value.trim().toLowerCase().replace(/[^a-z]/g, '');
+                    const normVerified = vBadge.textContent.toLowerCase().replace(/[^a-z]/g, '');
+                    if (normEntered && !normVerified.includes(normEntered) && !normEntered.includes(normVerified)) {
+                        feedback.innerHTML = `<span class="badge-error"><i class="ph-bold ph-warning"></i> State mismatch with Pincode ${pin}</span>`;
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-invalid');
+                    }
+                }
+            });
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    initPincodeAutoValidator();
     if (selectedPincode) {
         fetchCouriers(selectedPincode, activePaymentMethod);
     } else {
