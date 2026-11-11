@@ -48,8 +48,14 @@
     background: #ffffff;
     border: 1px solid var(--pp-line);
     border-radius: var(--pp-radius);
-    padding: 20px;
+    padding: 16px;
     box-shadow: var(--pp-shadow-sm);
+}
+
+@media (min-width: 1200px) {
+    .shop-sidebar__box {
+        padding: 20px;
+    }
 }
 
 .sidebar-heading {
@@ -57,9 +63,59 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding-bottom: 14px;
+    padding-bottom: 12px;
     margin-bottom: 14px;
     border-bottom: 1px solid var(--pp-line);
+}
+
+.sidebar-heading h6 {
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 !important;
+    min-width: 0;
+}
+
+@media (min-width: 1200px) {
+    .sidebar-heading h6 {
+        font-size: 16px !important;
+        gap: 8px;
+    }
+}
+
+.sidebar-heading h6 span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-reset-btn {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.2px;
+    line-height: 1 !important;
+    padding: 3px 9px !important;
+    border-radius: 999px !important;
+    background-color: var(--main-50);
+    color: var(--main-600) !important;
+    border: 1px solid var(--main-200);
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    transition: all .18s ease;
+}
+
+.sidebar-reset-btn:hover {
+    background-color: var(--main-600);
+    color: #ffffff !important;
+    border-color: var(--main-600);
 }
 
 /* ============================ Unified Filter Rows ============================ */
@@ -894,13 +950,13 @@
                     <!-- CATEGORY BOX -->
                     <div class="shop-sidebar__box mb-24">
                         <div class="sidebar-heading">
-                            <h6 class="text-heading fw-bold text-base mb-0 d-flex align-items-center gap-8">
-                                <i class="ph-bold ph-squares-four text-main-600 text-lg"></i>
-                                Product Categories
+                            <h6 class="text-heading fw-bold mb-0">
+                                <i class="ph-bold ph-squares-four text-main-600 text-lg flex-shrink-0"></i>
+                                <span>Product Categories</span>
                             </h6>
                             @if(request('category') || request('subcategory'))
                                 <a href="{{ url('/products') }}?{{ http_build_query(request()->except(['category', 'subcategory', 'page'])) }}" 
-                                   class="text-xs text-neutral-500 hover-text-main-600 text-decoration-none">Reset</a>
+                                   class="sidebar-reset-btn" title="Reset categories">Reset</a>
                             @endif
                         </div>
 
@@ -1003,13 +1059,13 @@
                     <!-- BRANDS BOX -->
                     <div class="shop-sidebar__box mb-24">
                         <div class="sidebar-heading">
-                            <h6 class="text-heading fw-bold text-base mb-0 d-flex align-items-center gap-8">
-                                <i class="ph-bold ph-shield-check text-main-600 text-lg"></i>
-                                Brands
+                            <h6 class="text-heading fw-bold mb-0">
+                                <i class="ph-bold ph-shield-check text-main-600 text-lg flex-shrink-0"></i>
+                                <span>Brands</span>
                             </h6>
                             @if(request('brand'))
                                 <a href="{{ url('/products') }}?{{ http_build_query(request()->except(['brand', 'page'])) }}" 
-                                   class="text-xs text-neutral-500 hover-text-main-600 text-decoration-none">Reset</a>
+                                   class="sidebar-reset-btn" title="Reset brand">Reset</a>
                             @endif
                         </div>
 
