@@ -42,6 +42,9 @@
         <div class="row gy-4">
             <div class="col-xl-9 col-lg-8">
                 <div class="cart-table border border-gray-100 rounded-8 px-16 px-md-32 py-24 py-md-40">
+                    <div class="d-md-none text-xs text-neutral-500 mb-12 flex-align gap-6">
+                        <i class="ph ph-arrows-left-right text-sm text-main-600"></i> Swipe sideways to view price &amp; quantity
+                    </div>
                     <div class="overflow-x-auto scroll-sm scroll-sm-horizontal">
                     <form method="POST" action="{{ route('cart.update') }}">
                         @csrf
@@ -171,14 +174,35 @@
                     </div>
 
 
-                    <div class="flex-between flex-wrap gap-16 mt-16">
-                        <div class="flex-align gap-16 flex-wrap">
-                            <input type="text" id="coupon-code-input" class="common-input" placeholder="Coupon Code">
-                            <button type="button" id="btn-apply-coupon" class="btn btn-main py-18 w-100 rounded-8">Apply Coupon</button>
+                    <div class="cart-actions-bar d-flex justify-content-between align-items-center flex-wrap gap-16 mt-20">
+                        <div class="d-flex align-items-center gap-8 flex-wrap w-100-mobile">
+                            <input type="text" id="coupon-code-input" class="common-input rounded-8 py-12 px-16" placeholder="Coupon Code" style="max-width: 220px;">
+                            <button type="button" id="btn-apply-coupon" class="btn btn-main py-12 px-20 rounded-8 fw-semibold flex-shrink-0">Apply Coupon</button>
                         </div>
 
-                        <a href="/products" class="btn btn-main py-18 px-32 rounded-8">Continue Shopping</a>
+                        <a href="/products" class="btn btn-outline-main py-12 px-24 rounded-8 fw-semibold text-center w-100-mobile">Continue Shopping</a>
                     </div>
+
+                    <style>
+                    @media (max-width: 575px) {
+                        .w-100-mobile {
+                            width: 100% !important;
+                        }
+                        .w-100-mobile input {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                        }
+                        .w-100-mobile button {
+                            width: 100% !important;
+                        }
+                        .cart-sidebar {
+                            padding: 24px 16px !important;
+                        }
+                        .cart-table {
+                            padding: 16px 12px !important;
+                        }
+                    }
+                    </style>
 
                 </div>
             </div>

@@ -73,18 +73,18 @@
 <!-- ==================== Mobile Menu End Here ==================== -->
 
 <!-- ======================= Middle Header Start ========================= -->
-<header class="header-middle border-bottom border-neutral-40 py-12 bg-white">
+<header class="header-middle border-bottom border-neutral-40 py-10 py-lg-12 bg-white">
     <div class="container container-lg">
-        <nav class="header-inner d-flex align-items-center justify-content-between gap-16">
+        <nav class="header-inner d-flex align-items-center justify-content-between gap-12 gap-md-16">
             <!-- Logo Start -->
             <div class="logo flex-shrink-0">
                 <a href="/" class="link d-inline-block">
-                    <img src="/assets/images/logo/logo.png" alt="Pal Varnan" style="max-height: 56px; width: auto; object-fit: contain;"> 
+                    <img src="/assets/images/logo/logo.png" alt="Pal Varnan" style="max-height: 46px; width: auto; object-fit: contain;"> 
                 </a>
             </div>
             <!-- Logo End -->
 
-            <!-- Menu Start -->
+            <!-- Menu Start (Desktop only) -->
             <div class="header-menu d-lg-block d-none">
                 <ul class="nav-menu d-flex align-items-center gap-32 mb-0 ps-0 list-unstyled">
                     <li class="nav-menu__item">
@@ -117,32 +117,93 @@
             <!-- Menu End -->
              
             <!-- Middle Header Right start -->
-            <div class="header-right d-flex align-items-center gap-16 flex-shrink-0">
+            <div class="header-right d-flex align-items-center gap-8 gap-sm-12 flex-shrink-0">
                 <!-- Dropdown Country/Currency Select Start -->
                 <a href="javascript:void(0)" 
                    data-bs-toggle="modal" 
                    data-bs-target="#countryModal" 
-                   class="d-flex align-items-center gap-8 py-6 px-12 rounded-pill bg-neutral-30 border border-neutral-100 hover-border-main-600 text-neutral-600 hover-text-main-600 text-sm fw-semibold transition-1 text-decoration-none shadow-none"
+                   class="d-flex align-items-center gap-6 py-6 px-10 rounded-pill bg-neutral-30 border border-neutral-100 hover-border-main-600 text-neutral-600 hover-text-main-600 text-sm fw-semibold transition-1 text-decoration-none shadow-none"
                    title="Select Country / Currency">
                     @if($currentCountry && strtolower($currentCountry->name) == 'mexico')
-                        <img src="/assets/images/flags/mexico.png" alt="Mexico" style="width: 22px; height: 16px; object-fit: cover; border-radius: 2px;" onerror="this.src='https://flagcdn.com/w20/mx.png'">
-                        <span class="d-none d-sm-inline">Mexico (MXN $)</span>
+                        <img src="/assets/images/flags/mexico.png" alt="Mexico" style="width: 20px; height: 14px; object-fit: cover; border-radius: 2px;" onerror="this.src='https://flagcdn.com/w20/mx.png'">
+                        <span class="d-none d-md-inline">Mexico (MXN $)</span>
                     @else
-                        <img src="/assets/images/flags/india.png" alt="India" style="width: 22px; height: 16px; object-fit: cover; border-radius: 2px;" onerror="this.src='https://flagcdn.com/w20/in.png'">
-                        <span class="d-none d-sm-inline">India (INR ₹)</span>
+                        <img src="/assets/images/flags/india.png" alt="India" style="width: 20px; height: 14px; object-fit: cover; border-radius: 2px;" onerror="this.src='https://flagcdn.com/w20/in.png'">
+                        <span class="d-none d-md-inline">India (INR ₹)</span>
                     @endif
                     <i class="ph ph-caret-down text-xs text-neutral-500"></i>
                 </a>
                 <!-- Dropdown Select End -->
 
-                <!-- Order Tracking -->
-                <a href="/myaccount" class="d-none d-sm-flex align-items-center gap-6 text-neutral-600 hover-text-main-600 text-sm fw-semibold transition-1 text-decoration-none py-8 px-10 rounded-pill hover-bg-neutral-30">
+                <!-- Order Tracking (Desktop / Tablet) -->
+                <a href="/myaccount" class="d-none d-md-flex align-items-center gap-6 text-neutral-600 hover-text-main-600 text-sm fw-semibold transition-1 text-decoration-none py-8 px-10 rounded-pill hover-bg-neutral-30">
                     <i class="ph-bold ph-truck text-main-600 text-base"></i>
                     <span>Order Tracking</span>
                 </a>
 
+                <!-- Mobile Cart Button (visible below lg) -->
+                <a href="{{ url('/cart') }}" class="d-flex d-lg-none align-items-center justify-content-center rounded-circle border border-neutral-100 hover-border-main-600 bg-white transition-1 text-decoration-none position-relative" style="width: 38px; height: 38px;" aria-label="Shopping Cart">
+                    <i class="ph-bold ph-shopping-cart-simple text-xl text-main-600"></i>
+                    <span class="w-18 h-18 flex-center rounded-circle bg-success-600 text-white text-xs fw-bold position-absolute top-n4 end-n4 js-cart-count-badge" id="cart-count-mobile">
+                        {{ $cartCount }}
+                    </span>
+                </a>
+
+                <!-- Mobile Account Dropdown (visible below lg) -->
+                <div class="dropdown d-block d-lg-none">
+                    <button class="d-flex align-items-center justify-content-center rounded-circle bg-main-50 border border-main-100 text-main-600 hover-bg-main-600 hover-text-white transition-1"
+                        type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Account menu" style="width: 38px; height: 38px;">
+                        <i class="ph-bold ph-user text-base"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg rounded-12 border-0 p-8 mt-8" style="min-width: 180px;">
+                        @auth
+                        <li>
+                            <div class="px-14 py-8 border-bottom border-neutral-40 mb-4">
+                                <span class="text-xs text-neutral-400 d-block">Signed in as</span>
+                                <strong class="text-sm text-heading text-truncate d-block">{{ Auth::user()->name }}</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-8 px-14 rounded-8 d-flex align-items-center gap-8 text-sm fw-medium text-heading hover-bg-main-50 hover-text-main-600" href="/myaccount">
+                                <i class="ph ph-user-circle text-base"></i> My Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-8 px-14 rounded-8 d-flex align-items-center gap-8 text-sm fw-medium text-heading hover-bg-main-50 hover-text-main-600" href="/myaccount">
+                                <i class="ph ph-package text-base"></i> Order History
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-8 px-14 rounded-8 d-flex align-items-center gap-8 text-sm fw-medium text-heading hover-bg-main-50 hover-text-main-600" href="/wishlist">
+                                <i class="ph ph-heart text-base"></i> Wishlist
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider my-4 border-neutral-50"></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item py-8 px-14 rounded-8 d-flex align-items-center gap-8 text-sm fw-medium text-danger hover-bg-danger-50">
+                                    <i class="ph ph-sign-out text-base"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                        @else
+                        <li>
+                            <a class="dropdown-item py-8 px-14 rounded-8 d-flex align-items-center gap-8 text-sm fw-medium text-heading hover-bg-main-50 hover-text-main-600" href="/login">
+                                <i class="ph ph-sign-in text-base"></i> Login
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-8 px-14 rounded-8 d-flex align-items-center gap-8 text-sm fw-medium text-heading hover-bg-main-50 hover-text-main-600" href="/register">
+                                <i class="ph ph-user-plus text-base"></i> Register
+                            </a>
+                        </li>
+                        @endauth
+                    </ul>
+                </div>
+
                 <!-- Mobile Menu Button -->
-                <button type="button" class="toggle-mobileMenu d-lg-none text-heading text-3xl d-flex border-0 bg-transparent p-0 ms-4" aria-label="Open Menu">
+                <button type="button" class="toggle-mobileMenu d-lg-none text-heading text-2xl d-flex align-items-center justify-content-center border-0 bg-transparent p-0 ms-2" aria-label="Open Menu">
                     <i class="ph ph-list"></i>
                 </button>
             </div>
@@ -152,24 +213,11 @@
 </header>
 <!-- ======================= Middle Header End ========================= -->
 
-<!-- ==================== Header Two Start Here ==================== -->
-<header class="header bg-white py-16 border-bottom border-neutral-40">
+<!-- ==================== Header Two Start Here (Desktop only) ==================== -->
+<header class="header bg-white py-16 border-bottom border-neutral-40 d-none d-lg-block">
     <div class="container container-lg">
-        <nav class="header-inner d-flex align-items-center justify-content-between gap-12 gap-md-20">
+        <nav class="header-inner d-flex align-items-center justify-content-between gap-20">
             
-            <!-- Mobile/Tablet Logo & Hamburger Start (Visible ONLY when sticky below lg) -->
-            <div class="sticky-mobile-brand align-items-center gap-12 d-lg-none flex-shrink-0">
-                <button type="button" class="toggle-mobileMenu text-heading text-2xl d-flex border-0 bg-transparent p-0" aria-label="Open Menu">
-                    <i class="ph ph-list"></i>
-                </button>
-                <div class="logo">
-                    <a href="/" class="link d-inline-block">
-                        <img src="/assets/images/logo/logo.png" alt="Pal Varnan" style="max-height: 38px; width: auto; object-fit: contain;">
-                    </a>
-                </div>
-            </div>
-            <!-- Mobile/Tablet Logo & Hamburger End -->
-
             <!-- Category Dropdown Start -->
             <div class="category d-none d-lg-block on-hover-item flex-shrink-0" style="min-width: 220px;">
                 <button type="button" class="category__button d-flex align-items-center gap-10 fw-semibold py-14 px-20 bg-white hover-bg-main-50 text-heading rounded-12 w-100 transition-1 border border-neutral-200" style="height: 52px;">
@@ -179,13 +227,6 @@
                 </button>
 
                 <div class="responsive-dropdown on-hover-dropdown common-dropdown nav-submenu p-0 submenus-submenu-wrapper rounded-12 shadow-lg border border-neutral-100 overflow-hidden" style="min-width: 240px;">
-                    <button type="button" class="close-responsive-dropdown rounded-circle text-xl position-absolute inset-inline-end-0 inset-block-start-0 mt-4 me-8 d-lg-none d-flex" aria-label="Close"> <i class="ph ph-x"></i> </button>
-                    <div class="logo px-16 py-12 border-bottom border-neutral-40 d-lg-none d-block">
-                        <a href="/" class="link">
-                            <img src="/assets/images/logo/logo.png" alt="Logo" style="max-height: 40px;">
-                        </a>
-                    </div>
-                    
                     <ul class="scroll-sm p-8 m-0 list-unstyled max-h-380 overflow-y-auto">
                         @forelse($headerCategories as $cat)
                             <li>
@@ -222,7 +263,7 @@
             <!-- Category Dropdown End -->
 
             <!-- Search Start -->
-            <form action="/products" method="GET" class="position-relative flex-grow-1 d-md-block d-none m-0 js-search">
+            <form action="/products" method="GET" class="position-relative flex-grow-1 m-0 js-search">
                 <div class="position-relative">
                     <input type="text" id="globalSearch" name="search" value="{{ request('search') }}" 
                         class="form-control fw-medium bg-neutral-30 border border-neutral-100 rounded-pill py-14 ps-24 pe-56 text-sm text-heading shadow-none js-search-input" 
@@ -247,7 +288,7 @@
             <div class="d-flex align-items-center gap-12 flex-shrink-0">
                 @auth
                 <!-- Wishlist -->
-                <a href="/wishlist" class="d-none d-sm-flex align-items-center gap-8 py-10 px-14 rounded-pill border border-neutral-100 hover-border-main-600 bg-white transition-1 text-decoration-none" style="height: 52px;">
+                <a href="/wishlist" class="d-flex align-items-center gap-8 py-10 px-14 rounded-pill border border-neutral-100 hover-border-main-600 bg-white transition-1 text-decoration-none" style="height: 52px;">
                     <span class="text-2xl text-heading d-flex position-relative">
                         <i class="ph-bold ph-heart"></i>
                         <span id="wishlist-count-badge" class="w-18 h-18 flex-center rounded-circle bg-success-600 text-white text-xs position-absolute top-n6 end-n6">
@@ -259,24 +300,24 @@
                 @endauth
 
                 <!-- Cart -->
-                <a href="{{ url('/cart') }}" class="d-flex align-items-center gap-10 py-10 px-14 px-sm-16 rounded-pill border border-neutral-100 hover-border-main-600 bg-white transition-1 text-decoration-none item-hover" style="height: 52px;">
+                <a href="{{ url('/cart') }}" class="d-flex align-items-center gap-10 py-10 px-16 rounded-pill border border-neutral-100 hover-border-main-600 bg-white transition-1 text-decoration-none item-hover" style="height: 52px;">
                     <span class="text-2xl text-main-600 d-flex position-relative">
                         <i class="ph-bold ph-shopping-cart-simple"></i>
-                        <span id="cart-count" class="w-18 h-18 flex-center rounded-circle bg-success-600 text-white text-xs fw-bold position-absolute top-n6 end-n6">
+                        <span id="cart-count" class="w-18 h-18 flex-center rounded-circle bg-success-600 text-white text-xs fw-bold position-absolute top-n6 end-n6 js-cart-count-badge">
                             {{ $cartCount }}
                         </span>
                     </span>
-                    <span class="text-sm text-heading fw-semibold d-none d-sm-inline">Cart</span>
+                    <span class="text-sm text-heading fw-semibold">Cart</span>
                 </a>
 
                 <!-- Account -->
                 @auth
                 <div class="dropdown">
-                    <button class="d-flex align-items-center gap-8 fw-semibold text-main-600 py-10 px-14 px-sm-18 bg-main-50 border border-main-100 rounded-pill hover-bg-main-600 hover-text-white transition-1 text-decoration-none"
+                    <button class="d-flex align-items-center gap-8 fw-semibold text-main-600 py-10 px-18 bg-main-50 border border-main-100 rounded-pill hover-bg-main-600 hover-text-white transition-1 text-decoration-none"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Account menu" style="height: 52px;">
                         <i class="ph-bold ph-user text-base"></i>
-                        <span class="text-sm max-w-100 text-truncate d-none d-md-inline">{{ Auth::user()->name }}</span>
-                        <i class="ph ph-caret-down text-xs d-none d-md-inline"></i>
+                        <span class="text-sm max-w-100 text-truncate">{{ Auth::user()->name }}</span>
+                        <i class="ph ph-caret-down text-xs"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg rounded-12 border-0 p-8 mt-8" style="min-width: 180px;">
                         <li>
@@ -302,11 +343,11 @@
                 </div>
                 @else
                 <div class="dropdown">
-                    <button class="d-flex align-items-center gap-8 fw-semibold text-main-600 py-10 px-14 px-sm-20 bg-main-50 border border-main-100 rounded-pill hover-bg-main-600 hover-text-white transition-1 text-decoration-none"
+                    <button class="d-flex align-items-center gap-8 fw-semibold text-main-600 py-10 px-20 bg-main-50 border border-main-100 rounded-pill hover-bg-main-600 hover-text-white transition-1 text-decoration-none"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Account menu" style="height: 52px;">
                         <i class="ph-bold ph-user text-base"></i>
-                        <span class="text-sm d-none d-md-inline">Account</span>
-                        <i class="ph ph-caret-down text-xs d-none d-md-inline"></i>
+                        <span class="text-sm">Account</span>
+                        <i class="ph ph-caret-down text-xs"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg rounded-12 border-0 p-8 mt-8" style="min-width: 160px;">
                         <li>
@@ -330,9 +371,9 @@
 </header>
 <!-- ==================== Header End Here ==================== -->
 
-<!-- ==================== Mobile Search (visible below md) ==================== -->
-<div class="d-md-none bg-white border-bottom border-neutral-40">
-    <div class="container container-lg py-10">
+<!-- ==================== Mobile Search (visible below lg) ==================== -->
+<div class="d-lg-none bg-white border-bottom border-neutral-40 py-10">
+    <div class="container container-lg">
         <form action="/products" method="GET" class="position-relative m-0 js-search">
             <div class="position-relative">
                 <input type="text" name="search" value="{{ request('search') }}"
@@ -355,15 +396,18 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("globalSearch");
-    const resultsBox = document.getElementById("searchResults");
+    const searchForms = document.querySelectorAll(".js-search");
 
-    if (searchInput && resultsBox) {
+    searchForms.forEach(form => {
+        const input = form.querySelector(".js-search-input");
+        const resultsBox = form.querySelector(".js-search-results");
+        if (!input || !resultsBox) return;
+
         let timeout = null;
 
         const doSearch = function () {
             clearTimeout(timeout);
-            let query = searchInput.value.trim();
+            let query = input.value.trim();
 
             if (query.length < 2) {
                 resultsBox.classList.add("d-none");
@@ -399,12 +443,12 @@ document.addEventListener("DOMContentLoaded", function () {
                                              style="object-fit:cover;border-radius:6px;"
                                              onerror="this.src='/assets/images/logo/logo.png'">
                                         <div class="overflow-hidden">
-                                            <div class="fw-semibold text-sm text-truncate">
-                                                ${item.name}
-                                            </div>
-                                            <small class="text-main-600 text-xs">
-                                                ${item.type || 'Product'}
-                                            </small>
+                                             <div class="fw-semibold text-sm text-truncate">
+                                                 ${item.name}
+                                             </div>
+                                             <small class="text-main-600 text-xs">
+                                                 ${item.type || 'Product'}
+                                             </small>
                                         </div>
                                     </a>
                                 `;
@@ -419,14 +463,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }, 300);
         };
-        searchInput.addEventListener("input", doSearch);
-        searchInput.addEventListener("keyup", doSearch);
+
+        input.addEventListener("input", doSearch);
+        input.addEventListener("keyup", doSearch);
 
         document.addEventListener("click", function(e) {
-            if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+            if (!form.contains(e.target)) {
                 resultsBox.classList.add("d-none");
             }
         });
-    }
+    });
 });
 </script>

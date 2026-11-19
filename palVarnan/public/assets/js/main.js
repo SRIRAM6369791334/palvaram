@@ -305,17 +305,16 @@
 
    // ========================= hot deals Slider Js Start ==============
    $('.feature-item-wrapper').slick({
-    slidesToShow: 10,
+    slidesToShow: 6,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000,
-    speed: 1500,
+    autoplaySpeed: 2500,
+    speed: 1000,
     dots: false,
     pauseOnHover: true,
     arrows: true,
     draggable: true,
     rtl: $('html').attr('dir') === 'rtl' ? true : false,
-    speed: 900,
     infinite: true,
     nextArrow: '#feature-item-wrapper-next',
     prevArrow: '#feature-item-wrapper-prev',
@@ -323,13 +322,13 @@
       {
         breakpoint: 1699,
         settings: {
-          slidesToShow: 9,
+          slidesToShow: 6,
         }
       },
       {
         breakpoint: 1599,
         settings: {
-          slidesToShow: 8,
+          slidesToShow: 6,
         }
       },
       {

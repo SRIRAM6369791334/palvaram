@@ -123,69 +123,64 @@
 <!-- ============================ Feature Section End =============================== -->
 
     <!-- ======================== promotional banner Start ============================== -->
-<section class="promotional-banner pt-80">
+<section class="promotional-banner pt-40 pt-lg-80">
     <div class="container container-lg">
-        <div class="row gy-4">
-            <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="400">
-                <div class="promotional-banner-item position-relative rounded-24 overflow-hidden z-1 py-52 ps-40 pe-24 h-100">
-                    <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/promotional-banner-img1.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 object-fit-cover z-n1">
-                    <div class="promotional-banner-item__content">
-                        <h6 class="promotional-banner-item__title text-2xl max-w-184">Everyday Fresh Meat</h6>
-                        <div class="d-flex align-items-end gap-8">
-                            <span class="text-heading fst-italic text-sm">Starting at</span>
-                            <h6 class="text-danger-600 mb-0 text-xl"> ₹60.99</h6>
+        <div class="row g-12 g-sm-16 g-xl-24">
+            @php
+                $cardThemes = [
+                    ['bg' => 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)', 'border' => '#fed7aa'],
+                    ['bg' => 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', 'border' => '#bbf7d0'],
+                    ['bg' => 'linear-gradient(135deg, #fefce8 0%, #fef08a 100%)', 'border' => '#fde047'],
+                    ['bg' => 'linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%)', 'border' => '#99f6e4'],
+                ];
+            @endphp
+            @forelse($promoCategories as $index => $pCat)
+                @php
+                    $theme = $cardThemes[$index % 4];
+                    $catSlug = \Illuminate\Support\Str::slug($pCat->category_name);
+                    $mainUrl = rtrim(env('MAIN_URL', 'http://127.0.0.1:8001/'), '/');
+                    $catImg = !empty($pCat->category_image) ? $mainUrl . '/images/' . ltrim($pCat->category_image, '/') : null;
+                @endphp
+                <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="{{ 400 + ($index * 200) }}">
+                    <div class="promotional-banner-item position-relative rounded-20 rounded-xl-24 overflow-hidden z-1 p-14 p-sm-20 py-xl-40 ps-xl-32 pe-xl-24 h-100 d-flex flex-column justify-content-between group-item"
+                         style="min-height: 195px; background: {{ $theme['bg'] }}; border: 1px solid {{ $theme['border'] }}; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+                        
+                        <!-- Floating Category Image Cutout on Right -->
+                        @if($catImg)
+                            <img src="{{ $catImg }}" alt="{{ $pCat->category_name }}" 
+                                 class="position-absolute end-0 bottom-0 pointer-events-none transition-2 promo-cat-img"
+                                 style="max-height: 130px; max-width: 52%; object-fit: contain; z-index: 1; mix-blend-mode: multiply; margin-right: 6px; margin-bottom: 6px;"
+                                 onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src='{{ env('MAIN_URL') }}images/{{ $pCat->category_image }}';}">
+                        @endif
+
+                        <!-- Card Content on Left -->
+                        <div class="promotional-banner-item__content position-relative" style="z-index: 2; max-width: 65%;">
+                            <h6 class="promotional-banner-item__title mb-4 mb-sm-8 text-heading fw-bold text-capitalize" 
+                                style="font-size: clamp(14px, 3.2vw, 22px); line-height: 1.25; word-break: break-word; hyphens: none;">
+                                {{ $pCat->category_name }}
+                            </h6>
+                            <div class="d-flex align-items-baseline gap-4 gap-sm-6 flex-wrap my-4 my-sm-8" style="white-space: nowrap !important;">
+                                <span class="text-heading fst-italic text-xs text-sm-sm">Starting at</span>
+                                <span class="text-danger-600 mb-0 text-15 text-sm-xl fw-bold" style="white-space: nowrap !important;">
+                                    {{ $currencySymbol }}{{ number_format($pCat->min_price, 2) }}
+                                </span>
+                            </div>
                         </div>
-                        <a href="/products" class="btn btn-main d-inline-flex align-items-center rounded-pill gap-8 mt-24">
-                            Shop Now
-                            <span class="icon text-xl d-flex"><i class="ph ph-arrow-right"></i></span> 
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="600">
-                <div class="promotional-banner-item position-relative rounded-24 overflow-hidden z-1 py-52 ps-40 pe-24 h-100">
-                    <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/promotional-banner-img2.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 object-fit-cover z-n1">
-                    <div class="promotional-banner-item__content">
-                        <h6 class="promotional-banner-item__title text-2xl max-w-184">Daily Fresh Vegetables</h6>
-                        <div class="d-flex align-items-end gap-8">
-                            <span class="text-heading fst-italic text-sm">Starting at</span>
-                            <h6 class="text-danger-600 mb-0 text-xl"> ₹60.99</h6>
+
+                        <!-- Shop Now Button -->
+                        <div class="position-relative mt-auto pt-8" style="z-index: 2;">
+                            <a href="{{ url('/products?category=' . $catSlug) }}" class="btn btn-main d-inline-flex align-items-center rounded-pill gap-4 gap-sm-6 py-4 px-10 py-sm-8 px-sm-16 text-xs text-sm-sm fw-semibold shadow-sm">
+                                <span>Shop Now</span>
+                                <span class="icon text-xs text-sm-base d-flex"><i class="ph ph-arrow-right"></i></span> 
+                            </a>
                         </div>
-                        <a href="/products" class="btn btn-main d-inline-flex align-items-center rounded-pill gap-8 mt-24">
-                            Shop Now
-                            <span class="icon text-xl d-flex"><i class="ph ph-arrow-right"></i></span> 
-                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="800">
-                <div class="promotional-banner-item position-relative rounded-24 overflow-hidden z-1 py-52 ps-40 pe-24 h-100">
-                    <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/promotional-banner-img3.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 object-fit-cover z-n1">
-                    <div class="promotional-banner-item__content">
-                        <h6 class="promotional-banner-item__title text-2xl max-w-184">Everyday Fresh Milk</h6>
-                        <div class="d-flex align-items-end gap-8">
-                            <span class="text-heading fst-italic text-sm">Starting at</span>
-                            <h6 class="text-danger-600 mb-0 text-xl"> ₹60.99</h6>
-                        </div>
-                        <a href="/products" class="btn btn-main d-inline-flex align-items-center rounded-pill gap-8 mt-24">
-                            Shop Now
-                            <span class="icon text-xl d-flex"><i class="ph ph-arrow-right"></i></span> 
-                        </a>
-                    </div>
+            @empty
+                <div class="col-12 text-center py-20">
+                    <p class="text-neutral-500">Explore our wide range of groceries and products.</p>
                 </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="1000">
-                <div class="promotional-banner-item position-relative rounded-24 overflow-hidden z-1 py-52 ps-40 pe-24 h-100">
-                    <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/promotional-banner-img4.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 object-fit-cover z-n1">
-                    <div class="promotional-banner-item__content">
-                        <h6 class="promotional-banner-item__title text-2xl max-w-184">Everyday Fresh Fruits</h6>
-                        <a href="/products" class="btn btn-main d-inline-flex align-items-center rounded-pill gap-8 mt-24">
-                            Shop Now
-                            <span class="icon text-xl d-flex"><i class="ph ph-arrow-right"></i></span> 
-                        </a>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
     </div>
 </section>
@@ -227,9 +222,18 @@
                             $variant = $displayVariants->first();
                             $offerPrice = $variant->offer_price ?? $product->product_price ?? 0;
                             $mrpPrice = $variant->mrp_price ?? $variant->product_mrp_price ?? 0;
-                            $imgSrc = $product->product_image
-                                ? (Str::startsWith($product->product_image, 'http') ? $product->product_image : (Str::startsWith($product->product_image, 'assets/') ? asset($product->product_image) : asset('storage/' . $product->product_image)))
-                                : asset('assets/images/thumbs/product-img1.png');
+                            $mainUrl = rtrim(env('MAIN_URL', 'http://127.0.0.1:8001/'), '/');
+                            if (!empty($product->product_image)) {
+                                if (Str::startsWith($product->product_image, ['http://', 'https://'])) {
+                                    $imgSrc = $product->product_image;
+                                } elseif (Str::startsWith($product->product_image, 'assets/')) {
+                                    $imgSrc = asset($product->product_image);
+                                } else {
+                                    $imgSrc = $mainUrl . '/images/' . ltrim($product->product_image, '/');
+                                }
+                            } else {
+                                $imgSrc = asset('assets/images/thumbs/product-two-img1.png');
+                            }
                             $inCart = $variant ? in_array($variant->id, $cartProductIds ?? []) : false;
                             $cartItem = ($variant && isset($cartItems)) ? $cartItems->where('product_varient_id', $variant->id)->first() : null;
                             $isOutOfStock = ($variant ? (int)($variant->product_qty ?? 0) : 0) <= 0;
@@ -238,7 +242,7 @@
                             <div class="product-card h-100 p-12 p-sm-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item bg-white d-flex flex-column justify-content-between" style="box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
                                 <div class="w-100">
                                     <a href="/product/{{ $product->slug }}" class="product-card__thumb w-100 flex-center overflow-hidden rounded-12 bg-gray-50 mb-12" style="height: 160px;">
-                                        <img src="{{ $imgSrc }}" alt="{{ $product->product_name }}" class="w-100 h-100 object-fit-contain p-8" onerror="this.src='/assets/images/logo/logo.png'">
+                                        <img src="{{ $imgSrc }}" alt="{{ $product->product_name }}" class="w-100 h-100 object-fit-contain p-8" onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src='{{ env('MAIN_URL') }}images/{{ $product->product_image }}'; } else { this.src='/assets/images/thumbs/product-two-img1.png'; }">
                                     </a>
                                     <div class="product-card__content w-100">
                                         <span class="text-xs text-main-600 fw-semibold d-block mb-4 text-truncate">{{ $product->category->category_name ?? 'Farm Fresh' }}</span>
@@ -841,250 +845,91 @@
             <div class="col-md-8">
                 <div class="hot-deals-slider arrow-style-two">
 
-                    {{-- Product 1: Broccoli --}}
-                    <div class="" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
-                                <img src="https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=300&h=300&fit=crop&auto=format" alt="Broccoli">
-                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">44% OFF</span>
-                            </a>
-                            <div class="product-card__content mt-12">
+                    @forelse($hotDeals as $hProd)
+                        @php
+                            $hVariant = $hProd->variants->first();
+                            $hOffer = $hVariant->offer_price ?? $hProd->product_price ?? 0;
+                            $hMrp = $hVariant->mrp_price ?? $hVariant->product_mrp_price ?? 0;
+                            $hDiscount = ($hMrp > $hOffer && $hMrp > 0) ? round((($hMrp - $hOffer) / $hMrp) * 100) : 0;
+                            if (!empty($hProd->product_image)) {
+                                if (Str::startsWith($hProd->product_image, ['http://', 'https://'])) {
+                                    $hImg = $hProd->product_image;
+                                } elseif (Str::startsWith($hProd->product_image, 'assets/')) {
+                                    $hImg = asset($hProd->product_image);
+                                } else {
+                                    $hImg = rtrim(env('MAIN_URL', 'http://127.0.0.1:8001/'), '/') . '/images/' . ltrim($hProd->product_image, '/');
+                                }
+                            } else {
+                                $hImg = asset('assets/images/thumbs/product-two-img1.png');
+                            }
+                            $hInCart = $hVariant ? in_array($hVariant->id, $cartProductIds ?? []) : false;
+                            $hCartItem = ($hVariant && isset($cartItems)) ? $cartItems->where('product_varient_id', $hVariant->id)->first() : null;
+                            $hOutOfStock = ($hVariant ? (int)($hVariant->product_qty ?? 0) : 0) <= 0;
+                            $hUnitLabel = '';
+                            if ($hVariant) {
+                                if ($hProd->is_gift) {
+                                    $parts = [];
+                                    if ($hVariant->size) $parts[] = $hVariant->size->size;
+                                    if ($hVariant->color) $parts[] = $hVariant->color->color;
+                                    $hUnitLabel = !empty($parts) ? implode(' • ', $parts) : ($hVariant->varient_name ?: '');
+                                } else {
+                                    $hUnitLabel = ($hVariant->value ?? '') . ($hVariant->unit->short_name ?? '');
+                                }
+                            }
+                        @endphp
+                        <div class="px-6" data-aos="fade-up">
+                            <div class="product-card h-100 p-12 p-sm-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 bg-white d-flex flex-column justify-content-between">
                                 <div>
-                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                        <span class="text-heading text-md fw-bold">₹45.00 <span class="text-gray-500 text-xs fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹80.00</span>
-                                    </div>
-                                    <div class="flex-align gap-6 mb-8">
-                                        <span class="text-xs fw-bold text-gray-700">4.8</span>
-                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs fw-medium text-gray-500">(17k)</span>
-                                    </div>
-                                    <h6 class="title text-base fw-semibold mb-12">
-                                        <a href="/products" class="link text-line-2">Fresh Broccoli Florets (500g)</a>
-                                    </h6>
-                                    <div class="mb-16">
-                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">
-                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 35%"></div>
+                                    <a href="/product/{{ $hProd->slug }}" class="product-card__thumb flex-center overflow-hidden position-relative rounded-12 bg-gray-50 mb-12" style="height: 160px;">
+                                        <img src="{{ $hImg }}" alt="{{ $hProd->product_name }}" class="w-100 h-100 object-fit-contain p-8" onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src='{{ env('MAIN_URL') }}images/{{ $hProd->product_image }}'; } else { this.src='/assets/images/thumbs/product-two-img1.png'; }">
+                                        @if($hDiscount > 0)
+                                            <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">{{ $hDiscount }}% OFF</span>
+                                        @endif
+                                    </a>
+                                    <div class="product-card__content mt-8">
+                                        <span class="text-xs text-main-600 fw-semibold d-block mb-4 text-truncate">{{ $hProd->category->category_name ?? 'Farm Fresh' }}</span>
+                                        <h6 class="title text-sm fw-semibold mb-8" style="min-height: 38px;">
+                                            <a href="/product/{{ $hProd->slug }}" class="link text-line-2 text-inherit">{{ $hProd->product_name }}</a>
+                                        </h6>
+                                        <div class="product-card__price mb-8 d-flex align-items-center gap-8 flex-wrap">
+                                            <span class="text-heading text-md fw-bold text-main-600">{{ $currencySymbol }}{{ number_format($hOffer, 2) }}</span>
+                                            @if($hMrp > $hOffer)
+                                                <span class="text-gray-400 text-xs fw-medium text-decoration-line-through text-nowrap">{{ $currencySymbol }}{{ number_format($hMrp, 2) }}</span>
+                                            @endif
+                                            @if($hUnitLabel)
+                                                <span class="badge bg-neutral-50 text-neutral-600 text-xs px-6 py-2 rounded-4">{{ $hUnitLabel }}</span>
+                                            @endif
                                         </div>
-                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 18/35</span>
                                     </div>
                                 </div>
-                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
-                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Product 2: Tomatoes --}}
-                    <div class="" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
-                                <img src="https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300&h=300&fit=crop&auto=format" alt="Tomatoes">
-                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">38% OFF</span>
-                            </a>
-                            <div class="product-card__content mt-12">
-                                <div>
-                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                        <span class="text-heading text-md fw-bold">₹40.00 <span class="text-gray-500 text-xs fw-normal">/Kg</span></span>
-                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹65.00</span>
-                                    </div>
-                                    <div class="flex-align gap-6 mb-8">
-                                        <span class="text-xs fw-bold text-gray-700">4.7</span>
-                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs fw-medium text-gray-500">(12k)</span>
-                                    </div>
-                                    <h6 class="title text-base fw-semibold mb-12">
-                                        <a href="/products" class="link text-line-2">Farm Fresh Red Tomatoes (1 Kg)</a>
-                                    </h6>
-                                    <div class="mb-16">
-                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
-                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 60%"></div>
+                                <div class="cart-control mt-8 w-100" data-product-id="{{ $hProd->id }}" data-variant-id="{{ $hVariant->id ?? '' }}">
+                                    @if($hOutOfStock)
+                                        <button type="button" class="btn btn-outline-neutral-300 py-8 px-12 rounded-pill w-100 justify-content-center text-xs fw-semibold text-neutral-400" disabled>
+                                            Out of Stock
+                                        </button>
+                                    @elseif($hInCart)
+                                        <div class="qty-box">
+                                            <button type="button" class="quantity__minus">−</button>
+                                            <div class="d-flex align-items-center gap-4">
+                                                <span class="qty-box-label">In Cart:</span>
+                                                <input type="number" class="quantity__input" value="{{ $hCartItem->product_quantity ?? 1 }}" min="1" readonly>
+                                            </div>
+                                            <button type="button" class="quantity__plus">+</button>
                                         </div>
-                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 24/40</span>
-                                    </div>
+                                    @else
+                                        <button type="button"
+                                            class="add-to-cart-btn product-card__cart btn py-8 px-12 rounded-pill flex-align gap-6 w-100 justify-content-center text-xs fw-semibold">
+                                            <span>Add To Cart</span> <i class="ph-bold ph-shopping-cart-simple text-sm"></i>
+                                        </button>
+                                    @endif
                                 </div>
-                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
-                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
-                                </a>
                             </div>
                         </div>
-                    </div>
-
-                    {{-- Product 3: Eggs --}}
-                    <div class="" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
-                                <img src="https://images.unsplash.com/photo-1491524062933-cb0289261700?w=300&h=300&fit=crop&auto=format" alt="Eggs">
-                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">20% OFF</span>
-                            </a>
-                            <div class="product-card__content mt-12">
-                                <div>
-                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                        <span class="text-heading text-md fw-bold">₹72.00 <span class="text-gray-500 text-xs fw-normal">/Dozen</span></span>
-                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹90.00</span>
-                                    </div>
-                                    <div class="flex-align gap-6 mb-8">
-                                        <span class="text-xs fw-bold text-gray-700">4.9</span>
-                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs fw-medium text-gray-500">(20k)</span>
-                                    </div>
-                                    <h6 class="title text-base fw-semibold mb-12">
-                                        <a href="/products" class="link text-line-2">Farm Fresh White Eggs (1 Dozen)</a>
-                                    </h6>
-                                    <div class="mb-16">
-                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 70%"></div>
-                                        </div>
-                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 42/60</span>
-                                    </div>
-                                </div>
-                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
-                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
-                                </a>
-                            </div>
+                    @empty
+                        <div class="p-24 text-center">
+                            <p class="text-neutral-500 mb-0">No deals available today. Check back soon!</p>
                         </div>
-                    </div>
-
-                    {{-- Product 4: Milk --}}
-                    <div class="" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
-                                <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=300&fit=crop&auto=format" alt="Milk">
-                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">21% OFF</span>
-                            </a>
-                            <div class="product-card__content mt-12">
-                                <div>
-                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                        <span class="text-heading text-md fw-bold">₹55.00 <span class="text-gray-500 text-xs fw-normal">/Ltr</span></span>
-                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹70.00</span>
-                                    </div>
-                                    <div class="flex-align gap-6 mb-8">
-                                        <span class="text-xs fw-bold text-gray-700">4.8</span>
-                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs fw-medium text-gray-500">(15k)</span>
-                                    </div>
-                                    <h6 class="title text-base fw-semibold mb-12">
-                                        <a href="/products" class="link text-line-2">Full Cream Fresh Milk (1 Litre)</a>
-                                    </h6>
-                                    <div class="mb-16">
-                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 50%"></div>
-                                        </div>
-                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 25/50</span>
-                                    </div>
-                                </div>
-                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
-                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Product 5: Onions --}}
-                    <div class="" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
-                                <img src="https://images.unsplash.com/photo-1508747703725-719777637510?w=300&h=300&fit=crop&auto=format" alt="Onions">
-                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">36% OFF</span>
-                            </a>
-                            <div class="product-card__content mt-12">
-                                <div>
-                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                        <span class="text-heading text-md fw-bold">₹35.00 <span class="text-gray-500 text-xs fw-normal">/Kg</span></span>
-                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹55.00</span>
-                                    </div>
-                                    <div class="flex-align gap-6 mb-8">
-                                        <span class="text-xs fw-bold text-gray-700">4.6</span>
-                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs fw-medium text-gray-500">(9k)</span>
-                                    </div>
-                                    <h6 class="title text-base fw-semibold mb-12">
-                                        <a href="/products" class="link text-line-2">Fresh Red Onions (1 Kg)</a>
-                                    </h6>
-                                    <div class="mb-16">
-                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
-                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 45%"></div>
-                                        </div>
-                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 27/60</span>
-                                    </div>
-                                </div>
-                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
-                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Product 6: Cooking Oil --}}
-                    <div class="" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
-                                <img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&h=300&fit=crop&auto=format" alt="Cooking Oil">
-                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">24% OFF</span>
-                            </a>
-                            <div class="product-card__content mt-12">
-                                <div>
-                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                        <span class="text-heading text-md fw-bold">₹160.00 <span class="text-gray-500 text-xs fw-normal">/Ltr</span></span>
-                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹210.00</span>
-                                    </div>
-                                    <div class="flex-align gap-6 mb-8">
-                                        <span class="text-xs fw-bold text-gray-700">4.7</span>
-                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs fw-medium text-gray-500">(11k)</span>
-                                    </div>
-                                    <h6 class="title text-base fw-semibold mb-12">
-                                        <a href="/products" class="link text-line-2">Pure Sunflower Cooking Oil (1 Litre)</a>
-                                    </h6>
-                                    <div class="mb-16">
-                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">
-                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 55%"></div>
-                                        </div>
-                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 33/60</span>
-                                    </div>
-                                </div>
-                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
-                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Product 7: Rice --}}
-                    <div class="" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card h-100 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden position-relative">
-                                <img src="https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=300&h=300&fit=crop&auto=format" alt="Rice">
-                                <span class="position-absolute top-8 start-8 badge bg-danger-600 text-white text-xs px-8 py-4 rounded-8 fw-bold">23% OFF</span>
-                            </a>
-                            <div class="product-card__content mt-12">
-                                <div>
-                                    <div class="product-card__price mb-8 d-flex align-items-center gap-8">
-                                        <span class="text-heading text-md fw-bold">₹85.00 <span class="text-gray-500 text-xs fw-normal">/Kg</span></span>
-                                        <span class="text-gray-400 text-sm fw-medium text-decoration-line-through text-nowrap">₹110.00</span>
-                                    </div>
-                                    <div class="flex-align gap-6 mb-8">
-                                        <span class="text-xs fw-bold text-gray-700">4.9</span>
-                                        <span class="text-14 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs fw-medium text-gray-500">(22k)</span>
-                                    </div>
-                                    <h6 class="title text-base fw-semibold mb-12">
-                                        <a href="/products" class="link text-line-2">Premium Basmati Rice (1 Kg)</a>
-                                    </h6>
-                                    <div class="mb-16">
-                                        <div class="progress w-100 bg-color-three rounded-pill h-4" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
-                                            <div class="progress-bar bg-main-600 rounded-pill" style="width: 80%"></div>
-                                        </div>
-                                        <span class="text-gray-900 text-xs fw-medium mt-6 d-block">Sold: 48/60</span>
-                                    </div>
-                                </div>
-                                <a href="/cart" class="product-card__cart btn py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
-                                    Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
 
                 </div>
             </div>
@@ -1095,497 +940,292 @@
 
     
     <!-- Super Discount Start -->
- <div class="pt-80">
+ <div class="pt-60 pt-lg-80">
      <div class="container container-lg">
-        <div class="border border-main-500 bg-main-50 border-dashed rounded-16 py-20 px-24 d-flex flex-column flex-lg-row align-items-center justify-content-between justify-content-lg-evenly gap-16 text-center text-lg-start">
-            <p class="h6 text-main-600 fw-normal mb-0">Super discount for your <a href="{{ url('/products') }}" class="fw-bold text-decoration-underline text-main-600 hover-text-decoration-none hover-text-primary-600">first purchase</a></p>
-            <div class="position-relative flex-shrink-0">
-                <button type="button" class="copy-coupon-btn px-28 py-10 text-white text-uppercase bg-main-600 rounded-pill border-0 hover-bg-main-800 d-inline-flex align-items-center justify-content-center gap-8 fw-bold" style="white-space: nowrap !important; letter-spacing: 0.5px;">
-                    <span>FREE25BAC</span>
-                    <i class="ph ph-copy text-lg line-height-1"></i>
-                </button>
-                <span class="copy-text bg-main-600 text-white fw-normal position-absolute px-16 py-6 rounded-pill bottom-100 start-50 translate-middle-x min-w-max mb-8 text-xs"></span>
+        @if($activeCoupon)
+            <div class="border border-main-500 bg-main-50 border-dashed rounded-16 py-20 px-16 px-md-24 d-flex flex-column flex-lg-row align-items-center justify-content-between justify-content-lg-evenly gap-12 gap-lg-16 text-center text-lg-start">
+                <p class="h6 text-main-600 fw-normal mb-0 text-15 text-sm-base">Special discount coupon available now!</p>
+                <div class="position-relative flex-shrink-0 my-4 my-lg-0">
+                    <button type="button" class="copy-coupon-btn px-20 px-sm-28 py-8 py-sm-10 text-white text-uppercase bg-main-600 rounded-pill border-0 hover-bg-main-800 d-inline-flex align-items-center justify-content-center gap-8 fw-bold text-sm" style="white-space: nowrap !important; letter-spacing: 0.5px;">
+                        <span>{{ $activeCoupon->codename }}</span>
+                        <i class="ph ph-copy text-base text-sm-lg line-height-1"></i>
+                    </button>
+                    <span class="copy-text bg-main-600 text-white fw-normal position-absolute px-16 py-6 rounded-pill bottom-100 start-50 translate-middle-x min-w-max mb-8 text-xs"></span>
+                </div>
+                <p class="text-main-600 fw-normal mb-0 text-xs text-sm-sm text-lg-base">
+                    Use discount code <strong class="text-heading">{{ $activeCoupon->codename }}</strong> to get 
+                    <span class="fw-bold text-main-600">
+                        @if(str_contains(strtolower($activeCoupon->discount_type ?? ''), 'percent') || str_contains($activeCoupon->codename, 'PERCENT'))
+                            {{ $activeCoupon->discount }}% OFF
+                        @else
+                            {{ $currencySymbol }}{{ $activeCoupon->discount }} OFF
+                        @endif
+                    </span>
+                    @if($activeCoupon->min_spend)
+                        on orders above {{ $currencySymbol }}{{ $activeCoupon->min_spend }}
+                    @else
+                        on your purchase
+                    @endif
+                </p>
             </div>
-            <p class="text-md text-main-600 fw-normal mb-0">Use discount code to get <span class="fw-bold text-main-600">20% </span> discount for any item</p>
-        </div>
+        @else
+            <div class="border border-neutral-200 bg-neutral-30 border-dashed rounded-16 py-18 px-16 text-center">
+                <p class="text-neutral-500 fw-medium mb-0 text-sm">
+                    <i class="ph-bold ph-ticket text-main-600 me-6 text-base align-middle"></i>
+                    Coupon is not available currently. Stay tuned for upcoming offers!
+                </p>
+            </div>
+        @endif
      </div>
  </div>
 <!-- Super Discount End -->
 
     <!-- ========================== Short Product Section Start ============================== -->
-<div class="short-product pt-110">
+<div class="short-product pt-80">
     <div class="container container-lg">
         <div class="row gy-4">
 
-            <!-- Featured Products -->
+            <!-- 1. Featured Products -->
             <div class="col-xxl-3 col-lg-4 col-sm-6" data-aos="fade-up" data-aos-duration="600">
-                <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                    <div class="p-16 bg-main-50 rounded-16 mb-32">
-                        <h6 class="underlined-line position-relative mb-0 pb-16 d-inline-block">Featured Products</h6>
+                <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 bg-white">
+                    <div class="p-16 bg-main-50 rounded-16 mb-24">
+                        <h6 class="underlined-line position-relative mb-0 pb-12 d-inline-block fw-bold text-heading">Featured Products</h6>
                     </div>
                     <div class="short-product-list arrow-style-two max-h-unset">
-                        <div class="d-flex flex-column gap-44">
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img1.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                   
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Fresh Organic Broccoli Florets Vegetables</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹12.00</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹18.00</span>
+                        @forelse($shortFeatured->chunk(4) as $chunk)
+                            <div class="d-flex flex-column gap-20">
+                                @foreach($chunk as $p)
+                                    @php
+                                        $pVar = $p->variants->first();
+                                        $pOffer = $pVar->offer_price ?? $p->product_price ?? 0;
+                                        $pMrp = $pVar->mrp_price ?? $pVar->product_mrp_price ?? 0;
+                                        if (!empty($p->product_image)) {
+                                            if (Str::startsWith($p->product_image, ['http://', 'https://'])) {
+                                                $pImg = $p->product_image;
+                                            } elseif (Str::startsWith($p->product_image, 'assets/')) {
+                                                $pImg = asset($p->product_image);
+                                            } else {
+                                                $pImg = rtrim(env('MAIN_URL', 'http://127.0.0.1:8001/'), '/') . '/images/' . ltrim($p->product_image, '/');
+                                            }
+                                        } else {
+                                            $pImg = asset('assets/images/thumbs/product-two-img1.png');
+                                        }
+                                    @endphp
+                                    <div class="flex-align gap-14 p-6 rounded-12 hover-bg-neutral-30 transition-1">
+                                        <div class="w-80 h-80 rounded-12 border border-gray-100 flex-shrink-0 overflow-hidden bg-gray-50 flex-center">
+                                            <a href="/product/{{ $p->slug }}" class="w-100 h-100 flex-center">
+                                                <img src="{{ $pImg }}" alt="{{ $p->product_name }}" class="w-100 h-100 object-fit-contain p-6" onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src='{{ env('MAIN_URL') }}images/{{ $p->product_image }}'; } else { this.src='/assets/images/thumbs/product-two-img1.png'; }">
+                                            </a>
+                                        </div>
+                                        <div class="product-card__content flex-grow-1 min-w-0">
+                                            <h6 class="title text-sm fw-semibold mb-6">
+                                                <a href="/product/{{ $p->slug }}" class="link text-line-2 text-heading hover-text-main-600">{{ $p->product_name }}</a>
+                                            </h6>
+                                            <div class="product-card__price d-flex align-items-center gap-8">
+                                                <span class="text-heading text-sm fw-bold text-main-600">{{ $currencySymbol }}{{ number_format($pOffer, 2) }}</span>
+                                                @if($pMrp > $pOffer)
+                                                    <span class="text-gray-400 text-xs fw-medium text-decoration-line-through">{{ $currencySymbol }}{{ number_format($pMrp, 2) }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                @endforeach
                             </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img2.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                    <div class="flex-align gap-6">
-                                        <span class="text-xs fw-bold text-gray-500">4.7</span>
-                                        <span class="text-15 fw-bold text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs fw-bold text-gray-500">(12k)</span>
-                                    </div>
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Nature's Best Baby Spinach Leaves</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹9.00</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹14.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img3.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Farm Fresh Roma Tomatoes</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹7.00</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹11.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img4.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                   
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Organic Sweet Bell Peppers Mix</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹10.00</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹15.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex flex-column gap-44">
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img1.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Fresh Organic Broccoli Florets Vegetables</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹12.00</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹18.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img2.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Nature's Best Baby Spinach Leaves</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹9.00</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹14.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img3.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                   
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Farm Fresh Roma Tomatoes</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹7.00</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹11.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img4.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                   
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Organic Sweet Bell Peppers Mix</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹10.00</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹15.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @empty
+                            <div class="p-16 text-center text-neutral-500 text-sm">No featured products.</div>
+                        @endforelse
                     </div>
                 </div>
             </div>
 
-            <!-- Top Selling Products -->
+            <!-- 2. Top Selling Products -->
             <div class="col-xxl-3 col-lg-4 col-sm-6" data-aos="fade-up" data-aos-duration="700">
-                <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                    <div class="p-16 bg-main-50 rounded-16 mb-32">
-                        <h6 class="underlined-line position-relative mb-0 pb-16 d-inline-block">Top Selling Products</h6>
+                <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 bg-white">
+                    <div class="p-16 bg-main-50 rounded-16 mb-24">
+                        <h6 class="underlined-line position-relative mb-0 pb-12 d-inline-block fw-bold text-heading">Top Selling Products</h6>
                     </div>
                     <div class="short-product-list arrow-style-two max-h-unset">
-                        <div class="d-flex flex-column gap-44">
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img5.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Tropicana Pure Orange Juice 1L</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹5.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹8.99</span>
+                        @forelse($topSelling->chunk(4) as $chunk)
+                            <div class="d-flex flex-column gap-20">
+                                @foreach($chunk as $p)
+                                    @php
+                                        $pVar = $p->variants->first();
+                                        $pOffer = $pVar->offer_price ?? $p->product_price ?? 0;
+                                        $pMrp = $pVar->mrp_price ?? $pVar->product_mrp_price ?? 0;
+                                        if (!empty($p->product_image)) {
+                                            if (Str::startsWith($p->product_image, ['http://', 'https://'])) {
+                                                $pImg = $p->product_image;
+                                            } elseif (Str::startsWith($p->product_image, 'assets/')) {
+                                                $pImg = asset($p->product_image);
+                                            } else {
+                                                $pImg = rtrim(env('MAIN_URL', 'http://127.0.0.1:8001/'), '/') . '/images/' . ltrim($p->product_image, '/');
+                                            }
+                                        } else {
+                                            $pImg = asset('assets/images/thumbs/product-two-img1.png');
+                                        }
+                                    @endphp
+                                    <div class="flex-align gap-14 p-6 rounded-12 hover-bg-neutral-30 transition-1">
+                                        <div class="w-80 h-80 rounded-12 border border-gray-100 flex-shrink-0 overflow-hidden bg-gray-50 flex-center">
+                                            <a href="/product/{{ $p->slug }}" class="w-100 h-100 flex-center">
+                                                <img src="{{ $pImg }}" alt="{{ $p->product_name }}" class="w-100 h-100 object-fit-contain p-6" onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src='{{ env('MAIN_URL') }}images/{{ $p->product_image }}'; } else { this.src='/assets/images/thumbs/product-two-img1.png'; }">
+                                            </a>
+                                        </div>
+                                        <div class="product-card__content flex-grow-1 min-w-0">
+                                            <h6 class="title text-sm fw-semibold mb-6">
+                                                <a href="/product/{{ $p->slug }}" class="link text-line-2 text-heading hover-text-main-600">{{ $p->product_name }}</a>
+                                            </h6>
+                                            <div class="product-card__price d-flex align-items-center gap-8">
+                                                <span class="text-heading text-sm fw-bold text-main-600">{{ $currencySymbol }}{{ number_format($pOffer, 2) }}</span>
+                                                @if($pMrp > $pOffer)
+                                                    <span class="text-gray-400 text-xs fw-medium text-decoration-line-through">{{ $currencySymbol }}{{ number_format($pMrp, 2) }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                @endforeach
                             </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img6.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                   
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Dannon Whole Milk Plain Yogurt</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹4.49</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹6.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img7.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Organic Valley Whole Milk</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹6.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹9.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img8.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Chobani Greek Yogurt Strawberry</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹3.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹5.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex flex-column gap-44">
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img5.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Tropicana Pure Orange Juice 1L</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹5.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹8.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img6.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                   
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Dannon Whole Milk Plain Yogurt</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹4.49</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹6.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img7.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Organic Valley Whole Milk</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹6.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹9.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img8.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Chobani Greek Yogurt Strawberry</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹3.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹5.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @empty
+                            <div class="p-16 text-center text-neutral-500 text-sm">No top selling products.</div>
+                        @endforelse
                     </div>
                 </div>
             </div>
 
-            <!-- On-sale Products -->
+            <!-- 3. Trending Products -->
             <div class="col-xxl-3 col-lg-4 col-sm-6" data-aos="fade-up" data-aos-duration="800">
-                <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-                    <div class="p-16 bg-main-50 rounded-16 mb-32">
-                        <h6 class="underlined-line position-relative mb-0 pb-16 d-inline-block">On-sale Products</h6>
+                <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 bg-white">
+                    <div class="p-16 bg-main-50 rounded-16 mb-24">
+                        <h6 class="underlined-line position-relative mb-0 pb-12 d-inline-block fw-bold text-heading">Trending Products</h6>
                     </div>
                     <div class="short-product-list arrow-style-two max-h-unset">
-                        <div class="d-flex flex-column gap-44">
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img9.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Dave's Killer Bread Organic Thin-Sliced</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹5.49</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹7.99</span>
+                        @forelse($trending->chunk(4) as $chunk)
+                            <div class="d-flex flex-column gap-20">
+                                @foreach($chunk as $p)
+                                    @php
+                                        $pVar = $p->variants->first();
+                                        $pOffer = $pVar->offer_price ?? $p->product_price ?? 0;
+                                        $pMrp = $pVar->mrp_price ?? $pVar->product_mrp_price ?? 0;
+                                        if (!empty($p->product_image)) {
+                                            if (Str::startsWith($p->product_image, ['http://', 'https://'])) {
+                                                $pImg = $p->product_image;
+                                            } elseif (Str::startsWith($p->product_image, 'assets/')) {
+                                                $pImg = asset($p->product_image);
+                                            } else {
+                                                $pImg = rtrim(env('MAIN_URL', 'http://127.0.0.1:8001/'), '/') . '/images/' . ltrim($p->product_image, '/');
+                                            }
+                                        } else {
+                                            $pImg = asset('assets/images/thumbs/product-two-img1.png');
+                                        }
+                                    @endphp
+                                    <div class="flex-align gap-14 p-6 rounded-12 hover-bg-neutral-30 transition-1">
+                                        <div class="w-80 h-80 rounded-12 border border-gray-100 flex-shrink-0 overflow-hidden bg-gray-50 flex-center">
+                                            <a href="/product/{{ $p->slug }}" class="w-100 h-100 flex-center">
+                                                <img src="{{ $pImg }}" alt="{{ $p->product_name }}" class="w-100 h-100 object-fit-contain p-6" onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src='{{ env('MAIN_URL') }}images/{{ $p->product_image }}'; } else { this.src='/assets/images/thumbs/product-two-img1.png'; }">
+                                            </a>
+                                        </div>
+                                        <div class="product-card__content flex-grow-1 min-w-0">
+                                            <h6 class="title text-sm fw-semibold mb-6">
+                                                <a href="/product/{{ $p->slug }}" class="link text-line-2 text-heading hover-text-main-600">{{ $p->product_name }}</a>
+                                            </h6>
+                                            <div class="product-card__price d-flex align-items-center gap-8">
+                                                <span class="text-heading text-sm fw-bold text-main-600">{{ $currencySymbol }}{{ number_format($pOffer, 2) }}</span>
+                                                @if($pMrp > $pOffer)
+                                                    <span class="text-gray-400 text-xs fw-medium text-decoration-line-through">{{ $currencySymbol }}{{ number_format($pMrp, 2) }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                @endforeach
                             </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img4.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                    
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Organic Sliced Mushrooms Pack</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹3.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹5.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img7.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Kirkland Organic Almond Milk</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹4.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹7.49</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img4.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Green Giant Frozen Broccoli Florets</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹2.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹4.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex flex-column gap-44">
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img9.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                   
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Dave's Killer Bread Organic Thin-Sliced</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹5.49</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹7.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img4.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Organic Sliced Mushrooms Pack</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹3.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹5.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img7.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                  
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Kirkland Organic Almond Milk</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹4.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹7.49</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-align gap-16">
-                                <div class="w-90 h-90 rounded-12 border border-gray-100 flex-shrink-0">
-                                    <a href="/products" class="link"><img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/short-product-img4.png" alt=""></a>
-                                </div>
-                                <div class="product-card__content mt-12">
-                                   
-                                    <h6 class="title text-lg fw-semibold mt-8 mb-8">
-                                        <a href="/products" class="link text-line-1">Green Giant Frozen Broccoli Florets</a>
-                                    </h6>
-                                    <div class="product-card__price flex-align gap-8">
-                                        <span class="text-heading text-md fw-semibold d-block">₹2.99</span>
-                                        <span class="text-gray-400 text-md fw-semibold d-block">₹4.99</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @empty
+                            <div class="p-16 text-center text-neutral-500 text-sm">No trending products.</div>
+                        @endforelse
                     </div>
                 </div>
             </div>
 
-            <!-- Deals of the Week -->
+            <!-- 4. Deals of the Week -->
             <div class="col-xxl-3 col-lg-4 col-sm-6" data-aos="fade-up" data-aos-duration="900">
-                <div class="product-card h-100 p-24 pt-32 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item pt-32">
-                    <button type="button" class="wishlist-btn-two">
-                        <i class="ph-bold ph-heart"></i>
-                    </button>
-                    <div class="">
-                        <h6 class="position-relative mb-0 pb-12 d-inline-block">Deals of the week</h6>
-                        <div class="countdown mb-10" id="countdown26">
-                            <ul class="countdown-list flex-align flex-wrap">
-                                <li class="countdown-list__item colon-red py-8 px-12 flex-align gap-4 text-sm fw-medium box-shadow-4xl rounded-5 bg-main-600 text-white">
-                                    <span class="days"></span> D
-                                </li>
-                                <li class="countdown-list__item colon-red py-8 px-12 flex-align gap-4 text-sm fw-medium box-shadow-4xl rounded-5 bg-main-600 text-white">
-                                    <span class="hours"></span> H
-                                </li>
-                                <li class="countdown-list__item colon-red py-8 px-12 flex-align gap-4 text-sm fw-medium box-shadow-4xl rounded-5 bg-main-600 text-white">
-                                    <span class="minutes"></span> M
-                                </li>
-                                <li class="countdown-list__item colon-red py-8 px-12 flex-align gap-4 text-sm fw-medium box-shadow-4xl rounded-5 bg-main-600 text-white">
-                                    <span class="seconds"></span> S
-                                </li>
-                            </ul>
-                        </div>
-                        <p class="text-neutral-300 fw-medium text-sm">Don't miss this opportunity at a special</p>
-                    </div>
-                    <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                        <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/product-img32.png" alt="">
-                    </a>
-                    <div class="product-card__content w-100">
-                        <div class="flex-align gap-4">
-                            <!-- <div class="flex-align gap-2 me-4">
-                                <span class="text-12 fw-medium text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                <span class="text-12 fw-medium text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                <span class="text-12 fw-medium text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                <span class="text-12 fw-medium text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                <span class="text-12 fw-medium text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                @if($dealOfWeek)
+                    @php
+                        $dwVar = $dealOfWeek->variants->first();
+                        $dwOffer = $dwVar->offer_price ?? $dealOfWeek->product_price ?? 0;
+                        $dwMrp = $dwVar->mrp_price ?? $dwVar->product_mrp_price ?? 0;
+                        if (!empty($dealOfWeek->product_image)) {
+                            if (Str::startsWith($dealOfWeek->product_image, ['http://', 'https://'])) {
+                                $dwImg = $dealOfWeek->product_image;
+                            } elseif (Str::startsWith($dealOfWeek->product_image, 'assets/')) {
+                                $dwImg = asset($dealOfWeek->product_image);
+                            } else {
+                                $dwImg = rtrim(env('MAIN_URL', 'http://127.0.0.1:8001/'), '/') . '/images/' . ltrim($dealOfWeek->product_image, '/');
+                            }
+                        } else {
+                            $dwImg = asset('assets/images/thumbs/product-two-img1.png');
+                        }
+                        $dwInCart = $dwVar ? in_array($dwVar->id, $cartProductIds ?? []) : false;
+                        $dwCartItem = ($dwVar && isset($cartItems)) ? $cartItems->where('product_varient_id', $dwVar->id)->first() : null;
+                        $dwOutOfStock = ($dwVar ? (int)($dwVar->product_qty ?? 0) : 0) <= 0;
+                    @endphp
+                    <div class="product-card h-100 p-20 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item bg-white d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-12">
+                                <h6 class="position-relative mb-0 fw-bold text-heading text-16">Deal of the Week</h6>
+                                <span class="badge bg-danger-50 text-danger-600 fw-bold text-xs px-8 py-4 rounded-pill">Special Deal</span>
                             </div>
-                            <span class="text-xs fw-medium text-heading">(3)</span> -->
+                            <div class="countdown mb-12" id="countdown26">
+                                <ul class="countdown-list flex-align flex-wrap gap-4">
+                                    <li class="countdown-list__item colon-red py-6 px-10 flex-align gap-4 text-xs fw-bold rounded-6 bg-main-600 text-white">
+                                        <span class="days"></span> D
+                                    </li>
+                                    <li class="countdown-list__item colon-red py-6 px-10 flex-align gap-4 text-xs fw-bold rounded-6 bg-main-600 text-white">
+                                        <span class="hours"></span> H
+                                    </li>
+                                    <li class="countdown-list__item colon-red py-6 px-10 flex-align gap-4 text-xs fw-bold rounded-6 bg-main-600 text-white">
+                                        <span class="minutes"></span> M
+                                    </li>
+                                    <li class="countdown-list__item colon-red py-6 px-10 flex-align gap-4 text-xs fw-bold rounded-6 bg-main-600 text-white">
+                                        <span class="seconds"></span> S
+                                    </li>
+                                </ul>
+                            </div>
+                            <a href="/product/{{ $dealOfWeek->slug }}" class="product-card__thumb flex-center overflow-hidden rounded-12 bg-gray-50 mb-12" style="height: 180px;">
+                                <img src="{{ $dwImg }}" alt="{{ $dealOfWeek->product_name }}" class="w-100 h-100 object-fit-contain p-8" onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src='{{ env('MAIN_URL') }}images/{{ $dealOfWeek->product_image }}'; } else { this.src='/assets/images/thumbs/product-two-img1.png'; }">
+                            </a>
+                            <div class="product-card__content w-100">
+                                <div class="d-flex align-items-center gap-8 mt-6">
+                                    <span class="text-danger-600 mb-0 text-lg fw-bold">{{ $currencySymbol }}{{ number_format($dwOffer, 2) }}</span>
+                                    @if($dwMrp > $dwOffer)
+                                        <span class="text-neutral-400 fw-medium mb-0 text-sm text-decoration-line-through">{{ $currencySymbol }}{{ number_format($dwMrp, 2) }}</span>
+                                    @endif
+                                </div>
+                                <h6 class="title text-sm fw-semibold mt-8 mb-8">
+                                    <a href="/product/{{ $dealOfWeek->slug }}" class="link text-line-2 fw-bold text-heading hover-text-main-600">{{ $dealOfWeek->product_name }}</a>
+                                </h6>
+                            </div>
                         </div>
-                        <div class="d-flex align-items-center gap-12 mt-6">
-                            <h6 class="text-danger-600 mb-0 text-lg"> ₹60.99</h6>
-                            <h6 class="text-neutral-300 fw-medium mb-0 text-lg">₹79.99</h6>
+                        <div class="cart-control mt-12 w-100" data-product-id="{{ $dealOfWeek->id }}" data-variant-id="{{ $dwVar->id ?? '' }}">
+                            @if($dwOutOfStock)
+                                <button type="button" class="btn btn-outline-neutral-300 py-10 px-16 rounded-pill w-100 justify-content-center text-xs fw-semibold text-neutral-400" disabled>
+                                    Out of Stock
+                                </button>
+                            @elseif($dwInCart)
+                                <div class="qty-box">
+                                    <button type="button" class="quantity__minus">−</button>
+                                    <div class="d-flex align-items-center gap-4">
+                                        <span class="qty-box-label">In Cart:</span>
+                                        <input type="number" class="quantity__input" value="{{ $dwCartItem->product_quantity ?? 1 }}" min="1" readonly>
+                                    </div>
+                                    <button type="button" class="quantity__plus">+</button>
+                                </div>
+                            @else
+                                <button type="button"
+                                    class="add-to-cart-btn product-card__cart btn bg-success-600 text-white hover-bg-success-700 hover-text-white py-10 px-20 rounded-pill flex-align gap-8 w-100 justify-content-center text-sm fw-semibold">
+                                    <span>Add To Cart</span> <i class="ph ph-shopping-cart"></i>
+                                </button>
+                            @endif
                         </div>
-                        <h6 class="title text-md fw-semibold mt-10 mb-0">
-                            <a href="/products" class="link text-line-2 fw-bold">Perfectly Packed Meat Combos for Delicious and Flavorful Meals Every Day</a>
-                        </h6>
-                        <p class="text-gray-500 text-sm mt-12 pb-12 border-bottom border-neutral-100 mb-8">This product is about to run out</p>
-                        <div class="progress w-100 bg-gray-100 rounded-pill h-8" role="progressbar" aria-label="Basic example" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-success-600 rounded-pill" style="width: 35%"></div>
-                        </div>
-                        <div class="d-flex align-items-center gap-6 mt-6">
-                            <span class="text-sm text-gray-500">available only:</span>
-                            <h6 class="text-danger-600 mb-0 text-md fw-semibold"> ₹60.99</h6>
-                        </div>
-                        <a href="/cart" class="product-card__cart btn bg-success-600 text-white hover-bg-success-700 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-16 w-100 justify-content-center">
-                            Add To Cart <i class="ph ph-shopping-cart"></i>
-                        </a>
                     </div>
-                </div>
+                @endif
             </div>
 
         </div>
@@ -1714,54 +1354,6 @@ document.addEventListener("DOMContentLoaded", function () {
         attachQtyEvents(controlDiv);
     }
 
-    function attachQtyEvents(controlDiv) {
-        const variantId = controlDiv.dataset.variantId;
-        const input = controlDiv.querySelector('.quantity__input');
-        if (!input) return;
-
-        const plusBtn = controlDiv.querySelector('.quantity__plus');
-        const minusBtn = controlDiv.querySelector('.quantity__minus');
-
-        if (plusBtn) {
-            plusBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const newQty = parseInt(input.value) + 1;
-                syncCart(variantId, newQty, input);
-            });
-        }
-
-        if (minusBtn) {
-            minusBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const currentQty = parseInt(input.value);
-
-                if (currentQty <= 1) {
-                    fetch("{{ route('cart.ajaxRemove') }}", {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                        body: JSON.stringify({ product_varient_id: variantId })
-                    }).then(r => r.json()).then(data => {
-                        if (data.success) {
-                            controlDiv.innerHTML = `
-                                <button type="button"
-                                    class="add-to-cart-btn product-card__cart btn py-8 py-sm-10 px-12 px-sm-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-xs fw-semibold">
-                                    <span>Add To Cart</span> <i class="ph-bold ph-shopping-cart-simple text-sm"></i>
-                                </button>`;
-                            attachAddToCartEvent(controlDiv);
-                            if (typeof updateCartCount === 'function') {
-                                updateCartCount(-1);
-                            }
-                        }
-                    });
-                } else {
-                    syncCart(variantId, currentQty - 1, input);
-                }
-            });
-        }
-    }
-
     function syncCart(variantId, quantity, input) {
         fetch("{{ route('cart.ajaxUpdate') }}", {
             method: 'POST',
@@ -1770,7 +1362,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(async r => {
             const data = await r.json();
             if (r.ok && data.success) {
-                input.value = data.quantity !== undefined ? data.quantity : quantity;
+                const finalQty = data.quantity !== undefined ? data.quantity : quantity;
+                document.querySelectorAll(`.cart-control[data-variant-id="${variantId}"] .quantity__input`).forEach(inp => {
+                    inp.value = finalQty;
+                });
                 if (data.clamped) {
                     Swal.fire({ icon: 'info', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
                 }
@@ -1782,21 +1377,25 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function attachAddToCartEvent(controlDiv) {
-        const btn = controlDiv.querySelector('.add-to-cart-btn');
-        if (!btn) return;
-
-        btn.addEventListener('click', function (e) {
+    // Global Delegated Click Listener for Cart Actions (works seamlessly with Slick Clones)
+    document.addEventListener('click', function (e) {
+        // 1. Add to Cart button
+        const addBtn = e.target.closest('.add-to-cart-btn');
+        if (addBtn) {
             e.preventDefault();
             e.stopPropagation();
+            if (addBtn.disabled) return;
 
-            if (btn.disabled) return;
-            btn.disabled = true;
-            const origContent = btn.innerHTML;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Adding...`;
+            const controlDiv = addBtn.closest('.cart-control');
+            if (!controlDiv) return;
 
             const productId = controlDiv.dataset.productId;
             const variantId = controlDiv.dataset.variantId;
+            if (!productId || !variantId) return;
+
+            addBtn.disabled = true;
+            const origContent = addBtn.innerHTML;
+            addBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Adding...`;
 
             fetch("{{ route('cart.store') }}", {
                 method: 'POST',
@@ -1808,7 +1407,18 @@ document.addEventListener("DOMContentLoaded", function () {
             }).then(async r => {
                 const data = await r.json();
                 if (r.ok && data.status !== 'error') {
-                    showQtyBox(controlDiv, 1);
+                    document.querySelectorAll(`.cart-control[data-variant-id="${variantId}"]`).forEach(cd => {
+                        cd.innerHTML = `
+                            <div class="qty-box">
+                                <button type="button" class="quantity__minus">−</button>
+                                <div class="d-flex align-items-center gap-4">
+                                    <span class="qty-box-label">In Cart:</span>
+                                    <input type="number" class="quantity__input" value="1" min="1" readonly>
+                                </div>
+                                <button type="button" class="quantity__plus">+</button>
+                            </div>`;
+                    });
+
                     if (typeof updateCartCount === 'function') {
                         updateCartCount(1);
                     }
@@ -1818,8 +1428,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         showConfirmButton: false, timer: 2000, timerProgressBar: true
                     });
                 } else {
-                    btn.disabled = false;
-                    btn.innerHTML = origContent;
+                    addBtn.disabled = false;
+                    addBtn.innerHTML = origContent;
                     Swal.fire({
                         icon: 'warning', title: data.message || 'This product variant is currently unavailable.',
                         toast: true, position: 'top-end',
@@ -1827,22 +1437,68 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 }
             }).catch(() => {
-                btn.disabled = false;
-                btn.innerHTML = origContent;
+                addBtn.disabled = false;
+                addBtn.innerHTML = origContent;
                 Swal.fire({
                     icon: 'error', title: 'Network error',
                     toast: true, position: 'top-end',
                     showConfirmButton: false, timer: 2000
                 });
             });
-        });
-    }
+            return;
+        }
 
-    document.querySelectorAll('.cart-control').forEach(controlDiv => {
-        if (controlDiv.querySelector('.qty-box')) {
-            attachQtyEvents(controlDiv);
-        } else {
-            attachAddToCartEvent(controlDiv);
+        // 2. Quantity Plus button
+        const plusBtn = e.target.closest('.quantity__plus');
+        if (plusBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const controlDiv = plusBtn.closest('.cart-control');
+            if (!controlDiv) return;
+            const input = controlDiv.querySelector('.quantity__input');
+            const variantId = controlDiv.dataset.variantId;
+            if (!input || !variantId) return;
+
+            const newQty = parseInt(input.value) + 1;
+            syncCart(variantId, newQty, input);
+            return;
+        }
+
+        // 3. Quantity Minus button
+        const minusBtn = e.target.closest('.quantity__minus');
+        if (minusBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const controlDiv = minusBtn.closest('.cart-control');
+            if (!controlDiv) return;
+            const input = controlDiv.querySelector('.quantity__input');
+            const variantId = controlDiv.dataset.variantId;
+            if (!input || !variantId) return;
+
+            const currentQty = parseInt(input.value);
+            if (currentQty <= 1) {
+                fetch("{{ route('cart.ajaxRemove') }}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    body: JSON.stringify({ product_varient_id: variantId })
+                }).then(r => r.json()).then(data => {
+                    if (data.success) {
+                        document.querySelectorAll(`.cart-control[data-variant-id="${variantId}"]`).forEach(cd => {
+                            cd.innerHTML = `
+                                <button type="button"
+                                    class="add-to-cart-btn product-card__cart btn py-8 py-sm-10 px-12 px-sm-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-xs fw-semibold">
+                                    <span>Add To Cart</span> <i class="ph-bold ph-shopping-cart-simple text-sm"></i>
+                                </button>`;
+                        });
+                        if (typeof updateCartCount === 'function') {
+                            updateCartCount(-1);
+                        }
+                    }
+                });
+            } else {
+                syncCart(variantId, currentQty - 1, input);
+            }
+            return;
         }
     });
 
@@ -1879,7 +1535,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const copyBtn = document.querySelector('.copy-coupon-btn');
     if (copyBtn) {
         copyBtn.addEventListener('click', function () {
-            const code = 'FREE25BAC';
+            const code = this.querySelector('span')?.textContent?.trim() || 'FREE25BAC';
             navigator.clipboard.writeText(code).then(() => {
                 const copyText = copyBtn.parentElement.querySelector('.copy-text');
                 if (copyText) {
@@ -1889,6 +1545,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         });
+    }
+
+    // Dynamic Countdown Timer Initialization
+    if (typeof initializeCountdown === 'function') {
+        @php
+            $hotDealEndDate = (isset($dealOfWeek) && $dealOfWeek && $dealOfWeek->variants->first() && $dealOfWeek->variants->first()->flash_sale_date)
+                ? date('Y-m-d', strtotime($dealOfWeek->variants->first()->flash_sale_date)) 
+                : now()->addDays(7)->format('Y-m-d');
+        @endphp
+        initializeCountdown('countdown4', '{{ $hotDealEndDate }}');
+        initializeCountdown('countdown26', '{{ $hotDealEndDate }}');
     }
 });
 </script>

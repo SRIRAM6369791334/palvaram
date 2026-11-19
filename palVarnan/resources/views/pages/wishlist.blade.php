@@ -29,6 +29,9 @@
         <div class="row gy-4">
             <div class="col-lg-12">
                 <div class="cart-table border border-gray-100 rounded-8 px-16 px-md-32 py-24 py-md-40">
+                    <div class="d-md-none text-xs text-neutral-500 mb-12 flex-align gap-6">
+                        <i class="ph ph-arrows-left-right text-sm text-main-600"></i> Swipe sideways to view stock &amp; action
+                    </div>
                     <div class="overflow-x-auto scroll-sm scroll-sm-horizontal">
                         <table class="table style-three">
                             <thead>

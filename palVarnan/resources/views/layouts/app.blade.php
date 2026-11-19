@@ -143,16 +143,14 @@
             cursor: not-allowed !important;
         }
 
-        /* Sticky header mobile brand: ONLY show when header is fixed-header */
-        .sticky-mobile-brand {
-            display: none !important;
-        }
-        .header.fixed-header .sticky-mobile-brand {
-            display: flex !important;
-        }
-        @media (min-width: 992px) {
-            .sticky-mobile-brand {
-                display: none !important;
+        /* Mobile Header Sticky */
+        @media (max-width: 991.98px) {
+            .header-middle {
+                position: sticky;
+                top: 0;
+                z-index: 1020;
+                background-color: #ffffff !important;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             }
         }
 
@@ -261,12 +259,20 @@
             }
         }
 
-        /* GENERAL: Prevent any horizontal overflow globally */
+        /* GENERAL: Prevent any horizontal overflow globally while preserving container centering */
         body, html {
             overflow-x: hidden;
         }
-        .container, .container-lg {
-            max-width: 100%;
+        .container-lg {
+            max-width: 1320px;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            padding-inline: 24px !important;
+        }
+        @media (max-width: 575px) {
+            .container-lg {
+                padding-inline: 16px !important;
+            }
         }
 
         /* Country Modal Selection Cards */
@@ -461,9 +467,37 @@ window.addEventListener('DOMContentLoaded', function () {
 </script>
 @endif
 
-@auth
-<!-- @if(isset($cartCount) && $cartCount > 0) -->
-<div id="floating-cart-bar" onclick="window.location.href='/cart'" style="
+@if(isset($cartCount) && $cartCount > 0)
+<div id="floating-cart-bar" onclick="window.location.href='/cart'" class="floating-cart-bar">
+
+    {{-- Left: Icon & Info --}}
+    <div class="fcb-left">
+        <div class="fcb-icon">
+            <i class="ph-fill ph-shopping-cart"></i>
+        </div>
+        <div class="fcb-details">
+            <span id="fcb-item-label" class="fcb-count">{{ $cartCount }} {{ Str::plural('item', $cartCount) }} in cart</span>
+            <div class="fcb-title">
+                <span>Subtotal: <strong id="fcb-subtotal" style="color: #047857;">{{ $currencySymbol ?? '₹' }}{{ number_format($cartSubtotal, 0) }}</strong></span>
+            </div>
+        </div>
+    </div>
+
+    {{-- Right: CTA Button --}}
+    <div class="fcb-btn">
+        <span>Go to cart</span>
+        <i class="ph-bold ph-arrow-right"></i>
+        <span id="fcb-badge" class="fcb-badge">{{ $cartCount }}</span>
+    </div>
+
+</div>
+
+<style>
+@keyframes fcbSlideUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.floating-cart-bar {
     position: fixed;
     bottom: 24px;
     left: 50%;
@@ -471,81 +505,131 @@ window.addEventListener('DOMContentLoaded', function () {
     z-index: 9999;
     display: flex;
     align-items: center;
-    gap: 0;
+    justify-content: space-between;
+    gap: 12px;
     background: #faf2aa;
     border: 1px solid rgba(0,0,0,0.08);
     border-radius: 100px;
-    padding: 6px 6px 6px 20px;
-    min-width: 360px;
-    max-width: 500px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    padding: 7px 8px 7px 16px;
+    width: calc(100% - 32px);
+    max-width: 440px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
     cursor: pointer;
     animation: fcbSlideUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
-">
-
-    {{-- Icon --}}
-    <div style="width:36px;height:36px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <i class="ph-fill ph-shopping-cart" style="color:#16a34a;font-size:16px;"></i>
-    </div>
-
-    {{-- Label --}}
-    <div style="margin-left:10px;flex:1;min-width:0;">
-        <div id="fcb-item-label" style="font-size:11px;color:#000;line-height:1.2;">{{ $cartCount }} item{{ $cartCount > 1 ? 's' : '' }} in cart</div>
-        <div style="font-size:14px;font-weight:600;color:#111827;line-height:1.3;">Your cart is ready</div>
-    </div>
-
-    {{-- Divider --}}
-    <div style="width:1px;height:28px;background:rgba(0,0,0,0.08);margin:0 14px;flex-shrink:0;"></div>
-
-    {{-- Subtotal --}}
-    <div style="flex-shrink:0;text-align:right;">
-        <div style="font-size:11px;color:#000;line-height:1.2;">subtotal</div>
-        <div id="fcb-subtotal" style="font-size:14px;font-weight:600;color:#111827;line-height:1.3;">
-            {{ $currencySymbol ?? '₹' }}{{ number_format($cartSubtotal, 0) }}
-        </div>
-    </div>
-
-    {{-- CTA Button --}}
-    <div style="display:flex;align-items:center;gap:6px;background:#16a34a;color:#fff;font-size:13px;font-weight:600;border-radius:100px;padding:10px 16px;margin-left:12px;white-space:nowrap;flex-shrink:0;">
-        <i class="ph ph-arrow-right" style="font-size:14px;"></i>
-        Go to cart
-        <span id="fcb-badge" style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:rgba(255,255,255,0.25);border-radius:50%;font-size:11px;font-weight:700;">{{ $cartCount }}</span>
-    </div>
-
-</div>
-
-<style>
-@keyframes fcbSlideUp {
-    from { opacity:0; transform:translateX(-50%) translateY(20px); }
-    to   { opacity:1; transform:translateX(-50%) translateY(0); }
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
 }
-#floating-cart-bar:hover {
-    box-shadow: 0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
+.floating-cart-bar:hover {
+    box-shadow: 0 10px 32px rgba(0,0,0,0.16);
     transform: translateX(-50%) translateY(-2px);
-    transition: all 0.2s ease;
 }
-@media (max-width: 480px) {
-    #floating-cart-bar {
-        min-width: calc(100vw - 32px) !important;
-        bottom: 16px !important;
-        padding: 6px 6px 6px 14px !important;
+.fcb-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+.fcb-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+.fcb-details {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    line-height: 1.25;
+}
+.fcb-count {
+    font-size: 11px;
+    color: #4b5563;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fcb-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fcb-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #16a34a;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 100px;
+    padding: 8px 14px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.fcb-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: rgba(255,255,255,0.28);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+}
+@media (max-width: 575px) {
+    .floating-cart-bar {
+        bottom: 16px;
+        padding: 6px 6px 6px 12px;
+        gap: 8px;
     }
+    .fcb-btn {
+        padding: 7px 11px;
+        font-size: 12px;
+    }
+}
+@media (max-width: 360px) {
+    .fcb-count {
+        display: none;
+    }
+    .fcb-title {
+        font-size: 12px;
+    }
+    .fcb-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+}
+/* Ensure the progress-wrap (scroll-to-top button) lifts above floating cart bar */
+body:has(#floating-cart-bar) .progress-wrap {
+    bottom: 84px !important;
 }
 </style>
 @endif
-<!-- @endauth -->
 
 <script>
 function updateCartCount(delta) {
-    const badges   = document.querySelectorAll('#cart-count, [data-cart-count]');
+    const badges   = document.querySelectorAll('#cart-count, #cart-count-mobile, .js-cart-count-badge, [data-cart-count]');
     const headerEl = document.getElementById('cart-count');
+    const mobileEl = document.getElementById('cart-count-mobile');
     const bar      = document.getElementById('floating-cart-bar');
     const badge    = document.getElementById('fcb-badge');
     const label    = document.getElementById('fcb-item-label');
 
-    let current = Math.max(0, parseInt(headerEl?.textContent || 0) + delta);
+    let current = Math.max(0, parseInt(headerEl?.textContent || mobileEl?.textContent || 0) + delta);
     badges.forEach(el => el.textContent = current);
-    if (headerEl) headerEl.textContent = current;
     if (badge)    badge.textContent = current;
     if (label)    label.textContent = current + (current > 1 ? ' items' : ' item') + ' in cart';
 
