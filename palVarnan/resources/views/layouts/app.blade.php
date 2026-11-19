@@ -143,6 +143,132 @@
             cursor: not-allowed !important;
         }
 
+        /* Sticky header mobile brand: ONLY show when header is fixed-header */
+        .sticky-mobile-brand {
+            display: none !important;
+        }
+        .header.fixed-header .sticky-mobile-brand {
+            display: flex !important;
+        }
+        @media (min-width: 992px) {
+            .sticky-mobile-brand {
+                display: none !important;
+            }
+        }
+
+        /* =========================================================
+           RESPONSIVE UI FIXES — added 2026-11-19
+           ========================================================= */
+
+        /* BUG #2: Banner content — remove hardcoded negative margin on mobile */
+        .banner-item__content {
+            margin-top: -95px; /* desktop default */
+        }
+        @media (max-width: 575px) {
+            .banner-item__content {
+                margin-top: 0 !important;
+            }
+            /* BUG #3: Banner height flexible on mobile */
+            .banner-item {
+                min-height: 300px;
+                height: auto !important;
+            }
+            .banner-slider__inner {
+                flex-direction: column-reverse;
+                align-items: center;
+                padding: 24px 16px;
+            }
+        }
+
+        /* =========================================================
+           GLOBAL PRODUCT CARD STRETCH & ALIGNMENT
+           Fixes squished 123px thumbnail in 350px card bug
+           ========================================================= */
+        .product-card {
+            align-items: stretch !important;
+            height: 100% !important;
+        }
+        .product-card > div,
+        .product-card__thumb,
+        .product-card__content {
+            width: 100% !important;
+        }
+        .product-card__thumb {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .product-card__thumb img {
+            max-width: 100% !important;
+            object-fit: contain !important;
+        }
+
+        /* Common Tab Pills modern styling across all devices */
+        .common-tab .nav-link {
+            border-radius: 50rem !important;
+            padding: 8px 18px !important;
+            font-size: 13.5px !important;
+            font-weight: 600 !important;
+            background: #f8fafc !important;
+            color: #475569 !important;
+            border: 1px solid #e2e8f0 !important;
+            transition: all 0.2s ease !important;
+        }
+        .common-tab .nav-link:hover {
+            background: #e6f5f4 !important;
+            color: #026966 !important;
+            border-color: rgba(2, 105, 102, 0.3) !important;
+        }
+        .common-tab .nav-link.active {
+            background: #026966 !important;
+            color: #ffffff !important;
+            border-color: #026966 !important;
+            box-shadow: 0 4px 12px rgba(2, 105, 102, 0.2) !important;
+        }
+
+        /* BUG #5: Recommended tabs — horizontal scroll on tablet & mobile instead of overflow */
+        @media (max-width: 991px) {
+            .section-heading.flex-between {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 14px !important;
+            }
+            .section-heading .common-tab {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap !important;
+                scrollbar-width: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding-bottom: 8px !important;
+                padding-top: 2px !important;
+                gap: 8px !important;
+            }
+            .section-heading .common-tab::-webkit-scrollbar {
+                display: none !important;
+            }
+            .section-heading .common-tab .nav-item {
+                flex: 0 0 auto !important;
+            }
+        }
+
+        /* BUG #7: Body padding so floating cart bar doesn't cover page content */
+        @media (max-width: 768px) {
+            body:has(#floating-cart-bar) {
+                padding-bottom: 90px;
+            }
+        }
+
+        /* GENERAL: Prevent any horizontal overflow globally */
+        body, html {
+            overflow-x: hidden;
+        }
+        .container, .container-lg {
+            max-width: 100%;
+        }
+
         /* Country Modal Selection Cards */
         .country-select-btn {
             border: 2px solid #e5e7eb !important;

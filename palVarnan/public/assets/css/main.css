@@ -1,4 +1,21 @@
-/*====================== CSS Index Here =======================*/
+
+/* FIX: Recommended Tabs Overflow on Mobile - HIGH PRIORITY */
+@media (max-width: 767px) {
+    .common-tab {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none !important;
+    }
+    .common-tab::-webkit-scrollbar {
+        display: none !important;
+    }
+    .common-tab .nav-item {
+        flex: 0 0 auto !important;
+    }
+}/*====================== CSS Index Here =======================*/
 /*
 01. Abstracts
     1.1. Classes
@@ -10936,3 +10953,6 @@ input:focus-visible {
     border-inline-start: 1px solid var(--neutral-100, #e5e9ef) !important;
 }
 /*# sourceMappingURL=main.css.map */
+
+
+

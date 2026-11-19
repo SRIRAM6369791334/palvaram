@@ -867,6 +867,37 @@
     .account-nav__link.active-tab i {
         color: var(--main-600, #1c799b);
     }
+
+    @media (max-width: 991px) {
+        .account-sidebar {
+            padding: 16px !important;
+            margin-bottom: 16px;
+        }
+        .account-sidebar .border-bottom {
+            margin-bottom: 14px !important;
+            padding-bottom: 14px !important;
+        }
+        .account-nav {
+            flex-direction: row !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            white-space: nowrap !important;
+            scrollbar-width: none;
+            gap: 8px !important;
+        }
+        .account-nav::-webkit-scrollbar {
+            display: none;
+        }
+        .account-nav li {
+            flex: 0 0 auto;
+        }
+        .account-nav__link {
+            padding: 8px 14px !important;
+            font-size: 13px !important;
+            border-radius: 999px !important;
+            border: 1px solid #e2e8f0;
+        }
+    }
     .cart-table th {
         color: #111827;
         font-weight: 600;

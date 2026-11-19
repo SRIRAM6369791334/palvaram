@@ -28,7 +28,7 @@
 <section class="about-hero py-80">
     <div class="container container-lg">
         <div class="row gy-5 align-items-center">
-            <div class="col-lg-6" data-aos="fade-right" data-aos-duration="600">
+            <div class="col-lg-6 order-2 order-lg-1" data-aos="fade-right" data-aos-duration="600">
                 <div class="about-content pe-xl-40">
                     <span class="badge bg-main-50 text-main-600 text-sm py-8 px-16 rounded-pill fw-bold mb-16 d-inline-block">
                         🌾 Welcome to Pal Varnan
@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6" data-aos="fade-left" data-aos-duration="600">
+            <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left" data-aos-duration="600">
                 <div class="about-thumb position-relative text-center">
                     <div class="rounded-24 overflow-hidden p-24 bg-neutral-30 border border-neutral-100 d-inline-block">
                         <img src="/assets/images/thumbs/basket-img.png" alt="Farm Fresh Basket - Pal Varnan" class="img-fluid rounded-16" style="max-height: 440px; object-fit: contain;">

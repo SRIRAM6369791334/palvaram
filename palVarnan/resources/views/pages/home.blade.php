@@ -5,7 +5,7 @@
     <!-- ============================ Banner Section start =============================== -->
 <div class="banner">
     <div class="container container-lg">
-        <div class="banner-item rounded-24 overflow-hidden position-relative arrow-center" style="height: 450px;">
+        <div class="banner-item rounded-24 overflow-hidden position-relative arrow-center" style="min-height: 350px; height: 450px;">
             <a href="#featureSection" class="scroll-down w-84 h-84 text-center flex-center bg-main-600 rounded-circle border border-5 text-white border-white position-absolute start-50 translate-middle-x bottom-0 hover-bg-main-800" style="z-index: 10;">
                 <span class="icon line-height-0"><i class="ph ph-caret-double-down"></i></span> 
             </a>
@@ -25,7 +25,7 @@
                 @forelse($banners as $banner)
                     <div class="banner-slider__item">
                         <div class="banner-slider__inner flex-between position-relative">
-                            <div class="banner-item__content" style="margin-top: -95px;">
+                            <div class="banner-item__content">
                                 <span class="fw-semibold text-success-600 text-capitalize mb-8 animate-left-right animation-delay-08">
                                     {{ $banner->badge_text }}
                                 </span>
@@ -49,7 +49,7 @@
                 @empty
                     <div class="banner-slider__item">
                         <div class="banner-slider__inner flex-between position-relative">
-                            <div class="banner-item__content" style="margin-top: -95px;">
+                            <div class="banner-item__content">
                                 <span class="fw-semibold text-success-600 text-capitalize mb-8 animate-left-right animation-delay-08">
                                     Save up to 50% off on your first order
                                 </span>
@@ -126,7 +126,7 @@
 <section class="promotional-banner pt-80">
     <div class="container container-lg">
         <div class="row gy-4">
-            <div class="col-xl-3 col-sm-6 col-xs-6 wow bounceIn" data-aos="fade-up" data-aos-duration="400">
+            <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="400">
                 <div class="promotional-banner-item position-relative rounded-24 overflow-hidden z-1 py-52 ps-40 pe-24 h-100">
                     <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/promotional-banner-img1.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 object-fit-cover z-n1">
                     <div class="promotional-banner-item__content">
@@ -142,7 +142,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6 col-xs-6 wow bounceIn" data-aos="fade-up" data-aos-duration="600">
+            <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="600">
                 <div class="promotional-banner-item position-relative rounded-24 overflow-hidden z-1 py-52 ps-40 pe-24 h-100">
                     <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/promotional-banner-img2.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 object-fit-cover z-n1">
                     <div class="promotional-banner-item__content">
@@ -158,7 +158,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6 col-xs-6 wow bounceIn" data-aos="fade-up" data-aos-duration="800">
+            <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="800">
                 <div class="promotional-banner-item position-relative rounded-24 overflow-hidden z-1 py-52 ps-40 pe-24 h-100">
                     <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/promotional-banner-img3.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 object-fit-cover z-n1">
                     <div class="promotional-banner-item__content">
@@ -174,7 +174,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6 col-xs-6 wow bounceIn" data-aos="fade-up" data-aos-duration="1000">
+            <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="1000">
                 <div class="promotional-banner-item position-relative rounded-24 overflow-hidden z-1 py-52 ps-40 pe-24 h-100">
                     <img src="https://wowtheme7.com/tf/marketpro/assets/images/thumbs/promotional-banner-img4.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 w-100 h-100 object-fit-cover z-n1">
                     <div class="promotional-banner-item__content">
@@ -197,28 +197,22 @@
     <div class="container container-lg">
         <div class="section-heading flex-between flex-wrap gap-16">
             <h5 class="mb-0 wow fadeInLeft">Recommended for you</h5>
-            <ul class="nav common-tab nav-pills wow fadeInRight" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link fw-medium text-sm border border-white hover-border-main-600 active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="true">All</button>
+            <ul class="nav common-tab nav-pills wow fadeInRight flex-nowrap overflow-x-auto pb-4" id="recommendedCatPills" role="tablist">
+                <li class="nav-item flex-shrink-0" role="presentation">
+                  <button class="nav-link fw-medium text-sm active filter-rec-cat-btn" data-cat-id="all" type="button">All</button>
                 </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link fw-medium text-sm border border-white hover-border-main-600" id="pills-grocery-tab" data-bs-toggle="pill" data-bs-target="#pills-grocery" type="button" role="tab" aria-controls="pills-grocery" aria-selected="false">Grocery</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link fw-medium text-sm border border-white hover-border-main-600" id="pills-fruits-tab" data-bs-toggle="pill" data-bs-target="#pills-fruits" type="button" role="tab" aria-controls="pills-fruits" aria-selected="false">Fruits</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link fw-medium text-sm border border-white hover-border-main-600" id="pills-juices-tab" data-bs-toggle="pill" data-bs-target="#pills-juices" type="button" role="tab" aria-controls="pills-juices" aria-selected="false">Juices</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link fw-medium text-sm border border-white hover-border-main-600" id="pills-vegetables-tab" data-bs-toggle="pill" data-bs-target="#pills-vegetables" type="button" role="tab" aria-controls="pills-vegetables" aria-selected="false">Vegetables</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link fw-medium text-sm border border-white hover-border-main-600" id="pills-snacks-tab" data-bs-toggle="pill" data-bs-target="#pills-snacks" type="button" role="tab" aria-controls="pills-snacks" aria-selected="false">Snacks</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link fw-medium text-sm border border-white hover-border-main-600" id="pills-organic-tab" data-bs-toggle="pill" data-bs-target="#pills-organic" type="button" role="tab" aria-controls="pills-organic" aria-selected="false">Organic Foods</button>
-                </li>
+                @php
+                    $recCatIds = $featuredProducts->pluck('category_id')->filter()->unique();
+                    $recCategories = $categories->whereIn('id', $recCatIds);
+                    if ($recCategories->isEmpty()) {
+                        $recCategories = $categories->take(8);
+                    }
+                @endphp
+                @foreach($recCategories as $rcat)
+                    <li class="nav-item flex-shrink-0" role="presentation">
+                        <button class="nav-link fw-medium text-sm filter-rec-cat-btn" data-cat-id="{{ $rcat->id }}" type="button">{{ $rcat->category_name }}</button>
+                    </li>
+                @endforeach
             </ul>
         </div>
 
@@ -229,36 +223,134 @@
                 <div class="row g-16">
                     @forelse($featuredProducts as $product)
                         @php
-                            $variant = $product->variants->first();
+                            $displayVariants = $product->variants;
+                            $variant = $displayVariants->first();
                             $offerPrice = $variant->offer_price ?? $product->product_price ?? 0;
-                            $mrpPrice = $variant->product_mrp_price ?? 0;
+                            $mrpPrice = $variant->mrp_price ?? $variant->product_mrp_price ?? 0;
                             $imgSrc = $product->product_image
-                                ? asset('storage/' . $product->product_image)
+                                ? (Str::startsWith($product->product_image, 'http') ? $product->product_image : (Str::startsWith($product->product_image, 'assets/') ? asset($product->product_image) : asset('storage/' . $product->product_image)))
                                 : asset('assets/images/thumbs/product-img1.png');
+                            $inCart = $variant ? in_array($variant->id, $cartProductIds ?? []) : false;
+                            $cartItem = ($variant && isset($cartItems)) ? $cartItems->where('product_varient_id', $variant->id)->first() : null;
+                            $isOutOfStock = ($variant ? (int)($variant->product_qty ?? 0) : 0) <= 0;
                         @endphp
-                        <div class="col-xxl-3 col-lg-4 col-sm-6 col-12" data-aos="fade-up">
-                            <div class="product-card h-100 p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item bg-white d-flex flex-column justify-content-between" style="box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-                                <div>
-                                    <a href="/product/{{ $product->slug }}" class="product-card__thumb flex-center overflow-hidden rounded-12 bg-gray-50 mb-12" style="height: 190px;">
+                        <div class="col-xxl-3 col-lg-4 col-sm-6 col-6 recommended-card-col" data-cat-id="{{ $product->category_id }}" data-aos="fade-up">
+                            <div class="product-card h-100 p-12 p-sm-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item bg-white d-flex flex-column justify-content-between" style="box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+                                <div class="w-100">
+                                    <a href="/product/{{ $product->slug }}" class="product-card__thumb w-100 flex-center overflow-hidden rounded-12 bg-gray-50 mb-12" style="height: 160px;">
                                         <img src="{{ $imgSrc }}" alt="{{ $product->product_name }}" class="w-100 h-100 object-fit-contain p-8" onerror="this.src='/assets/images/logo/logo.png'">
                                     </a>
-                                    <div class="product-card__content">
-                                        <span class="text-xs text-main-600 fw-semibold d-block mb-4">{{ $product->category->category_name ?? 'Farm Fresh' }}</span>
-                                        <h6 class="title text-base fw-semibold mb-8">
+                                    <div class="product-card__content w-100">
+                                        <span class="text-xs text-main-600 fw-semibold d-block mb-4 text-truncate">{{ $product->category->category_name ?? 'Farm Fresh' }}</span>
+                                        <h6 class="title text-sm text-sm-base fw-semibold mb-8" style="min-height: 38px;">
                                             <a href="/product/{{ $product->slug }}" class="link text-line-2 text-inherit">{{ $product->product_name }}</a>
                                         </h6>
+
+                                        <!-- Custom Variant Dropdown / Slot -->
+                                        <div class="variant-slot w-100 my-8">
+                                            @if($displayVariants && $displayVariants->count() > 0)
+                                                <div class="variant-dropdown-wrap w-100">
+                                                    <div class="custom-variant-select" data-product-id="{{ $product->id }}">
+                                                        @php
+                                                            $first = $displayVariants->first();
+                                                            if ($product->is_gift) {
+                                                                $firstLabelParts = [];
+                                                                if ($first->size) $firstLabelParts[] = $first->size->size;
+                                                                if ($first->color) $firstLabelParts[] = $first->color->color;
+                                                                $firstLabel = !empty($firstLabelParts) ? implode(' • ', $firstLabelParts) : ($first->varient_name ?: 'Standard');
+                                                            } else {
+                                                                $firstLabel = ($first->value ?? '') . ($first->unit->short_name ?? '');
+                                                            }
+                                                        @endphp
+                                                        <div class="variant-selected-display" role="button" tabindex="0"
+                                                            aria-haspopup="listbox" aria-expanded="false" aria-label="Select variant">
+                                                            <span class="variant-label text-truncate">{{ $firstLabel }}</span>
+                                                            <span class="variant-price-tag">{{ $currencySymbol ?? '₹' }}{{ $first->offer_price }}</span>
+                                                            <i class="ph ph-caret-down variant-arrow" aria-hidden="true"></i>
+                                                        </div>
+                                                        <ul class="variant-options-list" role="listbox" aria-label="Available variants">
+                                                            @foreach($displayVariants as $v)
+                                                                @php
+                                                                    if ($product->is_gift) {
+                                                                        $vLabelParts = [];
+                                                                        if ($v->size) $vLabelParts[] = $v->size->size;
+                                                                        if ($v->color) $vLabelParts[] = $v->color->color;
+                                                                        $vLabel = !empty($vLabelParts) ? implode(' • ', $vLabelParts) : ($v->varient_name ?: 'Standard');
+                                                                    } else {
+                                                                        $vLabel = ($v->value ?? '') . ($v->unit->short_name ?? '');
+                                                                    }
+                                                                @endphp
+                                                                <li class="variant-option {{ $loop->first ? 'selected' : '' }}"
+                                                                    role="option" tabindex="0"
+                                                                    aria-selected="{{ $loop->first ? 'true' : 'false' }}"
+                                                                    data-variant-id="{{ $v->id }}"
+                                                                    data-offer="{{ $v->offer_price }}"
+                                                                    data-mrp="{{ $v->mrp_price ?? $v->product_mrp_price ?? 0 }}"
+                                                                    data-stock="{{ (int)($v->product_qty ?? 0) }}">
+                                                                    <span class="opt-size">{{ $vLabel }}@if(($v->product_qty ?? 0) <= 0) <small class="text-danger-600 fw-bold ms-1" style="font-size:10px;">(Out)</small>@endif</span>
+                                                                    <span class="opt-price">
+                                                                        @if($v->mrp_price && $v->mrp_price > $v->offer_price)
+                                                                            <span class="opt-mrp">{{ $currencySymbol ?? '₹' }}{{ $v->mrp_price }}</span>
+                                                                        @endif
+                                                                        <span class="opt-offer">{{ $currencySymbol ?? '₹' }}{{ $v->offer_price }}</span>
+                                                                    </span>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="variant-placeholder-pill text-xs py-6 px-12 rounded-8 bg-gray-50 border border-gray-100 text-neutral-500 d-inline-flex align-items-center gap-6">
+                                                    <i class="ph-bold {{ $product->is_gift ? 'ph-gift' : 'ph-package' }} text-main-600"></i>
+                                                    <span>{{ $product->is_gift ? 'Gift Item' : 'Standard Pack' }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-12 d-flex align-items-baseline gap-6">
-                                        <span class="text-heading text-lg fw-bold text-main-600">₹{{ number_format($offerPrice, 2) }}</span>
-                                        @if($mrpPrice > $offerPrice)
-                                            <span class="text-gray-400 text-xs fw-semibold text-decoration-line-through">₹{{ number_format($mrpPrice, 2) }}</span>
+
+                                <div class="product-card__content mt-12 w-100">
+                                    <!-- Price Section -->
+                                    <div class="product-card__price d-flex align-items-center justify-content-center flex-wrap gap-8 my-8 text-center w-100">
+                                        <div class="d-flex align-items-baseline justify-content-center gap-6">
+                                            <span class="text-heading text-base text-sm-lg fw-bold text-main-600 main-price-text">
+                                                {{ $currencySymbol ?? '₹' }}{{ number_format($offerPrice, 2) }}
+                                            </span>
+                                            @if($variant && $mrpPrice > $offerPrice)
+                                                <span class="text-neutral-400 text-xs fw-medium text-decoration-line-through mrp-price-text">
+                                                    {{ $currencySymbol ?? '₹' }}{{ number_format($mrpPrice, 2) }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                        @if($variant && $mrpPrice > $offerPrice)
+                                            <span class="badge bg-success-50 text-success-700 text-xs px-6 py-2 rounded-6 fw-bold save-badge">
+                                                Save {{ $currencySymbol ?? '₹' }}{{ number_format($mrpPrice - $offerPrice, 2) }}
+                                            </span>
                                         @endif
                                     </div>
-                                    <a href="/product/{{ $product->slug }}" class="btn btn-main py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-xs fw-semibold">
-                                        <span>View Options</span> <i class="ph-bold ph-arrow-right"></i>
-                                    </a>
+
+                                    <!-- Cart Control Button -->
+                                    <div class="cart-control mt-8 w-100" data-product-id="{{ $product->id }}" data-variant-id="{{ $variant->id ?? '' }}">
+                                        @if($isOutOfStock)
+                                            <button type="button" class="btn btn-outline-neutral-300 py-8 py-sm-10 px-12 px-sm-16 rounded-pill w-100 justify-content-center text-xs fw-semibold text-neutral-400" disabled>
+                                                Out of Stock
+                                            </button>
+                                        @elseif($inCart)
+                                            <div class="qty-box">
+                                                <button type="button" class="quantity__minus">−</button>
+                                                <div class="d-flex align-items-center gap-4">
+                                                    <span class="qty-box-label">In Cart:</span>
+                                                    <input type="number" class="quantity__input" value="{{ $cartItem->product_quantity ?? 1 }}" min="1" readonly>
+                                                </div>
+                                                <button type="button" class="quantity__plus">+</button>
+                                            </div>
+                                        @else
+                                            <button type="button"
+                                                class="add-to-cart-btn product-card__cart btn py-8 py-sm-10 px-12 px-sm-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-xs fw-semibold">
+                                                <span>Add To Cart</span> <i class="ph-bold ph-shopping-cart-simple text-sm"></i>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -267,728 +359,18 @@
                             <p class="text-gray-500">No products available in this region currently.</p>
                         </div>
                     @endforelse
+                    <div class="col-12 text-center py-48 d-none" id="noCategoryProducts">
+                        <div class="d-inline-flex flex-column align-items-center">
+                            <span class="w-56 h-56 rounded-circle bg-neutral-50 flex-center text-2xl text-neutral-400 mb-12">
+                                <i class="ph ph-package"></i>
+                            </span>
+                            <h6 class="text-neutral-700 text-base fw-semibold mb-4">No Products Found In This Category</h6>
+                            <p class="text-neutral-500 text-sm mb-16">Explore our full catalog to discover all fresh arrivals.</p>
+                            <a href="/products" class="btn btn-main btn-sm rounded-pill px-20">Browse All Products</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="tab-pane fade" id="pills-grocery" role="tabpanel" aria-labelledby="pills-grocery-tab" tabindex="0">
-                <div class="row g-12">
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop&auto=format" alt="Organic Bread">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Whole Grains and Seeds Organic Bread</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=300&fit=crop&auto=format" alt="Whole Milk">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">O Organics Milk, Whole, Vitamin D</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-info-600 px-8 py-4 text-sm text-white">Best Sale</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&h=300&fit=crop&auto=format" alt="Vitamin Supplement">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">C-500 Antioxidant Protect Dietary Supplement</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1600718374662-0483d2b9da44?w=300&h=300&fit=crop&auto=format" alt="Almond Milk">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Marcel's Modern Pantry Almond Unsweetened</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&h=300&fit=crop&auto=format" alt="Granola Bar">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Nature Valley Whole Grain Oats and Honey Protein</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-warning-600 px-8 py-4 text-sm text-white">New</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&h=300&fit=crop&auto=format" alt="Yogurt">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Lucerne Yogurt, Lowfat, Strawberry</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- FRUITS TAB -->
-            <div class="tab-pane fade" id="pills-fruits" role="tabpanel" aria-labelledby="pills-fruits-tab" tabindex="0">
-                <div class="row g-12">
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=300&h=300&fit=crop&auto=format" alt="Fresh Fruits">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Fresh Mixed Tropical Fruit Basket Assorted</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&h=300&fit=crop&auto=format" alt="Apple">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Red Delicious Premium Apple Fresh Picked</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                   
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=300&h=300&fit=crop&auto=format" alt="Watermelon">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Seedless Watermelon Fresh Whole Summer</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-warning-600 px-8 py-4 text-sm text-white">New</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1519996529931-28324d5a630e?w=300&h=300&fit=crop&auto=format" alt="Grapes">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Sweet Green Seedless Grapes Fresh Bunch</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=300&fit=crop&auto=format" alt="Blueberries">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Organic Blueberries Fresh Pint Antioxidant Rich</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- JUICES TAB -->
-            <div class="tab-pane fade" id="pills-juices" role="tabpanel" aria-labelledby="pills-juices-tab" tabindex="0">
-                <div class="row g-12">
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-warning-600 px-8 py-4 text-sm text-white">New</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&h=300&fit=crop&auto=format" alt="Orange Juice">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Tropicana 100% Juice, Orange, No Pulp</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                  
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1546173159-315724a31696?w=300&h=300&fit=crop&auto=format" alt="Green Smoothie">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Green Detox Smoothie Spinach Kale Banana Blend</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                  
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=300&h=300&fit=crop&auto=format" alt="Lemonade">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Simply Lemonade All Natural Fresh Squeezed Style</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&h=300&fit=crop&auto=format" alt="Coconut Water">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Vita Coco Pure Coconut Water Natural Electrolytes</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- VEGETABLES TAB -->
-            <div class="tab-pane fade" id="pills-vegetables" role="tabpanel" aria-labelledby="pills-vegetables-tab" tabindex="0">
-                <div class="row g-12">
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&h=300&fit=crop&auto=format" alt="Mixed Vegetables">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Fresh Mixed Vegetables Seasonal Garden Harvest</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-info-600 px-8 py-4 text-sm text-white">Best Sale</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=300&h=300&fit=crop&auto=format" alt="Broccoli">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Fresh Organic Broccoli Crown Green Nutrient Rich</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&h=300&fit=crop&auto=format" alt="Potatoes">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Russet Potato Bag 5 lb Farm Fresh Idaho</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-warning-600 px-8 py-4 text-sm text-white">New</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1582515073490-39981397c445?w=300&h=300&fit=crop&auto=format" alt="Tomatoes">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Vine Ripe Tomatoes Organic Cherry Red Fresh</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1587334274328-64186a80aeee?w=300&h=300&fit=crop&auto=format" alt="Carrots">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Organic Carrots Fresh Bunch Whole Baby Rainbow</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- SNACKS TAB -->
-            <div class="tab-pane fade" id="pills-snacks" role="tabpanel" aria-labelledby="pills-snacks-tab" tabindex="0">
-                <div class="row g-12">
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=300&h=300&fit=crop&auto=format" alt="Snacks">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Lays Classic Salted Potato Chips Party Pack</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=300&h=300&fit=crop&auto=format" alt="Granola Bar">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Nature Valley Whole Grain Oats and Honey Protein</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-warning-600 px-8 py-4 text-sm text-white">New</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?w=300&h=300&fit=crop&auto=format" alt="Candy">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Skittles Original Fruit Candy Chewy Rainbow</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                  
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1560008581-09826d1de69e?w=300&h=300&fit=crop&auto=format" alt="Cookies">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Oreo Double Stuf Chocolate Sandwich Cookies Pack</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=300&h=300&fit=crop&auto=format" alt="Popcorn">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Skinny Pop Original Popcorn Gluten Free Low Calorie</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- ORGANIC FOODS TAB -->
-            <div class="tab-pane fade" id="pills-organic" role="tabpanel" aria-labelledby="pills-organic-tab" tabindex="0">
-                <div class="row g-12">
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=300&fit=crop&auto=format" alt="Organic Salad">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Organic Garden Salad Fresh Mixed Greens Bowl</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="400">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-info-600 px-8 py-4 text-sm text-white">Best Sale</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&h=300&fit=crop&auto=format" alt="Organic Bread">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Whole Grains and Seeds Organic Bread Loaf</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="600">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&h=300&fit=crop&auto=format" alt="Organic Yogurt">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Stonyfield Organic Whole Milk Plain Yogurt</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="800">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&h=300&fit=crop&auto=format" alt="Organic Blueberries">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Organic Blueberries Fresh Pint Antioxidant Rich</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1000">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-warning-600 px-8 py-4 text-sm text-white">New</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=300&fit=crop&auto=format" alt="Organic Milk">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Horizon Organic Whole Milk Grass Fed Vitamin D</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xxl-2 col-lg-3 col-sm-4 col-6" data-aos="fade-up" data-aos-duration="1200">
-                        <div class="product-card h-100 p-12 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item">
-                            <button type="button" class="wishlist-btn-two"><i class="ph-bold ph-heart"></i></button>
-                            <span class="product-card__badge bg-danger-600 px-8 py-4 text-sm text-white">Sale 50%</span>
-                            <a href="/products" class="product-card__thumb flex-center overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&h=300&fit=crop&auto=format" alt="Organic Supplement">
-                            </a>
-                            <div class="product-card__content p-sm-2 w-100">
-                                <h6 class="title text-lg fw-semibold my-12"><a href="/products" class="link text-line-2">Garden of Life Raw Organic Protein Powder</a></h6>
-                                
-                                <div class="product-card__content mt-12">
-                                    <div class="product-card__price mb-8">
-                                        <span class="text-heading text-md fw-semibold">₹14.99 <span class="text-gray-500 fw-normal">/Qty</span></span>
-                                        <span class="text-gray-400 text-md fw-semibold text-decoration-line-through"> ₹28.99</span>
-                                    </div>
-                                    
-                                    <a href="/cart" class="product-card__cart btn py-10 px-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-sm fw-semibold">Add To Cart <i class="ph-bold ph-shopping-cart-simple"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
         </div>
     </div>
 </section>
@@ -999,15 +381,20 @@
 /* Recommended For You Section - Uniform Cards & Add To Cart Button Style */
 .recommended .product-card {
     height: 100% !important;
-    width: 100%;
+    width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
+    align-items: stretch !important;
     background: #ffffff;
     border-radius: 16px;
     padding: 14px 12px !important;
     border: 1px solid #edf2f7;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.recommended .product-card > div {
+    width: 100% !important;
 }
 
 .recommended .product-card:hover {
@@ -1017,22 +404,23 @@
 }
 
 .recommended .product-card__thumb {
-    height: 150px;
-    width: 100%;
+    height: 160px;
+    width: 100% !important;
     border-radius: 12px;
     background: #f8fafc;
     overflow: hidden;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     margin-bottom: 10px;
 }
 
 .recommended .product-card__thumb img {
-    max-height: 130px;
-    width: 100%;
-    object-fit: cover;
+    max-height: 140px;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
     border-radius: 10px;
     transition: transform 0.35s ease;
 }
@@ -1105,6 +493,206 @@
     .recommended .product-card__cart i {
         font-size: 14px !important;
     }
+}
+
+/* Custom Variant Dropdown in Home Page */
+.variant-dropdown-wrap {
+    position: relative;
+    width: 100%;
+}
+.custom-variant-select {
+    position: relative;
+    user-select: none;
+    width: 100%;
+}
+.variant-selected-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 36px;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #f8fafc;
+    font-size: 12.5px;
+    transition: all 0.18s ease;
+}
+.variant-selected-display:hover {
+    border-color: #026966;
+    background: #f0fdfa;
+}
+.custom-variant-select.open .variant-selected-display {
+    border-color: #026966;
+    background: #f0fdfa;
+    box-shadow: 0 0 0 3px rgba(2, 105, 102, 0.12);
+}
+.custom-variant-select.open {
+    z-index: 50;
+}
+.variant-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-weight: 600;
+    color: #1e293b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.variant-price-tag {
+    flex: 0 0 auto;
+    font-weight: 700;
+    color: #026966;
+    font-size: 11.5px;
+    background: #e6f5f4;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+.variant-arrow {
+    flex: 0 0 auto;
+    font-size: 12px;
+    color: #64748b;
+    transition: transform 0.2s ease;
+}
+.custom-variant-select.open .variant-arrow {
+    transform: rotate(180deg);
+}
+.variant-options-list {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.2);
+    z-index: 1050;
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+}
+.custom-variant-select.open .variant-options-list {
+    display: block;
+}
+.variant-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s ease;
+}
+.variant-option:hover,
+.variant-option.selected {
+    background: #f0fdfa;
+    color: #026966;
+    font-weight: 600;
+}
+.variant-option .opt-size {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.variant-option .opt-price {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+}
+.variant-option .opt-mrp {
+    text-decoration: line-through;
+    color: #94a3b8;
+    font-size: 10px;
+}
+.variant-option .opt-offer {
+    color: #026966;
+    font-weight: 700;
+}
+.variant-placeholder-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Quantity Box in Home Page */
+.qty-box {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-radius: 50rem !important;
+    background: #e6f5f4 !important;
+    border: 1.5px solid #026966 !important;
+    padding: 2px 6px !important;
+    height: 38px !important;
+    transition: all 0.2s ease;
+    width: 100% !important;
+}
+.qty-box .quantity__minus,
+.qty-box .quantity__plus {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+.qty-box .quantity__minus {
+    background: #ffffff !important;
+    color: #026966 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+.qty-box .quantity__minus:hover {
+    background: #fecdd3 !important;
+    color: #dc2626 !important;
+}
+.qty-box .quantity__plus {
+    background: #026966 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(2, 105, 102, 0.25) !important;
+}
+.qty-box .quantity__plus:hover {
+    background: #014e4b !important;
+    transform: scale(1.05);
+}
+.qty-box .quantity__input {
+    width: 26px !important;
+    border: none !important;
+    background: transparent !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    color: #026966 !important;
+    padding: 0 !important;
+}
+.qty-box-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #026966;
+    display: flex;
+    align-items: center;
+    gap: 3px;
 }
 
 /* Hot Deals Slider Card Equal Height & Bottom CTA Alignment */
@@ -1509,16 +1097,16 @@
     <!-- Super Discount Start -->
  <div class="pt-80">
      <div class="container container-lg">
-        <div class="border border-main-500 bg-main-50 border-dashed rounded-8 py-20 d-flex align-items-center justify-content-evenly">
-            <p class="h6 text-main-600 fw-normal">Super discount for your <a href="javascript:void(0)" class="fw-bold text-decoration-underline text-main-600 hover-text-decoration-none hover-text-primary-600 ">first purchase</a> </p>
-            <div class="position-relative">
-                <button class="copy-coupon-btn px-32 py-10 text-white text-uppercase bg-main-600 rounded-pill border-0 hover-bg-main-800 ">
-                    FREE25BAC
-                    <i class="ph ph-file-text text-lg line-height-1"></i>
+        <div class="border border-main-500 bg-main-50 border-dashed rounded-16 py-20 px-24 d-flex flex-column flex-lg-row align-items-center justify-content-between justify-content-lg-evenly gap-16 text-center text-lg-start">
+            <p class="h6 text-main-600 fw-normal mb-0">Super discount for your <a href="{{ url('/products') }}" class="fw-bold text-decoration-underline text-main-600 hover-text-decoration-none hover-text-primary-600">first purchase</a></p>
+            <div class="position-relative flex-shrink-0">
+                <button type="button" class="copy-coupon-btn px-28 py-10 text-white text-uppercase bg-main-600 rounded-pill border-0 hover-bg-main-800 d-inline-flex align-items-center justify-content-center gap-8 fw-bold" style="white-space: nowrap !important; letter-spacing: 0.5px;">
+                    <span>FREE25BAC</span>
+                    <i class="ph ph-copy text-lg line-height-1"></i>
                 </button>
                 <span class="copy-text bg-main-600 text-white fw-normal position-absolute px-16 py-6 rounded-pill bottom-100 start-50 translate-middle-x min-w-max mb-8 text-xs"></span>
             </div>
-            <p class="text-md text-main-600 fw-normal">Use discount code to get <span class="fw-bold text-main-600">20% </span> discount for any item</p>
+            <p class="text-md text-main-600 fw-normal mb-0">Use discount code to get <span class="fw-bold text-main-600">20% </span> discount for any item</p>
         </div>
      </div>
  </div>
@@ -2004,5 +1592,305 @@
     </div>
 </div>
 <!-- ========================== Short Product Section End ============================== -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const activeCurrency = '{{ $currencySymbol ?? "₹" }}';
+
+    function closeAllVariantSelects(except) {
+        document.querySelectorAll('.custom-variant-select.open').forEach(function (s) {
+            if (s === except) return;
+            s.classList.remove('open');
+            const d = s.querySelector('.variant-selected-display');
+            if (d) d.setAttribute('aria-expanded', 'false');
+        });
+    }
+
+    function applyVariant(select, option, options) {
+        const variantId  = option.dataset.variantId;
+        const offerPrice = option.dataset.offer;
+        const mrpPrice   = option.dataset.mrp;
+        const sizeText   = option.querySelector('.opt-size').textContent;
+
+        // Update display text & price tag
+        const vLabel = select.querySelector('.variant-label');
+        if (vLabel) vLabel.textContent = sizeText;
+        const vPriceTag = select.querySelector('.variant-price-tag');
+        if (vPriceTag) vPriceTag.textContent = activeCurrency + offerPrice;
+
+        options.forEach(function (o) {
+            o.classList.toggle('selected', o === option);
+            o.setAttribute('aria-selected', o === option ? 'true' : 'false');
+        });
+
+        select.classList.remove('open');
+        const displayEl = select.querySelector('.variant-selected-display');
+        if (displayEl) displayEl.setAttribute('aria-expanded', 'false');
+
+        // Update card price & cart control
+        const cardRoot = select.closest('.product-card');
+        if (cardRoot) {
+            const priceBox = cardRoot.querySelector('.product-card__price');
+            if (priceBox) {
+                const hasDiscount = mrpPrice && Number(mrpPrice) > Number(offerPrice);
+                const savings = hasDiscount ? (Number(mrpPrice) - Number(offerPrice)) : 0;
+                priceBox.innerHTML = `
+                    <div class="d-flex align-items-baseline justify-content-center gap-6">
+                        <span class="text-heading text-base text-sm-lg fw-bold text-main-600 main-price-text">${activeCurrency}${parseFloat(offerPrice).toFixed(2)}</span>
+                        ${hasDiscount ? `<span class="text-neutral-400 text-xs fw-medium text-decoration-line-through mrp-price-text">${activeCurrency}${parseFloat(mrpPrice).toFixed(2)}</span>` : ''}
+                    </div>
+                    ${hasDiscount ? `<span class="badge bg-success-50 text-success-700 text-xs px-6 py-2 rounded-6 fw-bold save-badge">Save ${activeCurrency}${savings.toFixed(2)}</span>` : ''}
+                `;
+            }
+
+            const control = cardRoot.querySelector('.cart-control');
+            if (control) {
+                control.dataset.variantId = variantId;
+                const stock = parseInt(option.dataset.stock !== undefined ? option.dataset.stock : 99);
+                if (stock <= 0) {
+                    control.innerHTML = `
+                        <button type="button" class="btn btn-outline-neutral-300 py-8 py-sm-10 px-12 px-sm-16 rounded-pill w-100 justify-content-center text-xs fw-semibold text-neutral-400" disabled>
+                            Out of Stock
+                        </button>`;
+                } else {
+                    control.innerHTML = `
+                        <button type="button"
+                            class="add-to-cart-btn product-card__cart btn py-8 py-sm-10 px-12 px-sm-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-xs fw-semibold">
+                            <span>Add To Cart</span> <i class="ph-bold ph-shopping-cart-simple text-sm"></i>
+                        </button>`;
+                    attachAddToCartEvent(control);
+                }
+            }
+        }
+    }
+
+    document.querySelectorAll('.custom-variant-select').forEach(function (select) {
+        const display = select.querySelector('.variant-selected-display');
+        const options = Array.from(select.querySelectorAll('.variant-option'));
+        if (!display) return;
+
+        const setOpen = function (open) {
+            if (open) closeAllVariantSelects(select);
+            select.classList.toggle('open', open);
+            display.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+
+        display.addEventListener('click', function (e) {
+            e.stopPropagation();
+            setOpen(!select.classList.contains('open'));
+        });
+
+        display.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setOpen(!select.classList.contains('open'));
+            } else if (e.key === 'Escape') {
+                setOpen(false);
+            }
+        });
+
+        options.forEach(function (option) {
+            option.addEventListener('click', function (e) {
+                e.stopPropagation();
+                applyVariant(select, option, options);
+            });
+        });
+    });
+
+    document.addEventListener('click', function () {
+        closeAllVariantSelects();
+    });
+
+    function showQtyBox(controlDiv, qty) {
+        controlDiv.innerHTML = `
+            <div class="qty-box">
+                <button type="button" class="quantity__minus">−</button>
+                <div class="d-flex align-items-center gap-4">
+                    <span class="qty-box-label">In Cart:</span>
+                    <input type="number" class="quantity__input" value="${qty}" min="1" readonly>
+                </div>
+                <button type="button" class="quantity__plus">+</button>
+            </div>`;
+        attachQtyEvents(controlDiv);
+    }
+
+    function attachQtyEvents(controlDiv) {
+        const variantId = controlDiv.dataset.variantId;
+        const input = controlDiv.querySelector('.quantity__input');
+        if (!input) return;
+
+        const plusBtn = controlDiv.querySelector('.quantity__plus');
+        const minusBtn = controlDiv.querySelector('.quantity__minus');
+
+        if (plusBtn) {
+            plusBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const newQty = parseInt(input.value) + 1;
+                syncCart(variantId, newQty, input);
+            });
+        }
+
+        if (minusBtn) {
+            minusBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const currentQty = parseInt(input.value);
+
+                if (currentQty <= 1) {
+                    fetch("{{ route('cart.ajaxRemove') }}", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                        body: JSON.stringify({ product_varient_id: variantId })
+                    }).then(r => r.json()).then(data => {
+                        if (data.success) {
+                            controlDiv.innerHTML = `
+                                <button type="button"
+                                    class="add-to-cart-btn product-card__cart btn py-8 py-sm-10 px-12 px-sm-16 rounded-pill flex-align gap-6 w-100 justify-content-center text-xs fw-semibold">
+                                    <span>Add To Cart</span> <i class="ph-bold ph-shopping-cart-simple text-sm"></i>
+                                </button>`;
+                            attachAddToCartEvent(controlDiv);
+                            if (typeof updateCartCount === 'function') {
+                                updateCartCount(-1);
+                            }
+                        }
+                    });
+                } else {
+                    syncCart(variantId, currentQty - 1, input);
+                }
+            });
+        }
+    }
+
+    function syncCart(variantId, quantity, input) {
+        fetch("{{ route('cart.ajaxUpdate') }}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: JSON.stringify({ product_varient_id: variantId, quantity: quantity })
+        }).then(async r => {
+            const data = await r.json();
+            if (r.ok && data.success) {
+                input.value = data.quantity !== undefined ? data.quantity : quantity;
+                if (data.clamped) {
+                    Swal.fire({ icon: 'info', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+                }
+            } else {
+                Swal.fire({ icon: 'warning', title: data.message || 'Could not update quantity', toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+            }
+        }).catch(() => {
+            Swal.fire({ icon: 'error', title: 'Network error', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+        });
+    }
+
+    function attachAddToCartEvent(controlDiv) {
+        const btn = controlDiv.querySelector('.add-to-cart-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (btn.disabled) return;
+            btn.disabled = true;
+            const origContent = btn.innerHTML;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Adding...`;
+
+            const productId = controlDiv.dataset.productId;
+            const variantId = controlDiv.dataset.variantId;
+
+            fetch("{{ route('cart.store') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ product_id: productId, product_varient_id: variantId, quantity: 1 })
+            }).then(async r => {
+                const data = await r.json();
+                if (r.ok && data.status !== 'error') {
+                    showQtyBox(controlDiv, 1);
+                    if (typeof updateCartCount === 'function') {
+                        updateCartCount(1);
+                    }
+                    Swal.fire({
+                        icon: 'success', title: data.message || 'Added to cart successfully!',
+                        toast: true, position: 'top-end',
+                        showConfirmButton: false, timer: 2000, timerProgressBar: true
+                    });
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = origContent;
+                    Swal.fire({
+                        icon: 'warning', title: data.message || 'This product variant is currently unavailable.',
+                        toast: true, position: 'top-end',
+                        showConfirmButton: false, timer: 3000, timerProgressBar: true
+                    });
+                }
+            }).catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = origContent;
+                Swal.fire({
+                    icon: 'error', title: 'Network error',
+                    toast: true, position: 'top-end',
+                    showConfirmButton: false, timer: 2000
+                });
+            });
+        });
+    }
+
+    document.querySelectorAll('.cart-control').forEach(controlDiv => {
+        if (controlDiv.querySelector('.qty-box')) {
+            attachQtyEvents(controlDiv);
+        } else {
+            attachAddToCartEvent(controlDiv);
+        }
+    });
+
+    // Recommended Section Category Filter Pills
+    document.querySelectorAll('.filter-rec-cat-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.filter-rec-cat-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const selectedCat = this.dataset.catId;
+            let visibleCount = 0;
+
+            document.querySelectorAll('.recommended-card-col').forEach(cardCol => {
+                if (selectedCat === 'all' || cardCol.dataset.catId === selectedCat) {
+                    cardCol.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    cardCol.classList.add('d-none');
+                }
+            });
+
+            const noProductsBox = document.getElementById('noCategoryProducts');
+            if (noProductsBox) {
+                if (visibleCount === 0) {
+                    noProductsBox.classList.remove('d-none');
+                } else {
+                    noProductsBox.classList.add('d-none');
+                }
+            }
+        });
+    });
+
+    // Copy coupon button
+    const copyBtn = document.querySelector('.copy-coupon-btn');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+            const code = 'FREE25BAC';
+            navigator.clipboard.writeText(code).then(() => {
+                const copyText = copyBtn.parentElement.querySelector('.copy-text');
+                if (copyText) {
+                    copyText.textContent = 'Copied: ' + code;
+                    copyText.style.display = 'block';
+                    setTimeout(() => { copyText.style.display = 'none'; }, 2000);
+                }
+            });
+        });
+    }
+});
+</script>
 
   @endsection

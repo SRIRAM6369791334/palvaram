@@ -6,15 +6,15 @@
             <div class="footer-item" data-aos="fade-up" data-aos-duration="200">
                 <div class="max-w-340">
                     <div class="footer-item__logo">
-                        <a href="index.html"> <img src="/assets/images/logo/logo.png" alt=""></a>
+                        <a href="/"> <img src="/assets/images/logo/logo.png" alt="Pal Varnan" style="max-height: 48px;"></a>
                     </div>
-                    <p class="mb-28 text-heading">We're Grocery Shop, an innovative team of food supliers.</p>
+                    <p class="mb-28 text-heading">We're Grocery Shop, an innovative team of food suppliers.</p>
     
                     <div class="d-flex flex-column gap-8">
                         <p class="text-heading fw-medium">Nachiarkudiyuruppu, Opp. Govt. Bus Stand, Kanyakumari-629702.</p>
                         <a href="mailto:apnstores369@gmail.com" class="text-heading fw-medium hover-text-main-600">apnstores369@gmail.com</a>
                         <a href="mailto:apaulskitchen@gmail.com " class="text-heading fw-medium hover-text-main-600">apaulskitchen@gmail.com </a>
-                        <a href="tel:+(406)555-0120" class="text-heading fw-medium hover-text-main-600">+91 8778509639 </a>
+                        <a href="tel:+918778509639" class="text-heading fw-medium hover-text-main-600">+91 8778509639 </a>
                     </div>
                 </div>
             </div>
@@ -29,16 +29,16 @@
                         <a href="/products" class="text-heading hover-text-main-600">Affiliate Program</a>
                     </li>
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Privacy Policy</a>
+                        <a href="{{ route('privacy.policy') }}" class="text-heading hover-text-main-600">Privacy Policy</a>
                     </li>
                     <li class="mb-16">
                         <a href="/products" class="text-heading hover-text-main-600">Our Suppliers</a>
                     </li>
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Extended Plan</a>
+                        <a href="{{ route('shipping.policy') }}" class="text-heading hover-text-main-600">Shipping Policy</a>
                     </li>
                     <li class="">
-                        <a href="/products" class="text-heading hover-text-main-600">Community</a>
+                        <a href="{{ route('refund.policy') }}" class="text-heading hover-text-main-600">Return & Refund Policy</a>
                     </li>
                 </ul>
             </div>
@@ -47,19 +47,16 @@
                 <h6 class="footer-item__title">Customer Support</h6>
                 <ul class="footer-menu">
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Help Center</a>
+                        <a href="{{ route('contact') }}" class="text-heading hover-text-main-600">Help Center</a>
                     </li>
                     <li class="mb-16">
-                        <a href="contact.html" class="text-heading hover-text-main-600">Contact Us</a>
+                        <a href="{{ route('contact') }}" class="text-heading hover-text-main-600">Contact Us</a>
                     </li>
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Report Abuse</a>
+                        <a href="{{ route('terms.conditions') }}" class="text-heading hover-text-main-600">Terms & Conditions</a>
                     </li>
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Submit and Dispute</a>
-                    </li>
-                    <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Policies & Rules</a>
+                        <a href="{{ route('terms.conditions') }}" class="text-heading hover-text-main-600">Policies & Rules</a>
                     </li>
                     <li class="">
                         <a href="/products" class="text-heading hover-text-main-600">Online Shopping</a>
@@ -71,22 +68,19 @@
                 <h6 class="footer-item__title">My Account</h6>
                 <ul class="footer-menu">
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">My Account</a>
+                        <a href="{{ route('account.index') }}" class="text-heading hover-text-main-600">My Account</a>
                     </li>
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Order History</a>
+                        <a href="{{ route('account.index') }}" class="text-heading hover-text-main-600">Order History</a>
                     </li>
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Shoping Cart</a>
+                        <a href="{{ url('/cart') }}" class="text-heading hover-text-main-600">Shopping Cart</a>
                     </li>
                     <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Compare</a>
-                    </li>
-                    <li class="mb-16">
-                        <a href="/products" class="text-heading hover-text-main-600">Help Ticket</a>
+                        <a href="{{ route('wishlist.index') }}" class="text-heading hover-text-main-600">Wishlist</a>
                     </li>
                     <li class="">
-                        <a href="/products" class="text-heading hover-text-main-600">Wishlist</a>
+                        <a href="{{ route('about') }}" class="text-heading hover-text-main-600">About Us</a>
                     </li>
                 </ul>
             </div>
@@ -117,7 +111,7 @@
             
             <div class="footer-item" data-aos="fade-up" data-aos-duration="1200">
                 <h6 class="">Global Exports</h6>
-                <p class="mb-16"> Pal Varnan exports high-quality <br>grocery products, gifts, and toys to <br>international markets with a strong focus<br> on reliability and timely delivery.</p>
+                <p class="mb-16">Pal Varnan exports high-quality grocery products, gifts, and toys to international markets with a strong focus on reliability and timely delivery.</p>
                 <div class="my-32">
                     
                     <div class="mt-24">

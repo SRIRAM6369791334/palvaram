@@ -41,7 +41,7 @@
         @endif
         <div class="row gy-4">
             <div class="col-xl-9 col-lg-8">
-                <div class="cart-table border border-gray-100 rounded-8 px-40 py-48">
+                <div class="cart-table border border-gray-100 rounded-8 px-16 px-md-32 py-24 py-md-40">
                     <div class="overflow-x-auto scroll-sm scroll-sm-horizontal">
                     <form method="POST" action="{{ route('cart.update') }}">
                         @csrf
@@ -172,7 +172,7 @@
 
 
                     <div class="flex-between flex-wrap gap-16 mt-16">
-                        <div class="flex-align gap-16">
+                        <div class="flex-align gap-16 flex-wrap">
                             <input type="text" id="coupon-code-input" class="common-input" placeholder="Coupon Code">
                             <button type="button" id="btn-apply-coupon" class="btn btn-main py-18 w-100 rounded-8">Apply Coupon</button>
                         </div>

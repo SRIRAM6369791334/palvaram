@@ -155,8 +155,21 @@
 <!-- ==================== Header Two Start Here ==================== -->
 <header class="header bg-white py-16 border-bottom border-neutral-40">
     <div class="container container-lg">
-        <nav class="header-inner d-flex align-items-center justify-content-between gap-20">
+        <nav class="header-inner d-flex align-items-center justify-content-between gap-12 gap-md-20">
             
+            <!-- Mobile/Tablet Logo & Hamburger Start (Visible ONLY when sticky below lg) -->
+            <div class="sticky-mobile-brand align-items-center gap-12 d-lg-none flex-shrink-0">
+                <button type="button" class="toggle-mobileMenu text-heading text-2xl d-flex border-0 bg-transparent p-0" aria-label="Open Menu">
+                    <i class="ph ph-list"></i>
+                </button>
+                <div class="logo">
+                    <a href="/" class="link d-inline-block">
+                        <img src="/assets/images/logo/logo.png" alt="Pal Varnan" style="max-height: 38px; width: auto; object-fit: contain;">
+                    </a>
+                </div>
+            </div>
+            <!-- Mobile/Tablet Logo & Hamburger End -->
+
             <!-- Category Dropdown Start -->
             <div class="category d-none d-lg-block on-hover-item flex-shrink-0" style="min-width: 220px;">
                 <button type="button" class="category__button d-flex align-items-center gap-10 fw-semibold py-14 px-20 bg-white hover-bg-main-50 text-heading rounded-12 w-100 transition-1 border border-neutral-200" style="height: 52px;">

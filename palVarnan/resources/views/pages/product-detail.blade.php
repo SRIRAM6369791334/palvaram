@@ -24,6 +24,19 @@
     overflow: hidden;
 }
 
+@media (max-width: 575px) {
+    .product-details__thumb {
+        min-height: 260px !important;
+        height: 260px !important;
+    }
+    .product-details__thumb img {
+        max-height: 220px !important;
+    }
+    .product-details__thumb-slider {
+        padding: 12px !important;
+    }
+}
+
 .product-details__thumb img {
     max-height: 340px;
     max-width: 100%;
@@ -470,8 +483,8 @@
             <div class="col-lg-9">
                 <div class="row gy-4">
 
-                    <!-- Product Image Gallery (col-xl-6) -->
-                    <div class="col-xl-6">
+                    <!-- Product Image Gallery (col-lg-6 col-xl-6) -->
+                    <div class="col-lg-6 col-xl-6">
                         <div class="product-details__left">
                             <div class="product-main-slider-wrap">
                                 <!-- Discount Badge -->
@@ -521,8 +534,8 @@
                         </div>
                     </div>
 
-                    <!-- Product Details Content (col-xl-6) -->
-                    <div class="col-xl-6">
+                    <!-- Product Details Content (col-lg-6 col-xl-6) -->
+                    <div class="col-lg-6 col-xl-6">
                         <div class="product-details__content ps-xl-16">
                             
                             <!-- Title -->

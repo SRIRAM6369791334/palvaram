@@ -28,7 +28,7 @@
     <div class="container container-lg">
         <div class="row gy-4">
             <div class="col-lg-12">
-                <div class="cart-table border border-gray-100 rounded-8 px-40 py-48">
+                <div class="cart-table border border-gray-100 rounded-8 px-16 px-md-32 py-24 py-md-40">
                     <div class="overflow-x-auto scroll-sm scroll-sm-horizontal">
                         <table class="table style-three">
                             <thead>

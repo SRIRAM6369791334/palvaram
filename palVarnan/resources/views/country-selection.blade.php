@@ -17,8 +17,16 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
         .inner { max-width: 620px; width: 100%; }
-        h1 { font-size: 56px; font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 44px; }
-        .flags { display: flex; gap: 40px; margin-bottom: 36px; flex-wrap: wrap; }
+        h1 { font-size: 56px; font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 44px; text-align: center; }
+        @media (max-width: 575px) {
+            h1 { font-size: 34px !important; line-height: 1.2 !important; margin-bottom: 24px !important; }
+            body { padding: 32px 16px; }
+        }
+        .flags { display: flex; gap: 40px; margin-bottom: 36px; flex-wrap: wrap; justify-content: center; }
+        @media (max-width: 480px) {
+            .flags { gap: 20px; }
+            .flag-box { width: 140px; height: 90px; }
+        }
         .flag-btn {
             background: none; border: none; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; gap: 14px;
@@ -34,8 +42,8 @@
         .flag-box img { width: 100%; height: 100%; object-fit: cover; }
         .flag-label { font-size: 15px; font-weight: 700; color: #fff; }
         .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.25); margin-bottom: 28px; }
-        .info-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .info-text { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+        .info-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; text-align: center; }
+        .info-text { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6; text-align: center; }
         .error { color: #ffcccc; font-size: 14px; margin-bottom: 16px; }
     </style>
 </head>

@@ -35,6 +35,18 @@
     flex-direction: column;
     gap: 12px;
     pointer-events: none;
+    max-width: calc(100vw - 32px);
+}
+@media (max-width: 575px) {
+    #toast-container {
+        top: 12px;
+        right: 16px;
+        left: 16px;
+    }
+    .app-toast {
+        min-width: unset !important;
+        width: 100% !important;
+    }
 }
 .app-toast {
     pointer-events: auto;
