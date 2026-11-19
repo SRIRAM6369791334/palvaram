@@ -90,7 +90,7 @@
             </a>
         </div>
 
-        <div class="position-relative arrow-center gradient-shadow">
+        <div class="position-relative arrow-center">
             <div class="flex-align">
                 <button type="button" id="feature-item-wrapper-prev" class="slick-prev slick-arrow flex-center rounded-circle bg-white text-xl hover-bg-main-600 hover-text-white transition-1">
                     <i class="ph ph-caret-left"></i>
@@ -101,9 +101,12 @@
             </div>
             <div class="feature-item-wrapper">
 
+            @php
+                $pastelBgs = ['#E8F9E9', '#FCEDED', '#F6EBF3', '#FCF2E7', '#F5FBE3', '#E3FBE9', '#E9E3FB', '#ECF8F2', '#F8F5E5', '#F0F8E5'];
+            @endphp
             @foreach($categories as $category)
-                <div class="feature-item text-center wow bounceIn" data-aos="fade-up" data-aos-duration="400">
-                    <div class="feature-item__thumb rounded-circle">
+                <div class="feature-item text-center">
+                    <div class="feature-item__thumb rounded-circle" style="background-color: {{ $pastelBgs[$loop->index % count($pastelBgs)] }};">
                         <a href="/products?category={{ \Illuminate\Support\Str::slug($category->category_name) }}" class="w-100 h-100 flex-center" title="{{ $category->category_name }}">
                             <img src="{{ env('MAIN_URL') }}images/{{ $category->category_image }}" alt="{{ $category->category_name }}">
                         </a>
@@ -113,8 +116,6 @@
                     </div>
                 </div>
             @endforeach
-
-                
 
             </div>
         </div>
@@ -142,24 +143,24 @@
                     $catImg = !empty($pCat->category_image) ? $mainUrl . '/images/' . ltrim($pCat->category_image, '/') : null;
                 @endphp
                 <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="{{ 400 + ($index * 200) }}">
-                    <div class="promotional-banner-item position-relative rounded-20 rounded-xl-24 overflow-hidden z-1 p-14 p-sm-20 py-xl-40 ps-xl-32 pe-xl-24 h-100 d-flex flex-column justify-content-between group-item"
-                         style="min-height: 195px; background: {{ $theme['bg'] }}; border: 1px solid {{ $theme['border'] }}; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+                    <div class="promotional-banner-item position-relative rounded-20 rounded-xl-24 overflow-hidden z-1 p-12 p-sm-20 py-xl-40 ps-xl-32 pe-xl-24 h-100 d-flex flex-column justify-content-between group-item"
+                         style="min-height: 170px; background: {{ $theme['bg'] }}; border: 1px solid {{ $theme['border'] }}; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
                         
                         <!-- Floating Category Image Cutout on Right -->
                         @if($catImg)
                             <img src="{{ $catImg }}" alt="{{ $pCat->category_name }}" 
                                  class="position-absolute end-0 bottom-0 pointer-events-none transition-2 promo-cat-img"
-                                 style="max-height: 130px; max-width: 52%; object-fit: contain; z-index: 1; mix-blend-mode: multiply; margin-right: 6px; margin-bottom: 6px;"
+                                 style="max-height: 95px; max-width: 46%; object-fit: contain; z-index: 1; mix-blend-mode: multiply; margin-right: 6px; margin-bottom: 6px;"
                                  onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src='{{ env('MAIN_URL') }}images/{{ $pCat->category_image }}';}">
                         @endif
 
                         <!-- Card Content on Left -->
-                        <div class="promotional-banner-item__content position-relative" style="z-index: 2; max-width: 65%;">
-                            <h6 class="promotional-banner-item__title mb-4 mb-sm-8 text-heading fw-bold text-capitalize" 
-                                style="font-size: clamp(14px, 3.2vw, 22px); line-height: 1.25; word-break: break-word; hyphens: none;">
+                        <div class="promotional-banner-item__content position-relative w-100" style="z-index: 2;">
+                            <h6 class="promotional-banner-item__title mb-2 mb-sm-8 text-heading fw-bold text-capitalize" 
+                                style="font-size: clamp(15px, 3.8vw, 22px); line-height: 1.25; word-break: normal; overflow-wrap: normal; hyphens: none; white-space: normal;">
                                 {{ $pCat->category_name }}
                             </h6>
-                            <div class="d-flex align-items-baseline gap-4 gap-sm-6 flex-wrap my-4 my-sm-8" style="white-space: nowrap !important;">
+                            <div class="d-flex align-items-baseline gap-4 gap-sm-6 flex-wrap my-2 my-sm-8" style="white-space: nowrap !important;">
                                 <span class="text-heading fst-italic text-xs text-sm-sm">Starting at</span>
                                 <span class="text-danger-600 mb-0 text-15 text-sm-xl fw-bold" style="white-space: nowrap !important;">
                                     {{ $currencySymbol }}{{ number_format($pCat->min_price, 2) }}
@@ -167,11 +168,16 @@
                             </div>
                         </div>
 
-                        <!-- Shop Now Button -->
-                        <div class="position-relative mt-auto pt-8" style="z-index: 2;">
-                            <a href="{{ url('/products?category=' . $catSlug) }}" class="btn btn-main d-inline-flex align-items-center rounded-pill gap-4 gap-sm-6 py-4 px-10 py-sm-8 px-sm-16 text-xs text-sm-sm fw-semibold shadow-sm">
+                        <!-- Shop Now Button: Full Pill on Desktop, Round Icon on Mobile -->
+                        <div class="position-relative mt-auto pt-6" style="z-index: 2;">
+                            {{-- Desktop & Tablet: Full Button --}}
+                            <a href="{{ url('/products?category=' . $catSlug) }}" class="btn btn-main d-none d-sm-inline-flex align-items-center rounded-pill gap-6 py-sm-8 px-sm-16 text-xs text-sm-sm fw-semibold shadow-sm">
                                 <span>Shop Now</span>
                                 <span class="icon text-xs text-sm-base d-flex"><i class="ph ph-arrow-right"></i></span> 
+                            </a>
+                            {{-- Mobile Only: Stylish Round Icon Button --}}
+                            <a href="{{ url('/products?category=' . $catSlug) }}" class="btn btn-main d-inline-flex d-sm-none align-items-center justify-content-center rounded-circle shadow-sm" style="width: 36px; height: 36px; min-width: 36px; padding: 0;" title="Shop Now">
+                                <i class="ph-bold ph-arrow-right" style="font-size: 15px;"></i>
                             </a>
                         </div>
                     </div>
@@ -215,7 +221,7 @@
 
             <!-- ALL TAB -->
             <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
-                <div class="row g-16">
+                <div class="row g-12 g-sm-16 gy-16 gy-sm-24">
                     @forelse($featuredProducts as $product)
                         @php
                             $displayVariants = $product->variants;
@@ -392,9 +398,58 @@
     align-items: stretch !important;
     background: #ffffff;
     border-radius: 16px;
-    padding: 14px 12px !important;
+    padding: 14px 12px 18px 12px !important;
     border: 1px solid #edf2f7;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.recommended-card-col {
+    margin-bottom: 0px;
+}
+@media (min-width: 768px) {
+    .recommended-card-col {
+        margin-bottom: 24px;
+    }
+}
+
+/* Short Product Section (Featured, Top Selling, Trending) - 2x2 Grid on Mobile */
+@media (max-width: 575px) {
+    .short-product-list .d-flex.flex-column.gap-20 {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    .short-product-list .flex-align.gap-14 {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 8px !important;
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 12px;
+        height: 100%;
+        gap: 6px !important;
+    }
+    .short-product-list .flex-align.gap-14 .w-80.h-80 {
+        width: 100% !important;
+        height: 90px !important;
+        border-radius: 8px;
+        background: #ffffff;
+        margin-bottom: 4px;
+    }
+    .short-product-list .product-card__content {
+        width: 100% !important;
+        text-align: left;
+    }
+    .short-product-list .product-card__content .title {
+        font-size: 13px !important;
+        min-height: 32px;
+        line-height: 1.25;
+        margin-bottom: 4px !important;
+    }
+    .short-product-list .product-card__price {
+        gap: 6px !important;
+        flex-wrap: wrap;
+    }
 }
 
 .recommended .product-card > div {
@@ -815,6 +870,25 @@
             </div>
         </div>
 
+        @php
+            $dealsOfDayEndDate = null;
+            if (isset($hotDeals) && $hotDeals->count() > 0) {
+                foreach($hotDeals as $hd) {
+                    if ($hd->variants && $hd->variants->count() > 0) {
+                        foreach($hd->variants as $hv) {
+                            if (!empty($hv->flash_sale_date) && strtotime($hv->flash_sale_date) > time()) {
+                                $dealsOfDayEndDate = date('Y-m-d H:i:s', strtotime($hv->flash_sale_date));
+                                break 2;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!$dealsOfDayEndDate) {
+                $dealsOfDayEndDate = now()->endOfDay()->format('Y-m-d H:i:s');
+            }
+        @endphp
+
         <div class="row g-12">
             <div class="col-md-4" data-aos="zoom-in">
                 <div class="hot-deals position-relative rounded-16 bg-main-600 overflow-hidden ps-40 pe-24 pt-80 pb-120 z-1">
@@ -826,7 +900,7 @@
                     <div class="">
                         <h5 class="text-white mb-8 mt-12">Deals of the Day</h5>
                         <p class="fw-semibold text-success-600">Save up to 50% off on your first order</p>
-                        <div class="countdown mt-24 mb-24" id="countdown4">
+                        <div class="countdown mt-24 mb-24" id="countdown4" data-date="{{ $dealsOfDayEndDate }}">
                             <ul class="countdown-list d-flex align-items-center flex-wrap">
                                 <li class="countdown-list__item py-8 px-12 text-heading flex-align gap-4 text-sm fw-medium colon-white"><span class="days"></span> D</li>
                                 <li class="countdown-list__item py-8 px-12 text-heading flex-align gap-4 text-sm fw-medium colon-white"><span class="hours"></span> H</li>
@@ -1172,7 +1246,21 @@
                                 <h6 class="position-relative mb-0 fw-bold text-heading text-16">Deal of the Week</h6>
                                 <span class="badge bg-danger-50 text-danger-600 fw-bold text-xs px-8 py-4 rounded-pill">Special Deal</span>
                             </div>
-                            <div class="countdown mb-12" id="countdown26">
+                            @php
+                                $dealOfWeekEndDate = null;
+                                if (isset($dealOfWeek) && $dealOfWeek && $dealOfWeek->variants) {
+                                    foreach($dealOfWeek->variants as $dv) {
+                                        if (!empty($dv->flash_sale_date) && strtotime($dv->flash_sale_date) > time()) {
+                                            $dealOfWeekEndDate = date('Y-m-d H:i:s', strtotime($dv->flash_sale_date));
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!$dealOfWeekEndDate) {
+                                    $dealOfWeekEndDate = now()->endOfWeek()->format('Y-m-d H:i:s');
+                                }
+                            @endphp
+                            <div class="countdown mb-12" id="countdown26" data-date="{{ $dealOfWeekEndDate }}">
                                 <ul class="countdown-list flex-align flex-wrap gap-4">
                                     <li class="countdown-list__item colon-red py-6 px-10 flex-align gap-4 text-xs fw-bold rounded-6 bg-main-600 text-white">
                                         <span class="days"></span> D
@@ -1549,13 +1637,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Dynamic Countdown Timer Initialization
     if (typeof initializeCountdown === 'function') {
-        @php
-            $hotDealEndDate = (isset($dealOfWeek) && $dealOfWeek && $dealOfWeek->variants->first() && $dealOfWeek->variants->first()->flash_sale_date)
-                ? date('Y-m-d', strtotime($dealOfWeek->variants->first()->flash_sale_date)) 
-                : now()->addDays(7)->format('Y-m-d');
-        @endphp
-        initializeCountdown('countdown4', '{{ $hotDealEndDate }}');
-        initializeCountdown('countdown26', '{{ $hotDealEndDate }}');
+        initializeCountdown('countdown4', '{{ $dealsOfDayEndDate }}');
+        initializeCountdown('countdown26', '{{ $dealOfWeekEndDate }}');
     }
 });
 </script>

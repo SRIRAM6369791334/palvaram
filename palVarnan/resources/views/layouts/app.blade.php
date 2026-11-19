@@ -259,6 +259,18 @@
             }
         }
 
+        /* Popular Categories Carousel: Ensure gradient shadows never block clicks or fade on mobile */
+        .gradient-shadow::before,
+        .gradient-shadow::after {
+            pointer-events: none !important;
+        }
+        @media (max-width: 991px) {
+            .gradient-shadow::before,
+            .gradient-shadow::after {
+                display: none !important;
+            }
+        }
+
         /* GENERAL: Prevent any horizontal overflow globally while preserving container centering */
         body, html {
             overflow-x: hidden;

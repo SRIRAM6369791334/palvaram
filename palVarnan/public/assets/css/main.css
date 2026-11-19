@@ -7562,18 +7562,27 @@ input:focus-visible {
 .gradient-shadow::before, .gradient-shadow::after {
     position: absolute;
     content: "";
-    width: 200px;
+    width: 120px;
     height: 100%;
     inset-inline-start: 0;
     inset-block-start: 0;
     background: linear-gradient(90deg, #ffffff, transparent);
     z-index: 1;
+    pointer-events: none !important;
 }
 
 .gradient-shadow::after {
     inset-inline-start: auto;
     inset-inline-end: 0;
     background: linear-gradient(-90deg, #fff, transparent);
+    pointer-events: none !important;
+}
+
+@media (max-width: 991px) {
+    .gradient-shadow::before,
+    .gradient-shadow::after {
+        display: none !important;
+    }
 }
 
 /* Font Size Class Start */
@@ -8328,6 +8337,30 @@ input:focus-visible {
 
 .g-12, .gx-12 {
     --bs-gutter-x: .75rem !important;
+}
+
+.g-16, .gy-16 {
+    --bs-gutter-y: 1rem !important;
+}
+
+.g-16, .gx-16 {
+    --bs-gutter-x: 1rem !important;
+}
+
+.g-20, .gy-20 {
+    --bs-gutter-y: 1.25rem !important;
+}
+
+.g-20, .gx-20 {
+    --bs-gutter-x: 1.25rem !important;
+}
+
+.g-24, .gy-24 {
+    --bs-gutter-y: 1.5rem !important;
+}
+
+.g-24, .gx-24 {
+    --bs-gutter-x: 1.5rem !important;
 }
 
 /* ================================= preload Css Start =========================== */
