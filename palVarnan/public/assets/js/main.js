@@ -732,7 +732,7 @@
         }
       },
       {
-        breakpoint: 424,
+        breakpoint: 360,
         settings: {
           slidesToShow: 1,
           arrows: false,
@@ -1015,22 +1015,44 @@ if(copyCouponBtn && copyText) {
 
   
   // ========================= Product Details Thumbs Slider Js Start ===================
-  $('.product-details__thumb-slider').slick({
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    fade: true,
-    asNavFor: '.product-details__images-slider'
-  });
+  if ($('.product-details__thumb-slider').length) {
+    $('.product-details__thumb-slider').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      fade: true,
+      asNavFor: $('.product-details__images-slider').length ? '.product-details__images-slider' : null
+    });
+  }
 
-  $('.product-details__images-slider').slick({
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    asNavFor: '.product-details__thumb-slider',
-    dots: false,
-    arrows: false,
-    focusOnSelect: true
-  });
+  if ($('.product-details__images-slider').length) {
+    var thumbCount = $('.product-details__images-slider .product-thumb-item').length;
+    $('.product-details__images-slider').slick({
+      slidesToShow: Math.min(4, Math.max(1, thumbCount)),
+      slidesToScroll: 1,
+      asNavFor: $('.product-details__thumb-slider').length ? '.product-details__thumb-slider' : null,
+      dots: false,
+      arrows: false,
+      focusOnSelect: true,
+      infinite: thumbCount > 4,
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: Math.min(4, Math.max(1, thumbCount)),
+            slidesToScroll: 1
+          }
+        },
+        {
+          breakpoint: 575,
+          settings: {
+            slidesToShow: Math.min(4, Math.max(1, thumbCount)),
+            slidesToScroll: 1
+          }
+        }
+      ]
+    });
+  }
   // ========================= Product Details Thumbs Slider Js End ===================
 
   
