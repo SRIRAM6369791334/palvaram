@@ -1,1 +1,6 @@
 *.zip
+*.sql
+scratch/
+.kilo/
+palVarnan/test-results/
+palVarnanDashboard/yesbe_dash/

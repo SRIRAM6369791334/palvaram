@@ -18,9 +18,11 @@ if [ ! -L "/var/www/html/public/storage" ]; then
     php artisan storage:link || true
 fi
 
-# Run database migrations
-echo "Running database migrations..."
-php artisan migrate --force || true
+# Run database migrations if enabled via environment variable (defaults to true)
+if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
+    echo "Running database migrations..."
+    php artisan migrate --force || true
+fi
 
 # Package discovery and cache cleanup
 php artisan package:discover --ansi || true

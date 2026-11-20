@@ -7,7 +7,6 @@ vendor
 .env.*
 !.env.example
 *.zip
-.zip
 *.sql
 *.pdf
 *.log
@@ -18,3 +17,10 @@ Homestead.yaml
 .vscode
 .opencode
 tests
+test-results
+playwright.config.js
+docs
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
