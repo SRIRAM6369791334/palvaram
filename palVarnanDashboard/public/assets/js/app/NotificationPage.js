@@ -1,10 +1,46 @@
+function renderRowData(notifidata, index) {
+    const isApproved = notifidata.approval == 1;
+    const statusBadge = isApproved
+        ? `<span class="badge bg-success font-size-12 px-2 py-1"><i class="mdi mdi-check-circle me-1"></i>Approved</span>`
+        : `<span class="badge bg-warning text-dark font-size-12 px-2 py-1"><i class="mdi mdi-clock-outline me-1"></i>Pending</span>`;
+
+    const reviewText = (notifidata.review || '').replace(/"/g, '&quot;');
+    const actionHtml = `
+        <div class="d-flex align-items-center justify-content-center gap-1">
+            ${!isApproved ? `<button class="btn btn-sm btn-success quick_approve_btn" data-notifiid="${notifidata.id}"><i class="mdi mdi-check"></i> Approve</button>` : ''}
+            <button data-bs-toggle="modal"
+                data-notifiid="${notifidata.id}"
+                data-notifitittle="${notifidata.title || ''}"
+                data-notificontent="${notifidata.content || ''}"
+                data-cate="${notifidata.cate_id || ''}"
+                data-pro="${notifidata.pro_id || ''}"
+                data-star="${notifidata.star || 5}"
+                data-approval="${notifidata.approval || 0}"
+                data-review="${reviewText}"
+                data-bs-target="#editNotificationModal" class="btn btn-sm btn-secondary edit_btn2">Edit</button>
+            <button class="btn btn-sm btn-danger delete_btn" data-notifiid="${notifidata.id}">Delete</button>
+        </div>
+    `;
+
+    return [
+        index + 1,
+        notifidata.cate_name || 'N/A',
+        notifidata.pro_name || 'N/A',
+        notifidata.title || 'Customer',
+        gridjs.html(`<span class="fw-semibold text-warning">${notifidata.star || 0} ⭐</span>`),
+        gridjs.html(statusBadge),
+        gridjs.html(actionHtml)
+    ];
+}
+
 const gridNew = new gridjs.Grid({
     columns: [
         "S.NO",
         "Category",
         "Product",
-        "Name",
-        // "Image",
+        "Customer",
+        "Rating",
+        "Status",
         {
             name: "Action",
             sort: false,
@@ -15,43 +51,15 @@ const gridNew = new gridjs.Grid({
     },
     sort: !0,
     search: !0,
-    data: notififils.map((notifidata, index) => {
-        return [
-            index + 1,
-            notifidata.cate_name,
-            notifidata.pro_name,
-            notifidata.title,
-            // gridjs.html(
-            //     `
-
-            //     <img class="bannerImage_image_el gridImage" src="images/${notifidata.notification_image}"  alt ="categgory_image${index}"/>
-
-
-            // `
-            // ),
-            gridjs.html(
-                `<div> <button data-bs-toggle="modal"
-                data-notifiid ="${notifidata.id}"
-                data-notifitittle="${notifidata.title}"
-                data-notificontent ="${notifidata.content}"
-                data-cate="${notifidata.cate_id}"
-                data-pro ="${notifidata.pro_id}"
-                data-star ="${notifidata.star}"
-                data-approval ="${notifidata.approval}"
-                data-review ="${notifidata.review}"
-
-                data-bs-target="#editNotificationModal"  class="btn btn-secondary edit_btn2 ">Edit</button><span>  </span><button class="btn btn-danger delete_btn" data-notifiid = ${notifidata.id} style="margin-left="5px">Delete</button>  </div>`
-            ),
-        ];
-    }),
+    data: notififils.map((notifidata, index) => renderRowData(notifidata, index)),
     style: {
         table: {
             border: "1px solid #ccc",
         },
         th: {
-            "background-color": "rgba(0, 0, 0, 0.1)",
+            "background-color": "rgba(0, 0, 0, 0.05)",
             color: "#000",
-            "border-bottom": "3px solid #ccc",
+            "border-bottom": "2px solid #ccc",
             "text-align": "center",
             "border-right": "0.5px solid #ccc",
         },
@@ -59,50 +67,48 @@ const gridNew = new gridjs.Grid({
             "text-align": "center",
             "border-right": "0.5px solid #ccc",
             "border-bottom": "0.5px solid #ccc",
+            "vertical-align": "middle",
         },
     },
 });
 gridNew.render(document.getElementById("table-gridjs"));
 
-
 function gridjsReRender(notififils) {
-
-    console.log(typeof notififils);
     if (gridNew) gridNew.config.plugin.remove("pagination");
     if (gridNew) gridNew.config.plugin.remove("search");
     gridNew
         .updateConfig({
-            data: notififils.map((notifidata, index) => {
-                return [
-                    index + 1,
-                    notifidata.cate_name,
-                    notifidata.pro_name,
-                    notifidata.title,
-                    // gridjs.html(
-                    //     `
-
-                    //     <img class="bannerImage_image_el gridImage" src="images/${notifidata.notification_image}"  alt ="categgory_image${index}"/>
-
-
-                    // `
-                    // ),
-                    gridjs.html(
-                        `<div> <button data-bs-toggle="modal"
-                        data-notifiid ="${notifidata.id}"
-                        data-notifitittle="${notifidata.title}"
-                        data-notificontent ="${notifidata.content}"
-                         data-cate="${notifidata.cate_id}"
-                data-pro ="${notifidata.pro_id}"
-                data-star ="${notifidata.star}"
-                data-approval ="${notifidata.approval}"
-                data-review ="${notifidata.review}"
-                        data-bs-target="#editNotificationModal"  class="btn btn-secondary edit_btn2 ">Edit</button><span>  </span><button class="btn btn-danger delete_btn" data-notifiid = ${notifidata.id} style="margin-left="5px">Delete</button>  </div>`
-                    ),
-                ];
-            }),
+            data: notififils.map((notifidata, index) => renderRowData(notifidata, index)),
         })
         .forceRender();
 }
+
+$(document).on("click", ".quick_approve_btn", function () {
+    const id = $(this).attr("data-notifiid");
+    Swal.fire({
+        title: "Approve this review?",
+        text: "This review will be published on the store immediately.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, approve!",
+        cancelButtonText: "Cancel",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "approvereview/" + id,
+                method: "POST",
+                data: { _token: $('meta[name="csrf-token"]').attr('content') || $('input[name="_token"]').val() },
+                success: function (response) {
+                    gridjsReRender(response.notififils);
+                    Swal.fire("Approved!", "Review is now live on the store.", "success");
+                },
+                error: function () {
+                    Swal.fire("Error", "Could not approve review.", "error");
+                }
+            });
+        }
+    });
+});
 
 const addValidator = new JustValidate("#addNotificaForm", {
     validateBeforeSubmitting: true,

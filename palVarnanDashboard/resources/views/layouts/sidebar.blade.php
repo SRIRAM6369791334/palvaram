@@ -423,12 +423,12 @@
                         <span class="menu-item" data-key="t-chat">One Time Coupon </span>
                     </a>
                 </li> --}}
-                <!-- <li>
-                    <a href="{{ route('review.index') }}">
-                        <i class="mdi mdi-comment-text-multiple nav-icon"></i>
-                        <span class="menu-item" data-key="t-chat">Reviews</span>
-                    </a>
-                </li> -->
+                    <li>
+                        <a href="{{ route('review.index') }}">
+                            <i class="mdi mdi-comment-text-multiple nav-icon"></i>
+                            <span class="menu-item" data-key="t-chat">Customer Reviews</span>
+                        </a>
+                    </li>
                 <!-- <li class="menu-title" data-key="t-applications">Bulk Order Enquries</li> -->
 
                 <!-- <li>

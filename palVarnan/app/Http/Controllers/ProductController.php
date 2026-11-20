@@ -246,8 +246,38 @@ if (Auth::check()) {
         //         ->pluck('product_varient_id');
         // }
 
+        $userCanReview = false;
+        $userHasPendingReview = false;
+        $userExistingReview = null;
+        $hasDeliveredOrder = false;
+
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $hasDeliveredOrder = \App\Models\ProductOrderItem::where('product_id', $product->id)
+                ->whereHas('order', function ($q) use ($userId) {
+                    $q->where('user_id', $userId)
+                      ->where(function ($sub) {
+                          $sub->where('status', 'delivered')
+                              ->orWhere('status', 'Delivered');
+                      });
+                })->exists();
+
+            if ($hasDeliveredOrder) {
+                $userExistingReview = \App\Models\Review::where('user_id', $userId)
+                    ->where('prod_id', $product->id)
+                    ->first();
+
+                if ($userExistingReview) {
+                    $userHasPendingReview = ($userExistingReview->approval == 0);
+                } else {
+                    $userCanReview = true;
+                }
+            }
+        }
+
         return view('pages.product-detail', compact(
-            'product', 'relatedProducts', 'cartProductIds', 'cartItems', 'wishlistVariantIds', 'wishlistProductIds'
+            'product', 'relatedProducts', 'cartProductIds', 'cartItems', 'wishlistVariantIds', 'wishlistProductIds',
+            'userCanReview', 'userHasPendingReview', 'userExistingReview', 'hasDeliveredOrder'
         ));
     }
     
@@ -255,16 +285,60 @@ if (Auth::check()) {
 
     public function storeReview(Request $request, $slug)
     {
+        if (!Auth::check()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Please login to submit a review.'], 401);
+            }
+            return redirect()->route('login');
+        }
+
         $product = Product::where('slug', $slug)->firstOrFail();
 
         $request->validate([
             'ratings' => 'required|integer|min:1|max:5',
             'review'  => 'required|string|min:3|max:1000',
+            'title'   => 'nullable|string|max:255',
         ]);
 
         $userId = Auth::id();
-        $name = Auth::check() ? (Auth::user()->name ?? 'Customer') : ($request->name ?: 'Customer');
-        $email = Auth::check() ? Auth::user()->email : ($request->email ?: 'customer@example.com');
+
+        // Check if user has ordered and received this product
+        $hasDeliveredOrder = \App\Models\ProductOrderItem::where('product_id', $product->id)
+            ->whereHas('order', function ($q) use ($userId) {
+                $q->where('user_id', $userId)
+                  ->where(function ($sub) {
+                      $sub->where('status', 'delivered')
+                          ->orWhere('status', 'Delivered');
+                  });
+            })->exists();
+
+        if (!$hasDeliveredOrder) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only customers who have ordered and received this product can write a review.'
+                ], 403);
+            }
+            return back()->with('error', 'Only customers who have ordered and received this product can write a review.');
+        }
+
+        // Check if user already reviewed
+        $existing = \App\Models\Review::where('user_id', $userId)
+            ->where('prod_id', $product->id)
+            ->first();
+
+        if ($existing) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have already submitted a review for this product.'
+                ], 422);
+            }
+            return back()->with('error', 'You have already submitted a review for this product.');
+        }
+
+        $name = Auth::user()->name ?? 'Customer';
+        $email = Auth::user()->email ?? '';
 
         $review = \App\Models\Review::create([
             'user_id'     => $userId,
@@ -273,22 +347,18 @@ if (Auth::check()) {
             'prod_id'     => $product->id,
             'prod_var_id' => $request->variant_id ?? ($product->variants->first()->id ?? null),
             'ratings'     => (int) $request->ratings,
+            'title'       => $request->title,
             'review'      => $request->review,
+            'approval'    => 0, // Pending admin approval
         ]);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Thank you! Your review has been submitted successfully.',
-                'review'  => [
-                    'name'       => $name,
-                    'ratings'    => (int) $request->ratings,
-                    'review'     => $request->review,
-                    'created_at' => $review->created_at ? $review->created_at->diffForHumans() : 'Just now'
-                ]
+                'message' => 'Thank you! Your review has been submitted successfully and will be published once approved by the admin.',
             ]);
         }
 
-        return back()->with('success', 'Thank you! Your review has been submitted successfully.');
+        return back()->with('success', 'Thank you! Your review has been submitted successfully and will be published once approved by the admin.');
     }
 }

@@ -17,9 +17,16 @@ class Review extends Model
         'email',
         'prod_id',
         'prod_var_id',
+        'title',
         'review',
         'ratings',
+        'approval',
     ];
+
+    public function scopeApproved($query)
+    {
+        return $query->where('approval', 1);
+    }
 
     public function product()
     {

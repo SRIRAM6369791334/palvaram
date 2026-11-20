@@ -3,7 +3,7 @@
     <div class="container container-lg">
         <div class="row g-4 gy-4 gy-md-5 align-items-start">
             <!-- 1. Brand & Contact Details -->
-            <div class="col-12 col-xl-3" data-aos="fade-up" data-aos-duration="200">
+            <div class="col-12 col-xl-3">
                 <div class="footer-item pe-xl-16">
                     <div class="footer-item__logo mb-16">
                         <a href="/"> 
@@ -45,7 +45,7 @@
             </div>
 
             <!-- 2. Quick Links -->
-            <div class="col-6 col-md-3 col-xl-2" data-aos="fade-up" data-aos-duration="400">
+            <div class="col-6 col-md-3 col-xl-2">
                 <div class="footer-item">
                     <h6 class="footer-item__title text-16 fw-bold mb-20 text-heading">Quick Links</h6>
                     <ul class="footer-menu list-unstyled p-0 m-0">
@@ -79,7 +79,7 @@
             </div>
 
             <!-- 3. Customer Care & Policies -->
-            <div class="col-6 col-md-3 col-xl-2" data-aos="fade-up" data-aos-duration="600">
+            <div class="col-6 col-md-3 col-xl-2">
                 <div class="footer-item">
                     <h6 class="footer-item__title text-16 fw-bold mb-20 text-heading">Customer Care</h6>
                     <ul class="footer-menu list-unstyled p-0 m-0">
@@ -113,7 +113,7 @@
             </div>
 
             <!-- 4. My Account -->
-            <div class="col-6 col-md-3 col-xl-2" data-aos="fade-up" data-aos-duration="800">
+            <div class="col-6 col-md-3 col-xl-2">
                 <div class="footer-item">
                     <h6 class="footer-item__title text-16 fw-bold mb-20 text-heading">My Account</h6>
                     <ul class="footer-menu list-unstyled p-0 m-0">
@@ -147,7 +147,7 @@
             </div>
 
             <!-- 5. Categories -->
-            <div class="col-6 col-md-3 col-xl-3" data-aos="fade-up" data-aos-duration="1000">
+            <div class="col-6 col-md-3 col-xl-3">
                 <div class="footer-item">
                     <h6 class="footer-item__title text-16 fw-bold mb-20 text-heading">Categories</h6>
                     <ul class="footer-menu list-unstyled p-0 m-0">
@@ -174,7 +174,7 @@
             </div>
 
             <!-- 6. Global Exports & Payments Strip -->
-            <div class="col-12 mt-32 mt-lg-48" data-aos="fade-up" data-aos-duration="1200">
+            <div class="col-12 mt-32 mt-lg-48">
                 <div class="footer-global-strip p-20 p-sm-24 p-md-28 rounded-20 border">
                     <div class="row align-items-center justify-content-between gy-16">
                         <div class="col-12 col-md-7 col-lg-8">
@@ -258,6 +258,12 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
+.bottom-footer {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 0 !important;
+}
+
 @media (max-width: 767px) {
     .footer {
         padding-top: 40px !important;
@@ -280,11 +286,12 @@
         padding: 16px 14px !important;
     }
     .bottom-footer {
-        padding-top: 16px !important;
-        padding-bottom: 24px !important;
+        padding-top: 10px !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 0 !important;
     }
     .bottom-footer__inner {
-        padding-right: 44px !important;
+        padding-right: 0 !important;
     }
 }
 </style>

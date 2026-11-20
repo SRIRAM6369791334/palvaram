@@ -2,209 +2,128 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppNotification;
 use App\Models\Category;
-use App\Models\Notification;
 use App\Models\Product;
-use Illuminate\Support\Facades\File;
+use App\Models\Review;
 use Illuminate\Http\Request;
-use Psy\Readline\Hoa\Console;
 
 class NotificationController extends Controller
 {
-
     public $NotificationSuccessMessage = "Reviews Added Successfully";
-    public function index(){
-        $notififils = Notification::all();
-        $products =  Product::with('category')->get();
-        $categories = Category::all();
 
-        return view("pages.notification",compact("notififils","products", "categories"));
-
-
+    private function formatReviews()
+    {
+        return Review::with(['product.category'])->latest()->get()->map(function ($rev) {
+            return [
+                'id'         => $rev->id,
+                'cate_id'    => $rev->product->category_id ?? null,
+                'pro_id'     => $rev->prod_id,
+                'cate_name'  => $rev->product->category->category_name ?? 'N/A',
+                'pro_name'   => $rev->product->product_name ?? 'N/A',
+                'title'      => $rev->name ?? 'Customer',
+                'content'    => $rev->title ?? '',
+                'review'     => $rev->review,
+                'star'       => (int) $rev->ratings,
+                'approval'   => (int) ($rev->approval ?? 0),
+                'created_at' => $rev->created_at ? $rev->created_at->format('d M Y') : '',
+            ];
+        });
     }
 
-    // add notifications
+    public function index()
+    {
+        $notififils = $this->formatReviews();
+        $products = Product::with('category')->get();
+        $categories = Category::all();
 
-    // public function notifications(Request $request){
+        return view("pages.notification", compact("notififils", "products", "categories"));
+    }
 
-    //     $validate = $request->validate(
-    //         [
-    //             'notification_title' => "required",
-    //             'notification_content' => "required",
-    //             // 'notification_image' => "required|mimes:png,jpg,webp,jpeg",
-    //             ]
-    //         );
-
-
-    //         if ($request->hasFile("notification_image")) {
-    //             $productImage = $request->file("notification_image");
-    //             $path =  $productImage->store("notification_image", "public");
-    //             $notififils = AppNotification::create([...$validate, "notification_image" => $path]);
-
-    //             $notififils = AppNotification::all();
-
-
-    //             return response()->json([
-    //                 "message" => $this->NotificationSuccessMessage,
-    //                 "notififils" =>$notififils
-    //             ]);
-    //         }
-
-
-    // }
     public function notifications(Request $request)
-{
-    $validate = $request->validate([
-        'notification_title' => "required",
-        'notification_content' => "nullable",
-        'category_id' => "required",
-        'product_id' => "required",
-        'product_review' => "required",
-        'star_rating' => "required",
-    ]);
+    {
+        $validate = $request->validate([
+            'notification_title'   => "required",
+            'notification_content' => "nullable",
+            'category_id'          => "required",
+            'product_id'           => "required",
+            'product_review'       => "required",
+            'star_rating'          => "required",
+        ]);
 
-     $category = Category::find($validate['category_id']);
-    $product = Product::find($validate['product_id']);
+        Review::create([
+            'name'     => $validate['notification_title'],
+            'title'    => $validate['notification_content'],
+            'prod_id'  => $validate['product_id'],
+            'review'   => $validate['product_review'],
+            'ratings'  => (float) $validate['star_rating'],
+            'approval' => 1,
+        ]);
 
-    $data = [
-        'title' => $validate['notification_title'],
-        'content' => $validate['notification_content'],
-        'cate_id' => $validate['category_id'],
-        'pro_id' => $validate['product_id'],
-        'cate_name' => $category ? $category->category_name : null,
-        'pro_name' => $product ? $product->product_name : null,
-        'review' => $validate['product_review'],
-        'star' => $validate['star_rating'],
-        // 'approval' => $request->has('approval') ? 1 : 0,
-        'approval' => 1,
-    ];
-
-    Notification::create($data); // Save only
-
-     $notififils = Notification::all();
-
-    return response()->json([
-        "message" => $this->NotificationSuccessMessage,
-        "notififils" =>$notififils
-    ]);
-}
-
-
-     // Update coupons
-    //  public function update(Request $request, $id)
-    //  {
-    //      $notification = AppNotification::findOrFail($id);
-
-    //      $validated = $request->validate([
-    //         'notification_title' => "required",
-    //         'notification_content' => "required",
-    //         "notification_image" => $request->hasFile("notification_image") ? "required|mimes:png,jpg,webp,jpeg" : "",
-
-    //      ]);
-
-    //      if ($request->hasFile("notification_image")) {
-
-
-    //         $productImage = $request->file("notification_image");
-    //         $path =  $productImage->store("notification_image", "public");
-    //         File::delete(public_path("images/" . $notification->notification_image));
-    //         $notification->update([
-    //             ...$validated,
-    //             "notification_image" =>  $path,
-    //         ]);
-    //         $notififils =  AppNotification::all();
-    //         return response()->json([
-    //             "message" => $this->NotificationSuccessMessage,
-    //             "notififils" => $notififils
-    //         ]);
-    //     }else{
-
-
-
-    //      $notification->update([
-    //          'notification_title' => $validated["notification_title"],
-    //          'notification_content' => $validated["notification_content"],
-
-
-
-    //      ]);
-
-    //      $notififils =  AppNotification::all();
-    //      return response()->json([
-    //          "message" => $this->NotificationSuccessMessage,
-    //          "notififils" => $notififils
-    //      ]);
-    //     }
-    //  }
+        return response()->json([
+            "message"    => "Review Added Successfully",
+            "notififils" => $this->formatReviews()
+        ]);
+    }
 
     public function update(Request $request, $id)
-{
-    $notification = Notification::findOrFail($id);
+    {
+        $review = Review::findOrFail($id);
 
-    $validated = $request->validate([
-        'notification_title' => "required",
-        'notification_content' => "nullable",
-         'categoryid' => "required",
-    'product_id' => "required",
-    'product_review' => "required",
-    'star_rating' => "required",
-    ]);
+        $validated = $request->validate([
+            'notification_title'   => "required",
+            'notification_content' => "nullable",
+            'categoryid'           => "required",
+            'product_id'           => "required",
+            'product_review'       => "required",
+            'star_rating'          => "required",
+        ]);
 
-    $category = Category::find($validated['categoryid']);
-$product = Product::find($validated['product_id']);
+        $review->update([
+            'name'     => $validated['notification_title'],
+            'title'    => $validated['notification_content'],
+            'prod_id'  => $validated['product_id'],
+            'review'   => $validated['product_review'],
+            'ratings'  => (float) $validated['star_rating'],
+            'approval' => $request->has('approval') ? 1 : 0,
+        ]);
 
+        return response()->json([
+            "message"    => "Review Updated Successfully",
+            "notififils" => $this->formatReviews()
+        ]);
+    }
 
-    $notification->update([
-    'title' => $validated['notification_title'],
-    'content' => $validated['notification_content'],
-    'cate_id' => $validated['categoryid'],
-    'pro_id' => $validated['product_id'],
-    'cate_name' => $category->category_name ?? null,
-    'pro_name' => $product->product_name ?? null,
-    'review' => $validated['product_review'],
-    'star' => $validated['star_rating'],
-    'approval' => $request->has('approval') ? 1 : 0,
-]);
+    public function approve($id)
+    {
+        $review = Review::findOrFail($id);
+        $review->update(['approval' => 1]);
 
+        return response()->json([
+            "success"    => true,
+            "message"    => "Review Approved Successfully",
+            "notififils" => $this->formatReviews()
+        ]);
+    }
 
-    $notififils = Notification::all();
+    public function destroy($id)
+    {
+        $deleted = Review::where('id', $id)->delete();
 
-    return response()->json([
-        "message" => $this->NotificationSuccessMessage,
-        "notififils" => $notififils
-    ]);
-}
+        if ($deleted) {
+            return response()->json([
+                "message"      => "Review Deleted Successfully",
+                "notification" => $this->formatReviews()
+            ]);
+        }
 
+        return response()->json([
+            "message" => "Review Not Found or Could Not Be Deleted",
+        ], 404);
+    }
 
-     public function destroy($id)
-     {
-
-
-
-
-
-         // Use a SQL DELETE query to remove the coupon with the given ID
-         $notification = Notification::where('id', $id)->delete();
-
-         if ($notification) {
-             $notification = Notification::all();
-             return response()->json([
-                 "message" => "Reviews Deleted Successfully",
-                 "notification" => $notification
-             ]);
-         } else {
-             return response()->json([
-                 "message" => "Reviews Not Found or Could Not Be Deleted",
-             ], 404); // You can use a different HTTP status code if needed
-         }
-     }
-
-public function getProductsByCategory($id)
-{
-    $products = Product::where('category_id', $id)->get(['id', 'product_name']);
-    return response()->json($products);
-}
-
-
+    public function getProductsByCategory($id)
+    {
+        $products = Product::where('category_id', $id)->get(['id', 'product_name']);
+        return response()->json($products);
+    }
 }

@@ -57,11 +57,30 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
+/* Thumbnail Navigation Gallery - Clean Fixed Gap Flex Container */
+.product-thumb-gallery {
+    display: flex !important;
+    gap: 10px !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px 2px !important;
+    width: 100% !important;
+}
+.product-thumb-gallery::-webkit-scrollbar {
+    display: none !important;
+}
+
 .product-thumb-item {
-    width: 84px;
-    height: 84px;
+    width: 76px !important;
+    height: 76px !important;
+    min-width: 76px !important;
+    max-width: 76px !important;
+    flex-shrink: 0 !important;
     border-radius: 12px;
-    border: 1.5px solid var(--gray-100, #e2e8f0);
+    border: 1.5px solid var(--gray-200, #e2e8f0);
     background: #ffffff;
     display: flex;
     align-items: center;
@@ -69,18 +88,20 @@
     padding: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin: 0 4px;
+    margin: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .product-thumb-item img {
-    max-height: 68px;
-    max-width: 68px;
+    max-height: 60px;
+    max-width: 60px;
+    width: auto;
+    height: auto;
     object-fit: contain;
 }
 
 .product-thumb-item:hover,
-.product-thumb-item.active,
-.product-details__images-slider .slick-current .product-thumb-item {
+.product-thumb-item.active {
     border-color: var(--main-600, #1c799b) !important;
     box-shadow: 0 0 0 2px rgba(28, 121, 155, 0.2);
 }
@@ -165,6 +186,106 @@
     padding: 36px 32px;
 }
 
+/* Specifications Table */
+.product-spec-table {
+    width: 100% !important;
+    margin-bottom: 0 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+.product-spec-table th.spec-label {
+    width: 28%;
+    padding: 12px 18px !important;
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+    font-weight: 600 !important;
+    font-size: 13.5px !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #edf2f7 !important;
+    border-right: 1px solid #edf2f7 !important;
+}
+.product-spec-table td {
+    padding: 12px 18px !important;
+    font-size: 13.5px !important;
+    color: #334155 !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #edf2f7 !important;
+    line-height: 1.5 !important;
+}
+.product-spec-table tr:last-child th.spec-label,
+.product-spec-table tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Specifications Table Mobile Responsiveness (Clean, zero-horizontal-scroll card rows) */
+@media (max-width: 575px) {
+    .product-spec-table-wrap {
+        overflow-x: visible !important;
+    }
+    .product-spec-table {
+        display: block !important;
+        border: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+    }
+    .product-spec-table tbody {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+    .product-spec-table tr {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 9px 12px !important;
+        box-sizing: border-box !important;
+    }
+    .product-spec-table th.spec-label {
+        display: block !important;
+        width: 100% !important;
+        background: transparent !important;
+        --bs-table-bg: transparent !important;
+        padding: 0 0 4px 0 !important;
+        border: none !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        color: #64748b !important;
+    }
+    .product-spec-table td {
+        display: block !important;
+        width: 100% !important;
+        background: transparent !important;
+        --bs-table-bg: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: #0f172a !important;
+        line-height: 1.4 !important;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+    .product-spec-table th.spec-label {
+        width: 38% !important;
+        padding: 10px 14px !important;
+    }
+    .product-spec-table td {
+        padding: 10px 14px !important;
+    }
+}
+
 @media (max-width: 767px) {
     .product-dContent__header {
         padding: 14px 16px !important;
@@ -202,21 +323,163 @@
     .product-dContent__box {
         padding: 24px 16px !important;
     }
+    .product-spec-table-wrap {
+        overflow-x: visible !important;
+    }
+    .product-spec-table {
+        table-layout: fixed !important;
+        width: 100% !important;
+    }
+    .product-spec-table th.spec-label {
+        width: 38% !important;
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+        line-height: 1.35 !important;
+        text-align: left !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #edf2f7 !important;
+        border-right: 1px solid #edf2f7 !important;
+    }
+    .product-spec-table td {
+        width: 62% !important;
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+        line-height: 1.35 !important;
+        word-break: break-word !important;
+        text-align: left !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #edf2f7 !important;
+    }
 }
 
 @media (max-width: 575px) {
+    .product-details {
+        padding-top: 24px !important;
+        padding-bottom: 36px !important;
+    }
+    .product-details__thumb {
+        min-height: 250px !important;
+        height: 250px !important;
+    }
+    .product-details__thumb img {
+        max-height: 210px !important;
+    }
+    .product-thumb-gallery {
+        gap: 8px !important;
+    }
+    .product-thumb-item {
+        width: 64px !important;
+        height: 64px !important;
+        min-width: 64px !important;
+        max-width: 64px !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
+    }
+    .product-thumb-item img {
+        max-height: 52px !important;
+        max-width: 52px !important;
+    }
+    .product-details__content h4 {
+        font-size: 20px !important;
+    }
+    .product-details__sidebar-item {
+        padding: 12px 14px !important;
+        gap: 12px !important;
+    }
+    .product-details__sidebar-icon {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 18px !important;
+    }
+    .product-details__sidebar-item h6 {
+        font-size: 13.5px !important;
+        margin-bottom: 2px !important;
+    }
+    .product-details__sidebar-item p {
+        font-size: 11.5px !important;
+    }
+    .product-dContent {
+        border-radius: 16px !important;
+    }
+    .product-dContent__header {
+        padding: 12px 12px !important;
+        gap: 10px !important;
+    }
+    #pills-tab {
+        gap: 6px !important;
+    }
+    #pills-tab .nav-link {
+        padding: 6px 11px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+    }
+    .product-dContent__header .btn {
+        font-size: 11.5px !important;
+        padding: 6px 10px !important;
+        border-radius: 12px !important;
+    }
+    .product-dContent__box {
+        padding: 16px 12px !important;
+    }
+    .product-spec-table-wrap {
+        overflow-x: visible !important;
+        margin: 0 !important;
+    }
+    .product-spec-table {
+        table-layout: fixed !important;
+        width: 100% !important;
+        border-radius: 10px !important;
+    }
+    .product-spec-table th.spec-label {
+        width: 44% !important;
+        padding: 9px 11px !important;
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        background-color: #f8fafc !important;
+        text-align: left !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #edf2f7 !important;
+        border-right: 1px solid #edf2f7 !important;
+    }
+    .product-spec-table td {
+        width: 56% !important;
+        padding: 9px 11px !important;
+        font-size: 12.5px !important;
+        line-height: 1.35 !important;
+        word-break: break-word !important;
+        text-align: left !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #edf2f7 !important;
+    }
+    .review-score-box {
+        padding: 20px 24px !important;
+        width: 100% !important;
+    }
+    .detail-cart-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+    .detail-cart-control-wrap {
+        width: 100% !important;
+    }
     .detail-cart-control {
         width: 100% !important;
     }
     .detail-cart-control .add-to-cart-btn {
         width: 100% !important;
         justify-content: center !important;
-        padding-left: 20px !important;
-        padding-right: 20px !important;
+        padding: 12px 20px !important;
+        font-size: 14.5px !important;
     }
     .detail-cart-control .qty-box {
         width: 100% !important;
         justify-content: space-between !important;
+    }
+    .detail-cart-actions {
+        width: 100% !important;
+        justify-content: center !important;
+        gap: 16px !important;
     }
 }
 
@@ -464,6 +727,25 @@
         $discountPercent = round((($firstVariant->mrp_price - $firstVariant->offer_price) / $firstVariant->mrp_price) * 100);
     }
 
+    // Determine dynamic Special Offer end date
+    $hasSpecialOffer = false;
+    $offerEndDate = null;
+    if ($firstVariant) {
+        $hasFlashSale = (!empty($firstVariant->flash_sale) && (int)$firstVariant->flash_sale === 1);
+        $hasHotDeals  = (!empty($firstVariant->hot_deals) && (int)$firstVariant->hot_deals === 1);
+        $hasDiscount  = ($discountPercent > 0);
+        
+        if ($hasFlashSale || $hasHotDeals || $hasDiscount) {
+            $hasSpecialOffer = true;
+            if (!empty($firstVariant->flash_sale_date) && \Carbon\Carbon::parse($firstVariant->flash_sale_date)->isFuture()) {
+                $offerEndDate = \Carbon\Carbon::parse($firstVariant->flash_sale_date)->format('Y-m-d H:i:s');
+            } else {
+                // Dynamic end of current day (midnight countdown for daily special offer)
+                $offerEndDate = \Carbon\Carbon::today()->endOfDay()->format('Y-m-d H:i:s');
+            }
+        }
+    }
+
     $isFirstInStock = ($firstVariant && (int)$firstVariant->product_qty > 0);
 
     $cartQuantities = [];
@@ -474,25 +756,42 @@
     }
 
 
-    // Build image collection
+    // Helper to check if image file actually exists on server
+    $imageExists = function($path) {
+        if (empty($path)) return false;
+        if (\Illuminate\Support\Str::startsWith($path, 'http://') || \Illuminate\Support\Str::startsWith($path, 'https://')) return true;
+        if (\Illuminate\Support\Str::startsWith($path, 'assets/')) {
+            return file_exists(public_path($path));
+        }
+        $dashFile = base_path('../palVarnanDashboard/public/images/' . $path);
+        if (file_exists($dashFile)) return true;
+        if (file_exists(public_path('images/' . $path)) || file_exists(public_path($path))) return true;
+        return false;
+    };
+
+    // Build image collection with only valid, existing images
     $galleryImages = collect();
-    if (!empty($product->product_image)) {
+    if (!empty($product->product_image) && $imageExists($product->product_image)) {
         $galleryImages->push($product->product_image);
     }
     if ($product->childImages && $product->childImages->count() > 0) {
         foreach ($product->childImages as $ci) {
-            if (!empty($ci->product_child_image) && !$galleryImages->contains($ci->product_child_image)) {
+            if (!empty($ci->product_child_image) && $imageExists($ci->product_child_image) && !$galleryImages->contains($ci->product_child_image)) {
                 $galleryImages->push($ci->product_child_image);
             }
         }
     }
     foreach ($product->variants as $pv) {
-        if (!empty($pv->varient_img) && !$galleryImages->contains($pv->varient_img)) {
+        if (!empty($pv->varient_img) && $imageExists($pv->varient_img) && !$galleryImages->contains($pv->varient_img)) {
             $galleryImages->push($pv->varient_img);
         }
     }
     if ($galleryImages->isEmpty()) {
-        $galleryImages->push('product-details-thumb1.png');
+        if (!empty($product->product_image)) {
+            $galleryImages->push($product->product_image);
+        } else {
+            $galleryImages->push('assets/images/thumbs/product-img1.png');
+        }
     }
 @endphp
 
@@ -565,27 +864,27 @@
                                                      alt="{{ $product->product_name }}"
                                                      id="main-preview-img-{{ $loop->index }}"
                                                      class="main-zoomable-img"
-                                                     onerror="this.src='/assets/images/thumbs/product-details-thumb1.png'">
+                                                     onerror="this.src='/assets/images/logo/logo.png'">
                                             </div>
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
 
-                            <!-- Thumbnail Navigation Slider -->
-                            <div class="mt-20">
-                                <div class="product-details__images-slider">
+                            <!-- Thumbnail Navigation Gallery (Only when multiple images exist) -->
+                            @if($galleryImages->count() > 1)
+                            <div class="mt-16 mt-md-20">
+                                <div class="product-thumb-gallery">
                                     @foreach($galleryImages as $img)
-                                        <div>
-                                            <div class="product-thumb-item {{ $loop->first ? 'active' : '' }}" data-slide-index="{{ $loop->index }}">
-                                                <img src="{{ Str::startsWith($img, 'assets/') ? '/' . $img : (Str::startsWith($img, 'http') ? $img : env('MAIN_URL') . 'images/' . $img) }}"
-                                                     alt="Thumbnail {{ $loop->iteration }}"
-                                                     onerror="this.src='/assets/images/thumbs/product-details-img1.png'">
-                                            </div>
+                                        <div class="product-thumb-item {{ $loop->first ? 'active' : '' }}" data-slide-index="{{ $loop->index }}">
+                                            <img src="{{ Str::startsWith($img, 'assets/') ? '/' . $img : (Str::startsWith($img, 'http') ? $img : env('MAIN_URL') . 'images/' . $img) }}"
+                                                 alt="Thumbnail {{ $loop->iteration }}"
+                                                 onerror="this.src='/assets/images/logo/logo.png'">
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -665,18 +964,18 @@
                                 </a>
                             </div>
 
-                            <!-- Special Offer Countdown Box (MarketPro signature) -->
-                            <div class="flex-align flex-wrap gap-12 bg-color-one rounded-12 py-12 px-20 mb-20 border border-gray-100">
+                            <!-- Special Offer Countdown Box (MarketPro dynamic signature) -->
+                            <div class="flex-align flex-wrap gap-12 bg-color-one rounded-12 py-12 px-20 mb-20 border border-gray-100 {{ $hasSpecialOffer ? '' : 'd-none' }}" id="detail-offer-box">
                                 <div class="flex-align gap-8">
                                     <span class="w-24 h-24 bg-main-600 text-white rounded-circle flex-center text-xs"><i class="ph-fill ph-tag"></i></span>
                                     <span class="text-main-600 text-xs fw-semibold">Special Offer:</span>
                                 </div>
-                                <div class="countdown" id="countdown11">
+                                <div class="countdown" id="countdown11" data-date="{{ $offerEndDate ?? '' }}">
                                     <ul class="countdown-list flex-align flex-wrap gap-4 mb-0 ps-0">
-                                        <li class="countdown-list__item text-heading flex-align gap-4 text-xs fw-semibold px-8 py-2 rounded-4 border border-main-600 bg-white shadow-xs"><span class="days">2</span>d</li>
-                                        <li class="countdown-list__item text-heading flex-align gap-4 text-xs fw-semibold px-8 py-2 rounded-4 border border-main-600 bg-white shadow-xs"><span class="hours">18</span>h</li>
-                                        <li class="countdown-list__item text-heading flex-align gap-4 text-xs fw-semibold px-8 py-2 rounded-4 border border-main-600 bg-white shadow-xs"><span class="minutes">42</span>m</li>
-                                        <li class="countdown-list__item text-heading flex-align gap-4 text-xs fw-semibold px-8 py-2 rounded-4 border border-main-600 bg-white shadow-xs"><span class="seconds">15</span>s</li>
+                                        <li class="countdown-list__item text-heading flex-align gap-4 text-xs fw-semibold px-8 py-2 rounded-4 border border-main-600 bg-white shadow-xs"><span class="days">00</span>d</li>
+                                        <li class="countdown-list__item text-heading flex-align gap-4 text-xs fw-semibold px-8 py-2 rounded-4 border border-main-600 bg-white shadow-xs"><span class="hours">00</span>h</li>
+                                        <li class="countdown-list__item text-heading flex-align gap-4 text-xs fw-semibold px-8 py-2 rounded-4 border border-main-600 bg-white shadow-xs"><span class="minutes">00</span>m</li>
+                                        <li class="countdown-list__item text-heading flex-align gap-4 text-xs fw-semibold px-8 py-2 rounded-4 border border-main-600 bg-white shadow-xs"><span class="seconds">00</span>s</li>
                                     </ul>
                                 </div>
                                 <span class="text-gray-700 text-xs">Remains until offer ends</span>
@@ -716,6 +1015,9 @@
                                         @endphp
                                         @php
                                             $vInStock = (int)$v->product_qty > 0;
+                                            $vFlashDate = (!empty($v->flash_sale_date) && \Carbon\Carbon::parse($v->flash_sale_date)->isFuture())
+                                                ? \Carbon\Carbon::parse($v->flash_sale_date)->format('Y-m-d H:i:s')
+                                                : '';
                                         @endphp
                                         <button type="button"
                                             class="variant-pill border rounded-pill px-16 py-8 text-sm fw-medium transition-1
@@ -727,6 +1029,9 @@
                                             data-offer="{{ $v->offer_price }}"
                                             data-mrp="{{ $v->mrp_price }}"
                                             data-discount="{{ $vDiscount }}"
+                                            data-flash-sale="{{ $v->flash_sale ?? 0 }}"
+                                            data-hot-deals="{{ $v->hot_deals ?? 0 }}"
+                                            data-flash-date="{{ $vFlashDate }}"
                                             data-sku="{{ $v->sku ?? 'PV-' . $product->id }}"
                                             data-img="{{ $v->varient_img ? (Str::startsWith($v->varient_img, 'http') ? $v->varient_img : env('MAIN_URL') . 'images/' . $v->varient_img) : '' }}">
                                             @if($product->is_gift)
@@ -746,8 +1051,8 @@
 
                             <!-- Quantity Stepper, Add to Cart & Wishlist -->
                             <span class="text-gray-900 d-block mb-8 text-sm fw-medium">Quantity:</span>
-                            <div class="flex-between gap-16 flex-wrap mb-24">
-                                <div class="flex-align flex-wrap gap-16">
+                            <div class="detail-cart-row d-flex align-items-center justify-content-between gap-16 flex-wrap mb-24">
+                                <div class="detail-cart-control-wrap flex-align flex-wrap gap-16">
                                     @php
                                         $inCart = in_array($firstVariant->id ?? 0, $cartProductIds);
                                         $cartItem = $cartItems->where('product_varient_id', $firstVariant->id ?? 0)->first();
@@ -777,7 +1082,7 @@
                                     </div>
                                 </div>
 
-                                <div class="flex-align gap-12">
+                                <div class="detail-cart-actions flex-align gap-12">
                                     @auth
                                     <button type="button"
                                         class="wishlist-btn w-48 h-48 bg-main-50 text-main-600 text-xl hover-bg-main-600 hover-text-white flex-center rounded-circle border-0 transition-1"
@@ -920,7 +1225,7 @@
                         </li>
                         @endif
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-reviews-tab" data-bs-toggle="pill" data-bs-target="#pills-reviews" type="button" role="tab" aria-controls="pills-reviews" aria-selected="false">Reviews (4.8)</button>
+                            <button class="nav-link" id="pills-reviews-tab" data-bs-toggle="pill" data-bs-target="#pills-reviews" type="button" role="tab" aria-controls="pills-reviews" aria-selected="false">Reviews ({{ $product->reviews->count() }})</button>
                         </li>
                     </ul>
                     <div class="btn bg-color-one rounded-16 flex-align gap-8 text-main-600 text-sm fw-semibold cursor-default">
@@ -977,31 +1282,31 @@
                         <div class="tab-pane fade" id="pills-specification" role="tabpanel" aria-labelledby="pills-specification-tab">
                             <div class="mb-24">
                                 <h6 class="mb-20 text-heading fw-bold">Product Specifications</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered border-gray-100 rounded-8 overflow-hidden mb-0">
+                                <div class="table-responsive product-spec-table-wrap">
+                                    <table class="table table-bordered border-gray-100 rounded-8 overflow-hidden mb-0 product-spec-table">
                                         <tbody>
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20" style="width: 28%;">Product Name</th>
-                                                <td class="text-gray-700 py-12 px-20">{{ $product->product_name }}</td>
+                                                <th class="spec-label bg-gray-50 text-heading fw-semibold">Product Name</th>
+                                                <td class="text-gray-700">{{ $product->product_name }}</td>
                                             </tr>
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">Category</th>
-                                                <td class="text-gray-700 py-12 px-20">{{ $product->cate_name ?? $product->category->category_name ?? 'General' }}</td>
+                                                <th class="spec-label bg-gray-50 text-heading fw-semibold">Category</th>
+                                                <td class="text-gray-700">{{ $product->cate_name ?? $product->category->category_name ?? 'General' }}</td>
                                             </tr>
                                             @if($product->subcate_name)
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">Sub Category</th>
-                                                <td class="text-gray-700 py-12 px-20">{{ $product->subcate_name }}</td>
+                                                <th class="spec-label bg-gray-50 text-heading fw-semibold">Sub Category</th>
+                                                <td class="text-gray-700">{{ $product->subcate_name }}</td>
                                             </tr>
                                             @endif
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">Brand</th>
-                                                <td class="text-gray-700 py-12 px-20">{{ $product->brand->brand_name ?? $product->brand_name ?? 'Pal Varnan' }}</td>
+                                                <th class="spec-label bg-gray-50 text-heading fw-semibold">Brand</th>
+                                                <td class="text-gray-700">{{ $product->brand->brand_name ?? $product->brand_name ?? 'Pal Varnan' }}</td>
                                             </tr>
                                             @if($firstVariant)
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">Available {{ $product->is_gift ? 'Size / Color' : 'Size / Unit' }}</th>
-                                                <td class="text-gray-700 py-12 px-20">
+                                                <th class="spec-label bg-gray-50 text-heading fw-semibold">Available {{ $product->is_gift ? 'Size / Color' : 'Size / Unit' }}</th>
+                                                <td class="text-gray-700">
                                                     @if($product->is_gift)
                                                         {{ $firstVariant->size->size ?? 'Standard' }} @if($firstVariant->color) • Color: {{ $firstVariant->color->color }} @endif
                                                     @else
@@ -1011,19 +1316,19 @@
 
                                             </tr>
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">SKU Code</th>
-                                                <td class="text-gray-700 py-12 px-20">{{ $firstVariant->sku ?? 'PV-' . $product->id }}</td>
+                                                <th class="spec-label bg-gray-50 text-heading fw-semibold">SKU Code</th>
+                                                <td class="text-gray-700">{{ $firstVariant->sku ?? 'PV-' . $product->id }}</td>
                                             </tr>
                                             @if($firstVariant->product_gst)
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">Applicable GST</th>
-                                                <td class="text-gray-700 py-12 px-20">{{ $firstVariant->product_gst }}%</td>
+                                                <th class="spec-label bg-gray-50 text-heading fw-semibold">Applicable GST</th>
+                                                <td class="text-gray-700">{{ $firstVariant->product_gst }}%</td>
                                             </tr>
                                             @endif
                                             @endif
                                             <tr>
-                                                <th class="bg-gray-50 text-heading fw-semibold py-12 px-20">Specification Details</th>
-                                                <td class="text-gray-700 py-12 px-20">{{ $product->product_specification }}</td>
+                                                <th class="spec-label bg-gray-50 text-heading fw-semibold">Specification Details</th>
+                                                <td class="text-gray-700">{{ $product->product_specification }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1033,13 +1338,29 @@
                         @endif
 
                         <!-- Reviews Tab (MarketPro exact structure) -->
+                        @php
+                            $approvedReviews = $product->reviews;
+                            $reviewCount = $approvedReviews->count();
+                            $avgRating = $reviewCount > 0 ? round($approvedReviews->avg('ratings'), 1) : 0;
+                            $star5Count = $approvedReviews->where('ratings', '>=', 4.5)->count();
+                            $star4Count = $approvedReviews->where('ratings', '>=', 3.5)->where('ratings', '<', 4.5)->count();
+                            $star3Count = $approvedReviews->where('ratings', '>=', 2.5)->where('ratings', '<', 3.5)->count();
+                            $star2Count = $approvedReviews->where('ratings', '>=', 1.5)->where('ratings', '<', 2.5)->count();
+                            $star1Count = $approvedReviews->where('ratings', '<', 1.5)->count();
+
+                            $star5Pct = $reviewCount > 0 ? round(($star5Count / $reviewCount) * 100) : 0;
+                            $star4Pct = $reviewCount > 0 ? round(($star4Count / $reviewCount) * 100) : 0;
+                            $star3Pct = $reviewCount > 0 ? round(($star3Count / $reviewCount) * 100) : 0;
+                            $star2Pct = $reviewCount > 0 ? round(($star2Count / $reviewCount) * 100) : 0;
+                            $star1Pct = $reviewCount > 0 ? round(($star1Count / $reviewCount) * 100) : 0;
+                        @endphp
                         <div class="tab-pane fade" id="pills-reviews" role="tabpanel" aria-labelledby="pills-reviews-tab">
                             <div class="row g-4">
                                 <!-- Customer reviews list + review form -->
                                 <div class="col-lg-6">
-                                    <h6 class="mb-24 text-heading fw-bold">Customer Feedback</h6>
+                                    <h6 class="mb-24 text-heading fw-bold">Customer Feedback ({{ $reviewCount }})</h6>
                                     
-                                    @forelse($product->reviews as $rev)
+                                    @forelse($approvedReviews as $rev)
                                         <div class="d-flex align-items-start gap-20 pb-24 border-bottom border-gray-100 mb-24">
                                             <div class="w-48 h-48 rounded-circle bg-main-50 text-main-600 flex-center fw-bold text-lg flex-shrink-0 border border-main-200">
                                                 {{ strtoupper(substr($rev->name ?? 'C', 0, 1)) }}
@@ -1058,7 +1379,10 @@
                                                     </div>
                                                     <span class="text-gray-400 text-xs">{{ $rev->created_at ? $rev->created_at->diffForHumans() : 'Recently' }}</span>
                                                 </div>
-                                                <p class="text-gray-600 text-sm mt-8 mb-0">{{ $rev->review }}</p>
+                                                @if($rev->title)
+                                                    <p class="text-heading fw-semibold text-xs mt-6 mb-2">{{ $rev->title }}</p>
+                                                @endif
+                                                <p class="text-gray-600 text-sm {{ $rev->title ? 'mt-2' : 'mt-8' }} mb-0">{{ $rev->review }}</p>
                                             </div>
                                         </div>
                                     @empty
@@ -1067,28 +1391,59 @@
                                         </div>
                                     @endforelse
 
-                                    <!-- Write a Review Form -->
+                                    <!-- Write a Review Form or Gated Notice -->
                                     <div class="mt-32">
                                         <h6 class="mb-14 text-heading fw-bold">Write a Review</h6>
-                                        <span class="text-gray-700 text-sm d-block mb-8">What is your rating for this item?</span>
-                                        <div class="flex-align gap-6 mb-20 cursor-pointer text-warning-600 text-lg" id="star-rating-select">
-                                            <i class="ph-fill ph-star" data-rating="1"></i>
-                                            <i class="ph-fill ph-star" data-rating="2"></i>
-                                            <i class="ph-fill ph-star" data-rating="3"></i>
-                                            <i class="ph-fill ph-star" data-rating="4"></i>
-                                            <i class="ph-fill ph-star" data-rating="5"></i>
-                                        </div>
-                                        <form action="javascript:void(0)" onsubmit="submitProductReview(this)">
-                                            <div class="mb-16">
-                                                <label for="review-title" class="text-heading text-xs fw-semibold mb-6">Review Title</label>
-                                                <input type="text" class="form-control rounded-8 py-10 px-16 border-gray-200 text-sm" id="review-title" placeholder="Summary of your experience..." required>
+
+                                        @if(!Auth::check())
+                                            <div class="p-20 rounded-16 bg-gray-50 border border-gray-100 text-center">
+                                                <i class="ph ph-lock-key text-28 text-main-600 mb-6 d-block"></i>
+                                                <h6 class="text-sm fw-semibold mb-4">Have you purchased this product?</h6>
+                                                <p class="text-xs text-gray-600 mb-14">Please sign in to write a review. Only verified buyers with delivered orders can review this product.</p>
+                                                <a href="{{ route('login') }}" class="btn btn-main btn-sm rounded-pill px-24 py-8 text-xs fw-semibold">Sign In to Review</a>
                                             </div>
-                                            <div class="mb-20">
-                                                <label for="review-desc" class="text-heading text-xs fw-semibold mb-6">Review Content</label>
-                                                <textarea class="form-control rounded-8 py-10 px-16 border-gray-200 text-sm" id="review-desc" rows="4" placeholder="Write detailed feedback about taste, quality, packaging..." required></textarea>
+                                        @elseif(!$hasDeliveredOrder)
+                                            <div class="p-20 rounded-16 bg-gray-50 border border-gray-100 text-center">
+                                                <i class="ph ph-shopping-bag text-28 text-gray-400 mb-6 d-block"></i>
+                                                <h6 class="text-sm fw-semibold mb-4">Verified Purchase Required</h6>
+                                                <p class="text-xs text-gray-600 mb-0">Only customers who have ordered and received this product can write a review. Once your order status is <strong>Delivered</strong>, you will be able to share your feedback here.</p>
                                             </div>
-                                            <button type="submit" class="btn btn-main rounded-pill px-32 py-10 fw-semibold text-sm">Submit Review</button>
-                                        </form>
+                                        @elseif($userHasPendingReview)
+                                            <div class="p-20 rounded-16 bg-warning-50 border border-warning-200 text-center">
+                                                <i class="ph ph-clock-countdown text-28 text-warning-600 mb-6 d-block"></i>
+                                                <h6 class="text-sm fw-semibold text-warning-800 mb-4">Review Under Moderation</h6>
+                                                <p class="text-xs text-warning-700 mb-0">Your review has been submitted and is currently awaiting moderation by our team. It will appear here once approved by the admin. Thank you!</p>
+                                            </div>
+                                        @elseif($userExistingReview)
+                                            <div class="p-20 rounded-16 bg-success-50 border border-success-200 text-center">
+                                                <i class="ph ph-check-circle text-28 text-success-600 mb-6 d-block"></i>
+                                                <h6 class="text-sm fw-semibold text-success-800 mb-4">Thank You for Your Feedback!</h6>
+                                                <p class="text-xs text-success-700 mb-0">You have already submitted a review for this product.</p>
+                                            </div>
+                                        @else
+                                            <!-- Verified Buyer Review Form -->
+                                            <span class="text-gray-700 text-sm d-block mb-8">What is your rating for this item?</span>
+                                            <div class="flex-align gap-6 mb-20 cursor-pointer text-warning-600 text-lg" id="star-rating-select">
+                                                <i class="ph-fill ph-star active-star" data-rating="1"></i>
+                                                <i class="ph-fill ph-star active-star" data-rating="2"></i>
+                                                <i class="ph-fill ph-star active-star" data-rating="3"></i>
+                                                <i class="ph-fill ph-star active-star" data-rating="4"></i>
+                                                <i class="ph-fill ph-star active-star" data-rating="5"></i>
+                                            </div>
+                                            <form id="productReviewForm" onsubmit="submitProductReview(this, event)">
+                                                @csrf
+                                                <input type="hidden" name="ratings" id="selected-star-rating" value="5">
+                                                <div class="mb-16">
+                                                    <label for="review-title" class="text-heading text-xs fw-semibold mb-6">Review Title</label>
+                                                    <input type="text" name="title" class="form-control rounded-8 py-10 px-16 border-gray-200 text-sm" id="review-title" placeholder="Summary of your experience..." required>
+                                                </div>
+                                                <div class="mb-20">
+                                                    <label for="review-desc" class="text-heading text-xs fw-semibold mb-6">Review Content</label>
+                                                    <textarea name="review" class="form-control rounded-8 py-10 px-16 border-gray-200 text-sm" id="review-desc" rows="4" placeholder="Write detailed feedback about taste, quality, packaging..." required></textarea>
+                                                </div>
+                                                <button type="submit" id="submitReviewBtn" class="btn btn-main rounded-pill px-32 py-10 fw-semibold text-sm">Submit Review</button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -1097,52 +1452,52 @@
                                     <div class="ms-lg-4">
                                         <h6 class="mb-24 text-heading fw-bold">Customers Feedback & Rating</h6>
                                         <div class="d-flex flex-wrap gap-24 align-items-center mb-32">
-                                            <div class="border border-gray-100 rounded-16 px-36 py-40 flex-center flex-column flex-shrink-0 text-center bg-gray-50">
-                                                <h2 class="mb-4 text-main-600 fw-bold">4.8</h2>
+                                            <div class="border border-gray-100 rounded-16 px-36 py-40 flex-center flex-column flex-shrink-0 text-center bg-gray-50 review-score-box">
+                                                <h2 class="mb-4 text-main-600 fw-bold">{{ $avgRating > 0 ? number_format($avgRating, 1) : '0.0' }}</h2>
                                                 <div class="flex-center gap-4 mb-8">
-                                                    <span class="text-sm text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                    <span class="text-sm text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                    <span class="text-sm text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                    <span class="text-sm text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                                    <span class="text-sm text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <span class="text-sm {{ $avgRating >= $i ? 'text-warning-600' : ($avgRating >= ($i - 0.5) ? 'text-warning-600' : 'text-gray-300') }} d-flex">
+                                                            <i class="ph-fill ph-star"></i>
+                                                        </span>
+                                                    @endfor
                                                 </div>
-                                                <span class="text-gray-500 text-xs">Average Product Rating</span>
+                                                <span class="text-gray-500 text-xs">{{ $reviewCount }} {{ Str::plural('Review', $reviewCount) }}</span>
                                             </div>
                                             <div class="border border-gray-100 rounded-16 p-24 flex-grow-1 bg-white">
                                                 <div class="flex-align gap-8 mb-16">
                                                     <span class="text-gray-900 text-xs fw-semibold flex-shrink-0 w-16">5★</span>
                                                     <div class="progress w-100 bg-gray-100 rounded-pill h-8">
-                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 82%"></div>
+                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: {{ $star5Pct }}%"></div>
                                                     </div>
-                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">82%</span>
+                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">{{ $star5Pct }}%</span>
                                                 </div>
                                                 <div class="flex-align gap-8 mb-16">
                                                     <span class="text-gray-900 text-xs fw-semibold flex-shrink-0 w-16">4★</span>
                                                     <div class="progress w-100 bg-gray-100 rounded-pill h-8">
-                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 12%"></div>
+                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: {{ $star4Pct }}%"></div>
                                                     </div>
-                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">12%</span>
+                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">{{ $star4Pct }}%</span>
                                                 </div>
                                                 <div class="flex-align gap-8 mb-16">
                                                     <span class="text-gray-900 text-xs fw-semibold flex-shrink-0 w-16">3★</span>
                                                     <div class="progress w-100 bg-gray-100 rounded-pill h-8">
-                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 4%"></div>
+                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: {{ $star3Pct }}%"></div>
                                                     </div>
-                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">4%</span>
+                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">{{ $star3Pct }}%</span>
                                                 </div>
                                                 <div class="flex-align gap-8 mb-16">
                                                     <span class="text-gray-900 text-xs fw-semibold flex-shrink-0 w-16">2★</span>
                                                     <div class="progress w-100 bg-gray-100 rounded-pill h-8">
-                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 1%"></div>
+                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: {{ $star2Pct }}%"></div>
                                                     </div>
-                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">1%</span>
+                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">{{ $star2Pct }}%</span>
                                                 </div>
                                                 <div class="flex-align gap-8 mb-0">
                                                     <span class="text-gray-900 text-xs fw-semibold flex-shrink-0 w-16">1★</span>
                                                     <div class="progress w-100 bg-gray-100 rounded-pill h-8">
-                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: 1%"></div>
+                                                        <div class="progress-bar bg-main-600 rounded-pill" style="width: {{ $star1Pct }}%"></div>
                                                     </div>
-                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">1%</span>
+                                                    <span class="text-gray-500 text-xs flex-shrink-0 w-32 text-end">{{ $star1Pct }}%</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1385,14 +1740,74 @@ function copyProductLink() {
     }
 }
 
-function submitProductReview(form) {
-    Swal.fire({
-        icon: 'success',
-        title: 'Thank You!',
-        text: 'Your review has been submitted for moderation.',
-        confirmButtonColor: '#1c799b'
+// Interactive Star Rating selection in Review form
+$(document).on('click', '#star-rating-select i', function () {
+    const rating = parseInt($(this).attr('data-rating'));
+    $('#selected-star-rating').val(rating);
+    $('#star-rating-select i').each(function () {
+        const starVal = parseInt($(this).attr('data-rating'));
+        if (starVal <= rating) {
+            $(this).removeClass('ph ph-star text-gray-300').addClass('ph-fill ph-star text-warning-600');
+        } else {
+            $(this).removeClass('ph-fill ph-star text-warning-600').addClass('ph ph-star text-gray-300');
+        }
     });
-    form.reset();
+});
+
+function submitProductReview(form, event) {
+    if (event) event.preventDefault();
+    const btn = document.getElementById('submitReviewBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+    }
+
+    const formData = new FormData(form);
+
+    fetch("{{ route('product.review', $product->slug) }}", {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(async res => {
+        const data = await res.json();
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = 'Submit Review';
+        }
+        if (res.ok && data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Review Submitted!',
+                text: data.message || 'Your review has been submitted for moderation.',
+                confirmButtonColor: '#1c799b'
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Submission Notice',
+                text: data.message || 'Could not submit your review. Please try again.',
+                confirmButtonColor: '#1c799b'
+            });
+        }
+    })
+    .catch(err => {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = 'Submit Review';
+        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while submitting your review. Please try again later.',
+            confirmButtonColor: '#1c799b'
+        });
+    });
 }
 
 // Sync quantity via AJAX
@@ -1640,6 +2055,31 @@ document.querySelectorAll('.variant-pill').forEach(function (pill) {
         } else {
             if (badgeEl) badgeEl.classList.add('d-none');
             if (imgBadgeEl) imgBadgeEl.classList.add('d-none');
+        }
+
+        // Update Special Offer Countdown Box
+        const offerBox = document.getElementById('detail-offer-box');
+        const countdownEl = document.getElementById('countdown11');
+        const flashSale = this.dataset.flashSale;
+        const hotDeals  = this.dataset.hotDeals;
+        const flashDate = this.dataset.flashDate;
+
+        if (offerBox && countdownEl) {
+            if ((discount && parseInt(discount) > 0) || flashSale === '1' || hotDeals === '1' || flashDate) {
+                offerBox.classList.remove('d-none');
+                if (flashDate) {
+                    countdownEl.setAttribute('data-date', flashDate);
+                } else {
+                    const tonight = new Date();
+                    tonight.setHours(23, 59, 59, 999);
+                    countdownEl.setAttribute('data-date', tonight.toISOString());
+                }
+                if (typeof window.updateDetailOfferCountdown === 'function') {
+                    window.updateDetailOfferCountdown();
+                }
+            } else {
+                offerBox.classList.add('d-none');
+            }
         }
 
         // Update Stock Badge & Cart Control based on stock
@@ -1921,35 +2361,69 @@ document.querySelectorAll('.product-thumb-item').forEach(function (thumb, index)
     });
 });
 
-// Live offer countdown ticker
-(function() {
-    let days = 2, hours = 18, mins = 42, secs = 15;
-    const daysEl = document.querySelector('#countdown11 .days');
-    const hoursEl = document.querySelector('#countdown11 .hours');
-    const minsEl = document.querySelector('#countdown11 .minutes');
-    const secsEl = document.querySelector('#countdown11 .seconds');
-
-    if (secsEl) {
-        setInterval(function() {
-            secs--;
-            if (secs < 0) {
-                secs = 59;
-                mins--;
-                if (mins < 0) {
-                    mins = 59;
-                    hours--;
-                    if (hours < 0) {
-                        hours = 23;
-                        days = Math.max(0, days - 1);
-                    }
-                }
+if (typeof $ !== 'undefined') {
+    $('.product-details__thumb-slider').on('afterChange', function(event, slick, currentSlide) {
+        document.querySelectorAll('.product-thumb-item').forEach((t, i) => {
+            if (i === currentSlide) {
+                t.classList.add('active');
+                try { t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); } catch(e){}
+            } else {
+                t.classList.remove('active');
             }
-            if (daysEl) daysEl.textContent = days;
-            if (hoursEl) hoursEl.textContent = hours < 10 ? '0' + hours : hours;
-            if (minsEl) minsEl.textContent = mins < 10 ? '0' + mins : mins;
-            if (secsEl) secsEl.textContent = secs < 10 ? '0' + secs : secs;
-        }, 1000);
-    }
+        });
+    });
+}
+
+// Dynamic Special Offer Countdown Ticker
+(function() {
+    const countdownEl = document.getElementById('countdown11');
+    if (!countdownEl) return;
+
+    const daysEl = countdownEl.querySelector('.days');
+    const hoursEl = countdownEl.querySelector('.hours');
+    const minsEl = countdownEl.querySelector('.minutes');
+    const secsEl = countdownEl.querySelector('.seconds');
+    const offerBox = document.getElementById('detail-offer-box');
+
+    window.updateDetailOfferCountdown = function() {
+        let dateStr = countdownEl.getAttribute('data-date');
+        let targetTime;
+
+        if (dateStr && dateStr.trim() !== '') {
+            targetTime = new Date(dateStr.replace(' ', 'T')).getTime();
+        } else {
+            // Default to today midnight if no date specified
+            const midnight = new Date();
+            midnight.setHours(23, 59, 59, 999);
+            targetTime = midnight.getTime();
+        }
+
+        const now = Date.now();
+        const diff = targetTime - now;
+
+        if (diff <= 0) {
+            if (daysEl) daysEl.textContent = '00';
+            if (hoursEl) hoursEl.textContent = '00';
+            if (minsEl) minsEl.textContent = '00';
+            if (secsEl) secsEl.textContent = '00';
+            return;
+        }
+
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const m = Math.floor((diff / (1000 * 60)) % 60);
+        const s = Math.floor((diff / 1000) % 60);
+
+        if (daysEl) daysEl.textContent = d < 10 ? '0' + d : d;
+        if (hoursEl) hoursEl.textContent = h < 10 ? '0' + h : h;
+        if (minsEl) minsEl.textContent = m < 10 ? '0' + m : m;
+        if (secsEl) secsEl.textContent = s < 10 ? '0' + s : s;
+    };
+
+    // Run immediately
+    window.updateDetailOfferCountdown();
+    // Update every second
+    setInterval(window.updateDetailOfferCountdown, 1000);
 })();
 
 // Interactive Star Rating in Review Form

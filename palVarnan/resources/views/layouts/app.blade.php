@@ -271,9 +271,32 @@
             }
         }
 
-        /* GENERAL: Prevent any horizontal overflow globally while preserving container centering */
-        body, html {
-            overflow-x: hidden;
+        /* Sticky footer layout - eliminates any bottom gap without locking window scroll */
+        html {
+            height: auto !important;
+            overflow-x: clip !important;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+            overflow-x: clip !important;
+        }
+        .site-main {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+
+        /* Safety: Ensure animated elements are always visible and never locked in hidden state */
+        .wow {
+            visibility: visible !important;
+        }
+        [data-aos] {
+            opacity: 1 !important;
+            transform: none !important;
+            visibility: visible !important;
         }
         .container-lg {
             max-width: 1320px;
@@ -380,7 +403,9 @@
 
         @include('layouts.header')
 
-        @yield('main')
+        <main class="flex-grow-1 site-main">
+            @yield('main')
+        </main>
 
         @include('layouts.footer')
         

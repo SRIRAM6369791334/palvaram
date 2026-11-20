@@ -347,6 +347,7 @@ Route::delete('/admin/coupons/{id}', [NewcouponController::class, 'destroy'])->n
     Route::resource('review',NotificationController::class)->only(["index", "store"]);
     Route::post("reviews",[NotificationController::class,"notifications"])->name("notification.notifications");
     Route::post("updatenotifi/{id}",[NotificationController::class,"update"])->name("notification.update");
+    Route::post("approvereview/{id}",[NotificationController::class,"approve"])->name("review.approve");
     Route::post("destroynotifi/{id}",[NotificationController::class,"destroy"])->name("notification.destroy");
     Route::get('/getproductsbycategory/{id}', [NotificationController::class, 'getProductsByCategory']);
 

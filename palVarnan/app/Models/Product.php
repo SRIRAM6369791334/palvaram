@@ -39,6 +39,10 @@ class Product extends Model {
     }
 
     public function reviews() {
+        return $this->hasMany( Review::class, 'prod_id', 'id' )->where('approval', 1)->latest();
+    }
+
+    public function allReviews() {
         return $this->hasMany( Review::class, 'prod_id', 'id' )->latest();
     }
 }

@@ -142,7 +142,7 @@
                     $mainUrl = rtrim(env('MAIN_URL', 'http://127.0.0.1:8001/'), '/');
                     $catImg = !empty($pCat->category_image) ? $mainUrl . '/images/' . ltrim($pCat->category_image, '/') : null;
                 @endphp
-                <div class="col-xl-3 col-sm-6 col-6 wow bounceIn" data-aos="fade-up" data-aos-duration="{{ 400 + ($index * 200) }}">
+                <div class="col-xl-3 col-sm-6 col-6">
                     <div class="promotional-banner-item position-relative rounded-20 rounded-xl-24 overflow-hidden z-1 p-12 p-sm-20 py-xl-40 ps-xl-32 pe-xl-24 h-100 d-flex flex-column justify-content-between group-item"
                          style="min-height: 170px; background: {{ $theme['bg'] }}; border: 1px solid {{ $theme['border'] }}; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
                         
@@ -197,8 +197,8 @@
 <section class="recommended overflow-hidden pt-80">
     <div class="container container-lg">
         <div class="section-heading flex-between flex-wrap gap-16">
-            <h5 class="mb-0 wow fadeInLeft">Recommended for you</h5>
-            <ul class="nav common-tab nav-pills wow fadeInRight flex-nowrap overflow-x-auto pb-4" id="recommendedCatPills" role="tablist">
+            <h5 class="mb-0">Recommended for you</h5>
+            <ul class="nav common-tab nav-pills flex-nowrap overflow-x-auto pb-4" id="recommendedCatPills" role="tablist">
                 <li class="nav-item flex-shrink-0" role="presentation">
                   <button class="nav-link fw-medium text-sm active filter-rec-cat-btn" data-cat-id="all" type="button">All</button>
                 </li>
@@ -244,7 +244,7 @@
                             $cartItem = ($variant && isset($cartItems)) ? $cartItems->where('product_varient_id', $variant->id)->first() : null;
                             $isOutOfStock = ($variant ? (int)($variant->product_qty ?? 0) : 0) <= 0;
                         @endphp
-                        <div class="col-xxl-3 col-lg-4 col-sm-6 col-6 recommended-card-col" data-cat-id="{{ $product->category_id }}" data-aos="fade-up">
+                        <div class="col-xxl-3 col-lg-4 col-sm-6 col-6 recommended-card-col" data-cat-id="{{ $product->category_id }}">
                             <div class="product-card h-100 p-12 p-sm-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 group-item bg-white d-flex flex-column justify-content-between" style="box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
                                 <div class="w-100">
                                     <a href="/product/{{ $product->slug }}" class="product-card__thumb w-100 flex-center overflow-hidden rounded-12 bg-gray-50 mb-12" style="height: 160px;">
@@ -855,8 +855,8 @@
     <div class="container container-lg">
         <div class="section-heading">
             <div class="flex-between flex-wrap gap-8">
-                <h5 class="mb-0 wow fadeInLeft">Hot Deals Today</h5>
-                <div class="flex-align gap-16 wow fadeInRight">
+                <h5 class="mb-0">Hot Deals Today</h5>
+                <div class="flex-align gap-16">
                     <a href="/products" class="text-sm fw-medium text-gray-700 hover-text-main-600 hover-text-decoration-underline">View All Deals</a>
                     <div class="flex-align gap-8">
                         <button type="button" id="deals-prev" class="slick-prev slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
@@ -890,7 +890,7 @@
         @endphp
 
         <div class="row g-12">
-            <div class="col-md-4" data-aos="zoom-in">
+            <div class="col-md-4">
                 <div class="hot-deals position-relative rounded-16 bg-main-600 overflow-hidden ps-40 pe-24 pt-80 pb-120 z-1">
                     <img src="assets/images/shape/offer-shape.png" alt="" class="position-absolute inset-block-start-0 inset-inline-start-0 z-n1 w-100 h-100 opacity-6">
 
@@ -951,7 +951,7 @@
                                 }
                             }
                         @endphp
-                        <div class="px-6" data-aos="fade-up">
+                        <div class="px-6">
                             <div class="product-card h-100 p-12 p-sm-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 bg-white d-flex flex-column justify-content-between">
                                 <div>
                                     <a href="/product/{{ $hProd->slug }}" class="product-card__thumb flex-center overflow-hidden position-relative rounded-12 bg-gray-50 mb-12" style="height: 160px;">
@@ -1060,7 +1060,7 @@
         <div class="row gy-4">
 
             <!-- 1. Featured Products -->
-            <div class="col-xxl-3 col-lg-4 col-sm-6" data-aos="fade-up" data-aos-duration="600">
+            <div class="col-xxl-3 col-lg-4 col-sm-6">
                 <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 bg-white">
                     <div class="p-16 bg-main-50 rounded-16 mb-24">
                         <h6 class="underlined-line position-relative mb-0 pb-12 d-inline-block fw-bold text-heading">Featured Products</h6>
@@ -1113,7 +1113,7 @@
             </div>
 
             <!-- 2. Top Selling Products -->
-            <div class="col-xxl-3 col-lg-4 col-sm-6" data-aos="fade-up" data-aos-duration="700">
+            <div class="col-xxl-3 col-lg-4 col-sm-6">
                 <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 bg-white">
                     <div class="p-16 bg-main-50 rounded-16 mb-24">
                         <h6 class="underlined-line position-relative mb-0 pb-12 d-inline-block fw-bold text-heading">Top Selling Products</h6>
@@ -1166,7 +1166,7 @@
             </div>
 
             <!-- 3. Trending Products -->
-            <div class="col-xxl-3 col-lg-4 col-sm-6" data-aos="fade-up" data-aos-duration="800">
+            <div class="col-xxl-3 col-lg-4 col-sm-6">
                 <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2 bg-white">
                     <div class="p-16 bg-main-50 rounded-16 mb-24">
                         <h6 class="underlined-line position-relative mb-0 pb-12 d-inline-block fw-bold text-heading">Trending Products</h6>
@@ -1219,7 +1219,7 @@
             </div>
 
             <!-- 4. Deals of the Week -->
-            <div class="col-xxl-3 col-lg-4 col-sm-6" data-aos="fade-up" data-aos-duration="900">
+            <div class="col-xxl-3 col-lg-4 col-sm-6">
                 @if($dealOfWeek)
                     @php
                         $dwVar = $dealOfWeek->variants->first();
