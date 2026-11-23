@@ -160,7 +160,7 @@
 
                                 @empty
 
-                                <tr>
+                                <tr class="cart-empty-row">
                                     <td colspan="5" class="text-center">
                                         Cart is empty
                                     </td>
@@ -401,7 +401,7 @@ function updateCartTotal() {
     if (!hasItems) {
         const tbody = document.querySelector('.table.style-three tbody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-40 text-gray-500">Your cart is currently empty. <a href="/products" class="text-main-600 text-decoration-underline ms-2 fw-semibold">Continue Shopping</a></td></tr>';
+            tbody.innerHTML = '<tr class="cart-empty-row"><td colspan="5" class="text-center py-40 text-gray-500">Your cart is currently empty. <a href="/products" class="text-main-600 text-decoration-underline ms-2 fw-semibold">Continue Shopping</a></td></tr>';
         }
         const checkoutBtn = document.querySelector('.cart-sidebar .btn-main');
         if (checkoutBtn) {

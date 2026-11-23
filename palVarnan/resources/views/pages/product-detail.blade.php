@@ -1741,16 +1741,22 @@ function copyProductLink() {
 }
 
 // Interactive Star Rating selection in Review form
-$(document).on('click', '#star-rating-select i', function () {
-    const rating = parseInt($(this).attr('data-rating'));
-    $('#selected-star-rating').val(rating);
-    $('#star-rating-select i').each(function () {
-        const starVal = parseInt($(this).attr('data-rating'));
-        if (starVal <= rating) {
-            $(this).removeClass('ph ph-star text-gray-300').addClass('ph-fill ph-star text-warning-600');
-        } else {
-            $(this).removeClass('ph-fill ph-star text-warning-600').addClass('ph ph-star text-gray-300');
-        }
+// jQuery is loaded at the end of the layout, after this script, so bind once the
+// DOM is ready. Calling $ here directly threw "$ is not defined" and stopped the
+// rest of this script (Add To Cart, wishlist, qty, thumbnails).
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof $ === 'undefined') return;
+    $(document).on('click', '#star-rating-select i', function () {
+        const rating = parseInt($(this).attr('data-rating'));
+        $('#selected-star-rating').val(rating);
+        $('#star-rating-select i').each(function () {
+            const starVal = parseInt($(this).attr('data-rating'));
+            if (starVal <= rating) {
+                $(this).removeClass('ph ph-star text-gray-300').addClass('ph-fill ph-star text-warning-600');
+            } else {
+                $(this).removeClass('ph-fill ph-star text-warning-600').addClass('ph ph-star text-gray-300');
+            }
+        });
     });
 });
 
@@ -2361,7 +2367,9 @@ document.querySelectorAll('.product-thumb-item').forEach(function (thumb, index)
     });
 });
 
-if (typeof $ !== 'undefined') {
+// jQuery loads after this script - wait for DOM ready so this actually binds
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof $ === 'undefined') return;
     $('.product-details__thumb-slider').on('afterChange', function(event, slick, currentSlide) {
         document.querySelectorAll('.product-thumb-item').forEach((t, i) => {
             if (i === currentSlide) {
@@ -2372,7 +2380,7 @@ if (typeof $ !== 'undefined') {
             }
         });
     });
-}
+});
 
 // Dynamic Special Offer Countdown Ticker
 (function() {

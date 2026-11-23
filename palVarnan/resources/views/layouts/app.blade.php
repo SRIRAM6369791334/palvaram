@@ -360,7 +360,10 @@
         }
     </style>
 
-</head> 
+    <!-- Device responsive fixes (loaded last so it can override main.css + layout styles) -->
+    <link rel="stylesheet" href="/assets/css/responsive.css?v={{ @filemtime(public_path('assets/css/responsive.css')) }}">
+
+</head>
 <body>
     
 <!--==================== Preloader Start ====================-->
@@ -435,7 +438,7 @@
     <!-- Counter -->
     <script src="/assets/js/counter.min.js"></script>
     <!-- main js -->
-    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/main.js?v={{ @filemtime(public_path('assets/js/main.js')) }}"></script>
 
 <!-- <script>
 window.addEventListener('DOMContentLoaded', function () {

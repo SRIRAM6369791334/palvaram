@@ -1165,15 +1165,18 @@ if(copyCouponBtn && copyText) {
   // ========================== Checkout Payment Method Js End ================================
 
   // ================== Password Show Hide Js Start ==========
-  $(".toggle-password").on('click', function() {
-    $(this).toggleClass("active");
-    var input = $($(this).attr("id"));
-    if (input.attr("type") == "password") {
-      input.attr("type", "text");
-    } else {
-      input.attr("type", "password");
-    }
-  });
+  // Disabled: login, register and myaccount pages each bind their own
+  // .toggle-password handler (which also swaps the eye icon). Having both
+  // flipped the input type twice per click, so the password never showed.
+  // $(".toggle-password").on('click', function() {
+  //   $(this).toggleClass("active");
+  //   var input = $($(this).attr("id"));
+  //   if (input.attr("type") == "password") {
+  //     input.attr("type", "text");
+  //   } else {
+  //     input.attr("type", "password");
+  //   }
+  // });
   // ========================= Password Show Hide Js End ===========================
 
   // ========================= Background Image Js Start ===================
