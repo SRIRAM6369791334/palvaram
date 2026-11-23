@@ -208,7 +208,7 @@
             </p>
             <div class="flex-align gap-8 flex-wrap">
                <p class="bottom-footer__text text-neutral-500 text-13 fw-medium mb-0">
-                   Designed & Developed by <a href="https://saitechnosolutions.com/" target="_blank" class="text-main-600 fw-bold hover-text-main-800 text-decoration-none">Sai Techno Solutions</a>
+                   Designed & Developed by <a href="https://saitechnosolutions.com/" target="_blank" class="text-main-600 fw-bold hover-text-main-800 text-decoration-none">Sai Techno Solutions Pvt Ltd</a>
                </p>
             </div>
         </div>
