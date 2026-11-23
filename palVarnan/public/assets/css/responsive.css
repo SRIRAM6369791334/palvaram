@@ -80,6 +80,18 @@
     }
 }
 
+/* product card "In Cart: [1]" stepper broke into "In / Ca / rt:" on narrow cards */
+@media (max-width: 400px) {
+    .cart-control .qty-box .qty-box-label {
+        display: none !important;
+    }
+}
+@media (max-width: 575px) {
+    .cart-control .qty-box .qty-box-label {
+        white-space: nowrap;
+    }
+}
+
 /* ---------- Products page: mobile filter drawer ---------- */
 @media (max-width: 991px) {
     /* drawer opened underneath the sticky header (z 1020) */
@@ -272,6 +284,44 @@
     .addr-card .addr-card__edit {
         padding: 0 !important;
     }
+    /* saved address card: name / tag / Edit / Delete were crushed into
+       ~196px and wrapped one letter per line */
+    .addr-card {
+        padding: 16px 14px !important;
+    }
+    .addr-card .addr-card__label {
+        gap: 10px !important;
+    }
+    .addr-card .addr-radio {
+        position: absolute !important;
+        opacity: 0;
+        width: 1px !important;
+        height: 1px !important;
+        pointer-events: none;
+    }
+    .addr-card .addr-card__body {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+    .addr-card .addr-card__body > .flex-between {
+        flex-wrap: wrap;
+        gap: 6px 10px;
+    }
+    .addr-card .addr-card__body > .flex-between > * {
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+    .addr-card .addr-card__body > .flex-between > :first-child {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+    .addr-card .addr-card__meta {
+        flex-wrap: wrap;
+        row-gap: 4px;
+    }
+    .addr-card .addr-card__meta > * {
+        overflow-wrap: anywhere;
+    }
 }
 
 /* floating "Go to cart" bar is pointless on cart/checkout and covered the
@@ -288,6 +338,92 @@
     body:has(.cart-sidebar) .progress-wrap,
     body:has(.checkout-sidebar) .progress-wrap {
         bottom: 24px !important;
+    }
+}
+
+/* ---------- Thank-you (order success) page ---------- */
+@media (max-width: 575px) {
+    .thankyou-card {
+        padding: 24px 14px !important;
+        border-radius: 18px !important;
+    }
+    .thankyou-card h3 {
+        font-size: 22px !important;
+    }
+    .thankyou-card .w-88.h-88 {
+        width: 72px !important;
+        height: 72px !important;
+        font-size: 38px !important;
+    }
+    /* step labels broke mid-word: "Confir med", "Proce ssing" */
+    .thankyou-card .order-timeline {
+        padding: 14px 6px !important;
+    }
+    .thankyou-card .order-timeline .row {
+        --bs-gutter-x: 2px;
+    }
+    .thankyou-card .order-timeline .timeline-step > span:last-child {
+        font-size: 10.5px !important;
+        white-space: nowrap;
+        letter-spacing: -0.1px;
+    }
+    .thankyou-card .order-timeline .step-icon {
+        width: 30px !important;
+        height: 30px !important;
+    }
+    /* order summary box */
+    .thankyou-card .bg-gray-50.p-24 {
+        padding: 16px 12px !important;
+    }
+    .thankyou-card .bg-gray-50.p-24 strong.text-base {
+        overflow-wrap: anywhere;
+    }
+    .thankyou-card .bg-gray-50.p-24 .flex-between {
+        gap: 8px;
+    }
+    .thankyou-card .bg-gray-50.p-24 .flex-between > span:first-child {
+        white-space: nowrap;
+    }
+    .thankyou-card .bg-gray-50.p-24 .flex-between > :last-child {
+        text-align: right;
+    }
+    /* total broke into "₹1,335 / .00" */
+    .thankyou-card .bg-gray-50.p-24 > .flex-between:last-child strong {
+        white-space: nowrap;
+        font-size: 18px !important;
+    }
+    .thankyou-card .bg-gray-50.p-24 > .flex-between:last-child > span {
+        white-space: normal;
+        font-size: 14px !important;
+    }
+    /* buttons: full width, one line */
+    .thankyou-card .d-flex.justify-content-center.gap-16 > .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 16px !important;
+        white-space: nowrap;
+    }
+}
+
+/* floating cart bar sat on top of the open mobile menu / filter drawer */
+@media (max-width: 991px) {
+    body:has(.mobile-menu.active) #floating-cart-bar,
+    body:has(.shop-sidebar.active) #floating-cart-bar {
+        display: none !important;
+    }
+}
+/* phone landscape (very short screen): keep the cart bar small */
+@media (max-height: 500px) and (max-width: 991px) {
+    #floating-cart-bar {
+        bottom: 8px !important;
+        padding: 4px 4px 4px 10px !important;
+    }
+    #floating-cart-bar .fcb-icon,
+    #floating-cart-bar .fcb-count {
+        display: none !important;
+    }
+    #floating-cart-bar .fcb-btn {
+        padding: 6px 12px !important;
     }
 }
 
@@ -449,6 +585,142 @@
     }
     #account-add-address-wrap {
         padding: 16px 12px !important;
+    }
+}
+
+/* ---------- My Account: Orders / Wishlist / Cart tables -> cards ---------- */
+@media (max-width: 991px) {
+    #tab-orders .overflow-x-auto,
+    #tab-wishlist .overflow-x-auto,
+    #tab-cart .overflow-x-auto {
+        overflow: visible !important;
+    }
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) {
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) thead {
+        display: none;
+    }
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) tbody,
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) tbody > tr,
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) tbody > tr > td {
+        display: block;
+        width: 100%;
+    }
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) tbody > tr {
+        position: relative;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 12px;
+        padding: 12px 14px 6px;
+        margin-bottom: 12px;
+        background: #fff;
+    }
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) tbody > tr > td {
+        border: 0 !important;
+        padding: 6px 0 !important;
+        text-align: left !important;
+        white-space: normal !important;
+    }
+    /* label : value rows */
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) tbody > tr > td[data-l] {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+    :is(.acc-orders-table, .acc-wishlist-table, .acc-cart-table) tbody > tr > td[data-l]::before {
+        content: attr(data-l);
+        margin-right: auto;
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    /* Orders: 1 id, 2 product, 3 date, 4 price, 5 qty, 6 total, 7 status, 8 action */
+    .acc-orders-table tbody > tr > td:nth-child(1) {
+        padding-bottom: 8px !important;
+        border-bottom: 1px dashed #e5e7eb !important;
+        overflow-wrap: anywhere;
+    }
+    .acc-orders-table tbody > tr > td:nth-child(2) {
+        padding: 10px 0 !important;
+    }
+    .acc-orders-table tbody > tr > td:nth-child(n+3):nth-child(-n+7) {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+    .acc-orders-table tbody > tr > td:nth-child(n+3):nth-child(-n+7)::before {
+        margin-right: auto;
+        font-size: 13px;
+        color: #6b7280;
+    }
+    .acc-orders-table tbody > tr > td:nth-child(3)::before { content: "Date"; }
+    .acc-orders-table tbody > tr > td:nth-child(4)::before { content: "Price"; }
+    .acc-orders-table tbody > tr > td:nth-child(5)::before { content: "Qty"; }
+    .acc-orders-table tbody > tr > td:nth-child(6)::before { content: "Total"; }
+    .acc-orders-table tbody > tr > td:nth-child(7)::before { content: "Status"; }
+    .acc-orders-table tbody > tr > td:nth-child(8) {
+        text-align: right !important;
+        padding-top: 8px !important;
+    }
+    .acc-orders-table tbody > tr > td:nth-child(8):has(> span.text-gray-400) {
+        display: none;
+    }
+
+    /* Wishlist & Cart tabs: 1 remove (corner), 2 product */
+    :is(.acc-wishlist-table, .acc-cart-table) tbody > tr > td:nth-child(1) {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        width: auto;
+        padding: 0 !important;
+        z-index: 2;
+    }
+    :is(.acc-wishlist-table, .acc-cart-table) tbody > tr > td:nth-child(2) {
+        padding: 0 32px 10px 0 !important;
+        margin-bottom: 4px;
+        border-bottom: 1px dashed #e5e7eb !important;
+    }
+    :is(.acc-wishlist-table, .acc-cart-table) tbody > tr > td:nth-child(n+3) {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+    :is(.acc-wishlist-table, .acc-cart-table) tbody > tr > td:nth-child(n+3)::before {
+        margin-right: auto;
+        font-size: 13px;
+        color: #6b7280;
+    }
+    .acc-wishlist-table tbody > tr > td:nth-child(3)::before { content: "Variant"; }
+    .acc-wishlist-table tbody > tr > td:nth-child(4)::before { content: "Price"; }
+    .acc-wishlist-table tbody > tr > td:nth-child(4) .d-block {
+        display: inline !important;
+        order: 2;
+    }
+    .acc-wishlist-table tbody > tr > td:nth-child(5)::before { content: none; }
+    .acc-wishlist-table tbody > tr > td:nth-child(5) .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .acc-cart-table tbody > tr > td:nth-child(3)::before { content: "Price"; }
+    .acc-cart-table tbody > tr > td:nth-child(4)::before { content: "Quantity"; }
+    .acc-cart-table tbody > tr > td:nth-child(5)::before { content: "Subtotal"; }
+}
+
+/* ---------- Login / Register / Forgot password card ---------- */
+@media (max-width: 575px) {
+    /* 32px card padding left inputs ~207px at 320 - placeholders got cut */
+    section.account .rounded-16.px-32.py-40 {
+        padding: 28px 16px !important;
+    }
+    section.account #otpCode {
+        letter-spacing: 2px !important;
+    }
+    section.account #otpCode::placeholder {
+        letter-spacing: 0;
     }
 }
 

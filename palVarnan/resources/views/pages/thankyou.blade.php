@@ -22,7 +22,7 @@
 
 <section class="py-80">
     <div class="container container-lg">
-        <div class="bg-white border border-gray-100 hover-border-main-600 transition-1 rounded-24 p-32 p-sm-48 max-w-700 mx-auto text-center" style="box-shadow: 0 10px 40px rgba(0,0,0,0.04);">
+        <div class="thankyou-card bg-white border border-gray-100 hover-border-main-600 transition-1 rounded-24 p-32 p-sm-48 max-w-700 mx-auto text-center" style="box-shadow: 0 10px 40px rgba(0,0,0,0.04);">
             
             <!-- Success Icon -->
             <div class="w-88 h-88 rounded-circle bg-main-50 text-main-600 border border-main-200 flex-center mx-auto mb-24 shadow-sm" style="font-size: 48px;">

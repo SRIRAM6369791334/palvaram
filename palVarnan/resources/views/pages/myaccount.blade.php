@@ -132,7 +132,7 @@
 
                         @if($orders->count() > 0)
                             <div class="overflow-x-auto scroll-sm scroll-sm-horizontal">
-                                <table class="table style-three cart-table mb-0">
+                                <table class="table style-three cart-table mb-0 acc-orders-table">
                                     <thead>
                                         <tr class="bg-gray-50">
                                             <th class="h6 mb-0 text-sm fw-bold py-16 px-16">Order ID</th>
@@ -567,7 +567,7 @@
 
                         @if($wishlistItems->count() > 0)
                             <div class="overflow-x-auto scroll-sm scroll-sm-horizontal">
-                                <table class="table style-three cart-table mb-0">
+                                <table class="table style-three cart-table mb-0 acc-wishlist-table">
                                     <thead>
                                         <tr class="bg-gray-50">
                                             <th class="h6 mb-0 text-sm fw-bold py-16 px-16 text-center" style="width: 60px;">Remove</th>
@@ -674,7 +674,7 @@
 
                         @if($cartItems->count() > 0)
                             <div class="overflow-x-auto scroll-sm scroll-sm-horizontal">
-                                <table class="table style-three cart-table mb-0">
+                                <table class="table style-three cart-table mb-0 acc-cart-table">
                                     <thead>
                                         <tr class="bg-gray-50">
                                             <th class="h6 mb-0 text-sm fw-bold py-16 px-16 text-center" style="width: 60px;">Remove</th>
