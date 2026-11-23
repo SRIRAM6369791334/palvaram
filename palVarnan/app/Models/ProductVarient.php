@@ -21,7 +21,8 @@ class ProductVarient extends Model
     }
 
     public function category() {
-        return $this->belongsTo( Category::class );
+        // product_varient has `categoryid` (no `category_id` column)
+        return $this->belongsTo( Category::class, 'categoryid' );
     }
 
     public function unit() {

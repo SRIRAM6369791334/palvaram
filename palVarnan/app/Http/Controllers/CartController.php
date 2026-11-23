@@ -11,6 +11,20 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    /**
+     * Cart rows that belong to the current visitor (logged-in user, or guest by IP).
+     * Used so a visitor can never update / delete someone else's cart row by id.
+     */
+    private function ownedCartQuery()
+    {
+        if (Auth::check()) {
+            return Cart::where('user_id', Auth::id());
+        }
+
+        return Cart::where('ip_addresscart', request()->cookie('guest_token') ?? request()->ip())
+            ->whereNull('user_id');
+    }
+
     public function index()
     {
         $query = Cart::with(['product', 'variant']);
@@ -37,7 +51,7 @@ class CartController extends Controller
     {
         if (is_array($request->quantities)) {
             foreach ($request->quantities as $cartId => $qty) {
-                $cart = Cart::find($cartId);
+                $cart = $this->ownedCartQuery()->whereKey($cartId)->first();
                 if (!$cart) continue;
 
                 $variant = ProductVarient::find($cart->product_varient_id);
@@ -53,7 +67,7 @@ class CartController extends Controller
 
     public function remove($id)
     {
-        $cart = Cart::findOrFail($id);
+        $cart = $this->ownedCartQuery()->whereKey($id)->firstOrFail();
 
         $cart->delete();
 
@@ -227,6 +241,11 @@ public function subtotal()
         // Expiry check
         if (!empty($coupon->end_date) && strtotime($coupon->end_date) < strtotime(date('Y-m-d'))) {
             return response()->json(['success' => false, 'message' => 'This coupon has expired.'], 400);
+        }
+
+        // Not started yet
+        if (!empty($coupon->start_date) && strtotime($coupon->start_date) > strtotime(date('Y-m-d'))) {
+            return response()->json(['success' => false, 'message' => 'This coupon is not active yet.'], 400);
         }
 
         // Get subtotal

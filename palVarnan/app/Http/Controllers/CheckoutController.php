@@ -74,7 +74,11 @@ class CheckoutController extends Controller
         $couponDiscount = 0;
         if ($appliedCoupon) {
             $coupon = Coupon::find($appliedCoupon['id'] ?? null);
-            if ($coupon && $coupon->coupon_status == 1 && (empty($coupon->end_date) || strtotime($coupon->end_date) >= strtotime(date('Y-m-d')))) {
+            // same rules as CartController::applyCoupon (null status = active, start/end dates)
+            if ($coupon
+                && ($coupon->coupon_status == 1 || is_null($coupon->coupon_status))
+                && (empty($coupon->end_date) || strtotime($coupon->end_date) >= strtotime(date('Y-m-d')))
+                && (empty($coupon->start_date) || strtotime($coupon->start_date) <= strtotime(date('Y-m-d')))) {
                 if (empty($coupon->mini_amt) || $subtotal >= $coupon->mini_amt) {
                     if ($coupon->discounttype == 1) { // Flat
                         $couponDiscount = min($subtotal, (float)$coupon->discount);
@@ -168,6 +172,12 @@ class CheckoutController extends Controller
                     return $a['rate'] <=> $b['rate'];
                 });
 
+                // Remember the quoted rates server-side so the order total never
+                // trusts a shipping amount sent back by the browser.
+                session(['checkout_courier_rates.' . $isCod => collect($formattedCouriers)
+                    ->mapWithKeys(fn ($c) => [(string) $c['id'] => (float) $c['rate']])
+                    ->all()]);
+
                 return response()->json([
                     'status' => 'success',
                     'couriers' => $formattedCouriers
@@ -204,30 +214,28 @@ class CheckoutController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Cart is empty.'], 400);
         }
 
-        $subtotal = 0;
-        $gstAmount = 0;
-        foreach ($cartItems as $item) {
-            $price = $item->variant->offer_price ?? $item->product->product_price ?? 0;
-            $quantity = $item->product_quantity;
-            $subtotal += $price * $quantity;
-            $gstRate = $item->variant->product_gst ?? 0;
-            $gstAmount += ($price * $quantity) * ($gstRate / 100);
-        }
-
-        $shipping = floatval($request->shipping_charge ?? 0);
-        $discount = floatval($request->coupon_discount ?? 0);
-        $total = max(($subtotal + $gstAmount + $shipping) - $discount, 1);
+        // Amount is computed on the server only (shipping from the quoted courier
+        // rate, discount from the session coupon) - never from browser values.
+        $totals = $this->calculateTotals($cartItems, 'Online Payment', $request->selected_courier_id);
+        $total = max($totals['total'], 1);
 
         try {
             $key = config('services.razorpay.key');
             $secret = config('services.razorpay.secret');
 
             $api = new Api($key, $secret);
+            $amountPaise = (int) round($total * 100);
             $razorpayOrder = $api->order->create([
                 'receipt' => 'rcpt_' . uniqid(),
-                'amount' => (int) round($total * 100),
+                'amount' => $amountPaise,
                 'currency' => 'INR',
             ]);
+
+            // placeOrder() checks the paid Razorpay order against this.
+            session(['razorpay_pending' => [
+                'order_id' => $razorpayOrder['id'],
+                'amount_paise' => $amountPaise,
+            ]]);
 
             return response()->json([
                 'status' => 'success',
@@ -258,7 +266,8 @@ class CheckoutController extends Controller
             'shipping_email' => 'required|email',
             'shipping_phone' => 'required',
             'shipping_door_no' => 'required',
-            'shipping_street' => 'required',
+            // filled from the address's optional "Apartment / suite" line - must not block the order
+            'shipping_street' => 'nullable|string',
             'shipping_city' => 'required',
             'shipping_state' => 'required',
             'shipping_pincode' => 'required',
@@ -298,23 +307,33 @@ class CheckoutController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Cart is empty.'], 400);
         }
 
-        // Recalculate totals
-        $subtotal = 0;
-        $gstAmount = 0;
-        foreach ($cartItems as $item) {
-            $price = $item->variant->offer_price ?? $item->product->product_price ?? 0;
-            $quantity = $item->product_quantity;
-            $subtotal += $price * $quantity;
-            $gstRate = $item->variant->product_gst ?? 0;
-            $gstAmount += ($price * $quantity) * ($gstRate / 100);
-        }
+        // Recalculate totals on the server (shipping + discount are not taken from the request)
+        $totals = $this->calculateTotals($cartItems, $request->payment_method, $request->selected_courier_id);
+        $subtotal = $totals['subtotal'];
+        $gstAmount = $totals['gst'];
+        $shipping = $totals['shipping'];
+        $discount = $totals['discount'];
+        $total = $totals['total'];
 
-        $gstAmount = round($gstAmount, 2);
-        $shipping = max(0, floatval($request->shipping_charge ?? 0));
-        // Security check: validate discount against authenticated session coupon to prevent client-side tampering (TC-CH01 / TC-CH11)
-        $sessionDiscount = floatval(session('applied_coupon.discount', 0));
-        $discount = min($sessionDiscount, max(0, floatval($request->coupon_discount ?? 0)));
-        $total = round(max(0, ($subtotal + $gstAmount + $shipping) - $discount), 2);
+        // Online payment: the signed Razorpay order must be the one we created for
+        // this checkout, for exactly this amount (stops "pay ₹1, get order marked Paid").
+        if ($request->payment_method === 'Online Payment') {
+            $pending = session('razorpay_pending');
+            if (!$pending
+                || ($pending['order_id'] ?? null) !== $request->razorpay_order_id
+                || (int) ($pending['amount_paise'] ?? -1) !== (int) round(max($total, 1) * 100)) {
+                Log::warning('Razorpay amount/order mismatch on placeOrder', [
+                    'user_id' => $userId,
+                    'razorpay_order_id' => $request->razorpay_order_id,
+                    'expected' => $pending,
+                    'computed_paise' => (int) round(max($total, 1) * 100),
+                ]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Payment amount did not match your order. Please contact support with your payment ID.'
+                ], 400);
+            }
+        }
 
         $orderNumber = 'ORD-' . strtoupper(uniqid());
 
@@ -344,7 +363,7 @@ class CheckoutController extends Controller
                 'billing_email' => $request->shipping_email,
                 'billing_phone' => $request->shipping_phone,
                 'billing_door_no' => $request->shipping_door_no,
-                'billing_street' => $request->shipping_street,
+                'billing_street' => $request->shipping_street ?? '',
                 'billing_area' => $request->shipping_area ?? '-',
                 'billing_city' => $request->shipping_city,
                 'billing_state' => $request->shipping_state,
@@ -353,7 +372,7 @@ class CheckoutController extends Controller
                 'shipping_email' => $request->shipping_email,
                 'shipping_phone' => $request->shipping_phone,
                 'shipping_door_no' => $request->shipping_door_no,
-                'shipping_street' => $request->shipping_street,
+                'shipping_street' => $request->shipping_street ?? '',
                 'shipping_area' => $request->shipping_area ?? '-',
                 'shipping_city' => $request->shipping_city,
                 'shipping_state' => $request->shipping_state,
@@ -382,7 +401,7 @@ class CheckoutController extends Controller
                 'order_id' => $orderNumber,
                 'firstname' => $request->shipping_name,
                 'secondname' => '',
-                'address_line_one' => $request->shipping_door_no . ', ' . $request->shipping_street,
+                'address_line_one' => trim($request->shipping_door_no . ', ' . ($request->shipping_street ?? ''), ', '),
                 'address_line_two' => $request->shipping_area ?? '',
                 'landmark' => $request->shipping_landmark ?? '',
                 'city' => $request->shipping_city,
@@ -465,11 +484,11 @@ class CheckoutController extends Controller
                 }
             }
 
-            // 6. Clear Cart
-            Cart::where('user_id', $userId)
-                ->orWhere('ip_addresscart', $request->ip())
-                ->delete();
-            session()->forget('applied_coupon');
+            // 6. Clear Cart - only the rows that were just ordered. The old
+            // `orWhere('ip_addresscart', ip)` also deleted OTHER users' carts
+            // that shared the same IP (office Wi-Fi, proxy, load balancer).
+            Cart::whereIn('id', $cartItems->pluck('id'))->delete();
+            session()->forget(['applied_coupon', 'razorpay_pending', 'checkout_courier_rates']);
 
             DB::commit();
 
@@ -899,6 +918,40 @@ class CheckoutController extends Controller
         }
 
         return $validated;
+    }
+
+    /**
+     * Server-side order totals. Shipping comes from the courier rate this server
+     * quoted (getShiprocketCouriers), discount from the session coupon - never
+     * from amounts posted by the browser.
+     */
+    private function calculateTotals($cartItems, ?string $paymentMethod, $courierId): array
+    {
+        $subtotal = 0;
+        $gst = 0;
+        foreach ($cartItems as $item) {
+            $price = $item->variant->offer_price ?? $item->product->product_price ?? 0;
+            $lineTotal = $price * $item->product_quantity;
+            $subtotal += $lineTotal;
+            $gst += $lineTotal * (($item->variant->product_gst ?? 0) / 100);
+        }
+        $gst = round($gst, 2);
+
+        $isCod = ($paymentMethod === 'Cash on Delivery') ? 1 : 0;
+        $rates = session('checkout_courier_rates.' . $isCod, []);
+        $shipping = ($courierId !== null && $courierId !== '' && isset($rates[(string) $courierId]))
+            ? max(0, (float) $rates[(string) $courierId])
+            : 0.0;
+
+        $discount = min(max(0, (float) session('applied_coupon.discount', 0)), $subtotal);
+
+        return [
+            'subtotal' => $subtotal,
+            'gst' => $gst,
+            'shipping' => $shipping,
+            'discount' => $discount,
+            'total' => round(max(0, ($subtotal + $gst + $shipping) - $discount), 2),
+        ];
     }
 
     private function getCartItems()

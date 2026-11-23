@@ -161,7 +161,8 @@
                                                     <td class="py-16 px-16">
                                                         <div class="d-flex align-items-center gap-12">
                                                             <div class="border border-gray-100 rounded-8 p-4 bg-white flex-shrink-0" style="width:48px;height:48px;">
-                                                                <img src="{{ $item->product_image ? asset('storage/' . $item->product_image) : asset('assets/images/thumbs/product-img1.png') }}" 
+                                                                {{-- product images live on the dashboard (MAIN_URL/images/...), not in this app's /storage (gave 403) --}}
+                                                                <img src="{{ $item->product_image ? (\Illuminate\Support\Str::startsWith($item->product_image, ['http://', 'https://']) ? $item->product_image : rtrim(env('MAIN_URL', ''), '/') . '/images/' . ltrim($item->product_image, '/')) : asset('assets/images/thumbs/product-img1.png') }}"
                                                                      alt="{{ $item->product_name }}" 
                                                                      class="w-100 h-100 object-fit-contain"
                                                                      onerror="this.src='/assets/images/logo/logo.png'">
@@ -254,7 +255,7 @@
                                 <div class="col-sm-6">
                                     <label class="text-neutral-900 text-sm mb-8 fw-semibold d-block">First Name <span class="text-danger">*</span></label>
                                     <div class="position-relative">
-                                        <input type="text" name="name" class="common-input rounded-8 ps-44" value="{{ old('name', Auth::user()->name) }}" required>
+                                        <input type="text" name="name" class="common-input rounded-8 ps-44" value="{{ old('name', Auth::user()->first_name ?: Auth::user()->name) }}" required>
                                         <span class="position-absolute top-50 start-0 translate-middle-y ms-16 text-gray-400 text-xl pointer-events-none">
                                             <i class="ph ph-user"></i>
                                         </span>

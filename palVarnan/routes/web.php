@@ -20,8 +20,9 @@ Route::view('/login', 'pages.login')->name('login');
 Route::view('/register', 'pages.register')->name('register');
 Route::view('/about', 'pages.about')->name('about');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-Route::view('/product', 'pages.product-detail');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:contact')->name('contact.store'); // sends 2 emails per submit
+// Bare /product has no slug - the detail view crashed with "Undefined variable $product"
+Route::redirect('/product', '/products');
 
 // Legal & Policy Pages
 Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy.policy');
@@ -39,17 +40,20 @@ Route::get('/category/{slug}', function ($slug) {
     return redirect()->to('/products?category=' . urlencode($slug));
 });
 Route::get('/brand/{slug}', function ($slug) {
-    $brand = \App\Models\Brand::where('slug', $slug)->orWhere('id', $slug)->first();
+    // brands table has `brand_slug` (there is no `slug` column -> SQL error / HTTP 500)
+    $brand = \App\Models\Brand::where('brand_slug', $slug)->orWhere('id', $slug)->first();
     $param = $brand ? $brand->id : $slug;
     return redirect()->to('/products?brand=' . urlencode($param));
 });
 
-Route::post('/register-store', [AuthController::class, 'registerStore']) ->name('register.store');
-Route::post('/login-store', [AuthController::class, 'login'])->name('login.store');
-Route::post('/password/send-otp', [AuthController::class, 'sendResetOtp'])->name('password.sendOtp');
-Route::post('/password/verify-reset', [AuthController::class, 'resetPasswordWithOtp'])->name('password.resetWithOtp');
+// Rate limits (per IP): stop password / OTP brute force and email spamming
+Route::post('/register-store', [AuthController::class, 'registerStore'])->middleware('throttle:register')->name('register.store');
+Route::post('/login-store', [AuthController::class, 'login'])->middleware('throttle:login')->name('login.store');
+Route::post('/password/send-otp', [AuthController::class, 'sendResetOtp'])->middleware('throttle:otp-send')->name('password.sendOtp');
+Route::post('/password/verify-reset', [AuthController::class, 'resetPasswordWithOtp'])->middleware('throttle:otp-verify')->name('password.resetWithOtp');
 
 Route::put('/profile-update', [ProfileController::class, 'update'])
+    ->middleware('auth') // guests hit a null user -> HTTP 500
     ->name('profile.update');
 
 Route::post('/logout', [ProfileController::class, 'logout'])->name('logout');

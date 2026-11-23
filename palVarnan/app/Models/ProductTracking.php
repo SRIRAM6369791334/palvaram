@@ -14,6 +14,7 @@ class ProductTracking extends Model
     protected $fillable = [
         "user_id",
         "order_id",
-        "delivery_status"
+        "delivery_status",
+        "status", // set to 'Cancelled' by ProfileController::cancelOrder - was silently dropped
     ];
 }

@@ -90,6 +90,14 @@ class AuthController extends Controller
 
         Auth::login($user);
 
+        // New session id after login (prevents session fixation). Session data is kept.
+        $request->session()->regenerate();
+
+        // Logged-in users should not be bounced to /select-country if the session lost it
+        if (!session('country_id') && !empty($user->country_id)) {
+            session(['country_id' => $user->country_id]);
+        }
+
         // Migrate Guest Cart to Logged-in User
         try {
             $guestToken = $request->cookie('guest_token');
@@ -220,10 +228,25 @@ class AuthController extends Controller
         }
 
         if (!Hash::check($request->otp, $record->token)) {
+            // 6-digit code: cap wrong guesses so it can't be brute-forced in the 15-min window
+            $failKey = 'otp_fail_' . md5($email);
+            $fails = (int) \Illuminate\Support\Facades\Cache::get($failKey, 0) + 1;
+            \Illuminate\Support\Facades\Cache::put($failKey, $fails, now()->addMinutes(15));
+
+            if ($fails >= 5) {
+                DB::table('password_reset_tokens')->where('email', $email)->delete();
+                \Illuminate\Support\Facades\Cache::forget($failKey);
+                return response()->json([
+                    'errors' => ['otp' => ['Too many incorrect attempts. Please request a new verification code.']]
+                ], 422);
+            }
+
             return response()->json([
                 'errors' => ['otp' => ['Incorrect verification code. Please check your email and try again.']]
             ], 422);
         }
+
+        \Illuminate\Support\Facades\Cache::forget('otp_fail_' . md5($email));
 
         $user = User::where('email', $email)->first();
         $user->password = Hash::make($request->password);

@@ -889,8 +889,8 @@ async function handlePlaceOrderClick() {
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 },
                 body: JSON.stringify({
-                    shipping_charge: document.getElementById('hidden_shipping_charge').value,
-                    coupon_discount: document.getElementById('hidden_coupon_discount').value
+                    // server computes the amount; it only needs to know which courier was picked
+                    selected_courier_id: document.getElementById('hidden_courier_id').value
                 })
             });
 

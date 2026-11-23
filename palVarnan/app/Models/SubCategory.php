@@ -10,7 +10,8 @@ class SubCategory extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        // sub_categories stores the parent by name (`category_name`), there is no `category_id`
+        return $this->belongsTo(Category::class, 'category_name', 'category_name');
     }
 
     public function getSlugAttribute()

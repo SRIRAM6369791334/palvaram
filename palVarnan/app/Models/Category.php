@@ -28,7 +28,8 @@ class Category extends Model
 
     public function subCategories()
     {
-        return $this->hasMany(SubCategory::class);
+        // sub_categories links by `category_name` (no `category_id` column)
+        return $this->hasMany(SubCategory::class, 'category_name', 'category_name');
     }
 
     public function getSlugAttribute()

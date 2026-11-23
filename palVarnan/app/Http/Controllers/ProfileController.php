@@ -29,13 +29,8 @@ class ProfileController extends Controller
             'phone_number' => 'nullable',
         ]);
 
-        $user->update([
-            'name' => $request->name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
-        ]);
-
+        // Check the password change first, so a wrong current password does not
+        // leave the name/email half-saved behind an error message.
         if ($request->filled('password')) {
 
             $request->validate([
@@ -44,13 +39,25 @@ class ProfileController extends Controller
             ]);
 
             if (!Hash::check($request->current_password, $user->password)) {
-                return back()->with('error', 'Current password is wrong')->with('tab', 'personal');
+                return back()->withInput()->with('error', 'Current password is wrong')->with('tab', 'personal');
             }
-
-            $user->update([
-                'password' => bcrypt($request->password)
-            ]);
         }
+
+        // The form's "name" field is the FIRST name. Store it in first_name and keep
+        // `name` as the full name (registration stores "First Last" there).
+        $data = [
+            'first_name' => $request->name,
+            'last_name' => $request->last_name,
+            'name' => trim($request->name . ' ' . $request->last_name),
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user->update($data);
 
         return back()->with('success', 'Profile updated successfully')->with('tab', 'personal');
     }

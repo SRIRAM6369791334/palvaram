@@ -30,7 +30,24 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrapFive();
 
+        // Separate per-IP buckets for each sensitive form. (Plain `throttle:N,1`
+        // shares ONE counter per IP across all routes, so a few wrong OTP tries
+        // would also lock the user out of login.)
+        \Illuminate\Support\Facades\RateLimiter::for('login', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($r->ip()));
+        \Illuminate\Support\Facades\RateLimiter::for('register', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($r->ip()));
+        \Illuminate\Support\Facades\RateLimiter::for('otp-send', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by($r->ip()));
+        \Illuminate\Support\Facades\RateLimiter::for('otp-verify', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($r->ip()));
+        \Illuminate\Support\Facades\RateLimiter::for('contact', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($r->ip()));
+
         View::composer('*', function ($view) {
+            // '*' runs for every view and partial (header, footer, each include...).
+            // Compute the cart/wishlist numbers once per request instead of each time.
+            static $shared = null;
+            if ($shared !== null) {
+                $view->with($shared);
+                return;
+            }
+
             $cartCount    = 0;
             $wishlistCount = 0;
             $cartSubtotal  = 0;
@@ -76,12 +93,15 @@ class AppServiceProvider extends ServiceProvider
             $currencySymbol = ((int)$countryId === 244) ? '$' : '₹';
             $currencyCode   = ((int)$countryId === 244) ? 'MXN' : 'INR';
 
-            $view->with('cartCount', $cartCount);
-            $view->with('wishlistCount', $wishlistCount);
-            $view->with('cartSubtotal', $cartSubtotal);
-            $view->with('currencySymbol', $currencySymbol);
-            $view->with('currencyCode', $currencyCode);
-            $view->with('countryId', $countryId);
+            $shared = [
+                'cartCount'      => $cartCount,
+                'wishlistCount'  => $wishlistCount,
+                'cartSubtotal'   => $cartSubtotal,
+                'currencySymbol' => $currencySymbol,
+                'currencyCode'   => $currencyCode,
+                'countryId'      => $countryId,
+            ];
+            $view->with($shared);
         });
     }
 }
