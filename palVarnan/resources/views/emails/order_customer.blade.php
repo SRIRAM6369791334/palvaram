@@ -56,7 +56,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helve
                 </tr>
                 <tr>
                     <td>Payment Method</td>
-                    <td>{{ $order->payment_method }} ({{ $order->payment_status }})</td>
+                    <td>{{ $order->payment_method }} ({{ ucfirst(strtolower($order->payment_status)) }})</td>
                 </tr>
                 <tr>
                     <td>Delivery Address</td>

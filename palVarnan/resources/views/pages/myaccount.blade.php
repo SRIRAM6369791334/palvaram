@@ -189,26 +189,26 @@
                                                     </td>
                                                     <td class="py-16 px-16 text-center text-nowrap">
                                                         @php
-                                                            $status = $order->status ?? 'Order Placed';
+                                                            $statusKey = strtolower($order->status ?? \App\Models\ProductOrder::STATUS_PENDING);
                                                             $badgeClass = 'bg-warning-50 text-warning-600 border-warning-200';
-                                                            if (in_array(strtolower($status), ['delivered', 'completed'])) {
+                                                            if (in_array($statusKey, ['delivered', 'completed'])) {
                                                                 $badgeClass = 'bg-success-50 text-success-600 border-success-200';
-                                                            } elseif (in_array(strtolower($status), ['cancelled', 'failed'])) {
+                                                            } elseif (in_array($statusKey, ['cancelled', 'failed'])) {
                                                                 $badgeClass = 'bg-danger-50 text-danger-600 border-danger-200';
-                                                            } elseif (in_array(strtolower($status), ['shipped', 'in transit', 'out for delivery', 'awb assigned'])) {
+                                                            } elseif (in_array($statusKey, ['shipped', 'in transit', 'out_for_delivery', 'out for delivery', 'awb assigned'])) {
                                                                 $badgeClass = 'bg-info-50 text-info-600 border-info-200';
                                                             }
                                                         @endphp
                                                         <span class="badge {{ $badgeClass }} border rounded-pill px-12 py-4 text-xs fw-semibold">
-                                                            {{ $status }}
+                                                            {{ \App\Models\ProductOrder::statusLabel($statusKey) }}
                                                         </span>
                                                     </td>
                                                     <td class="py-16 px-16 text-center text-nowrap">
-                                                        @if(in_array(strtolower($status), ['order placed', 'pending']))
+                                                        @if(in_array($statusKey, [\App\Models\ProductOrder::STATUS_PENDING, 'order placed']))
                                                             <button type="button" class="cancel-order-btn" data-order="{{ $order->order_number }}">
                                                                 <i class="ph ph-x-circle me-1"></i> Cancel
                                                             </button>
-                                                        @elseif(strtolower($status) === 'delivered')
+                                                        @elseif($statusKey === \App\Models\ProductOrder::STATUS_DELIVERED)
                                                             <button type="button" class="return-order-btn" data-order="{{ $order->order_number }}">
                                                                 <i class="ph ph-arrow-u-up-left me-1"></i> Return
                                                             </button>

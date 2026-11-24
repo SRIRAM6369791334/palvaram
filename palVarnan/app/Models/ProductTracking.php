@@ -15,6 +15,7 @@ class ProductTracking extends Model
         "user_id",
         "order_id",
         "delivery_status",
-        "status", // set to 'Cancelled' by ProfileController::cancelOrder - was silently dropped
+        "status", // set to 'cancelled' by ProfileController::cancelOrder - was silently dropped
+        "return_requested", // 1 = requested (dashboard /returnrequests lists these), 3 = rejected
     ];
 }

@@ -98,7 +98,7 @@
                         <div class="col-sm-6">
                             <div class="flex-between">
                                 <span class="text-gray-600">Payment Status:</span>
-                                <span class="badge bg-success-50 text-success-600 border border-success-200 px-10 py-4 rounded-pill fw-semibold">{{ $order->payment_status }}</span>
+                                <span class="badge bg-success-50 text-success-600 border border-success-200 px-10 py-4 rounded-pill fw-semibold">{{ ucfirst(strtolower($order->payment_status)) }}</span>
                             </div>
                         </div>
                         @if($order->courier_name)

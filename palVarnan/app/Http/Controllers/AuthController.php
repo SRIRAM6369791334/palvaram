@@ -129,7 +129,12 @@ class AuthController extends Controller
             \Illuminate\Support\Facades\Log::warning('Guest cart migration failed: ' . $e->getMessage());
         }
 
-        $redirectUrl = $request->input('redirect', '/');
+        // Only allow same-site relative paths ("/checkout"), never "//host" or
+        // "https://host", so the login form can't be used as an open redirect.
+        $redirectUrl = (string) $request->input('redirect', '/');
+        if (!preg_match('#^/(?![/\\\\])#', $redirectUrl)) {
+            $redirectUrl = '/';
+        }
 
         return response()->json([
             'success'      => true,

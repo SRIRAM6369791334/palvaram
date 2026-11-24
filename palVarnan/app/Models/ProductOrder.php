@@ -15,6 +15,37 @@ class ProductOrder extends Model
 
     protected $table = 'product_orders';
 
+    // Order status values shared with the admin dashboard (palVarnanDashboard
+    // ProductController::upadetstatus status_map and its list filters). Store
+    // these exact lowercase codes; use statusLabel() for customer-facing text.
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_PROCESSING = 'processing';
+    public const STATUS_SHIPPED = 'shipped';
+    public const STATUS_OUT_FOR_DELIVERY = 'out_for_delivery';
+    public const STATUS_DELIVERED = 'delivered';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_RETURN_REQUESTED = 'return_requested';
+    public const STATUS_RETURN = 'return';
+
+    public const PAYMENT_PAID = 'paid';
+    public const PAYMENT_PENDING = 'pending';
+
+    public static function statusLabel(?string $status): string
+    {
+        $labels = [
+            self::STATUS_PENDING => 'Order Placed',
+            self::STATUS_PROCESSING => 'Packing',
+            self::STATUS_SHIPPED => 'Shipped',
+            self::STATUS_OUT_FOR_DELIVERY => 'Out for Delivery',
+            self::STATUS_DELIVERED => 'Delivered',
+            self::STATUS_CANCELLED => 'Cancelled',
+            self::STATUS_RETURN_REQUESTED => 'Return Requested',
+            self::STATUS_RETURN => 'Returned',
+        ];
+        $key = strtolower(trim((string) $status));
+        return $labels[$key] ?? ucwords(str_replace('_', ' ', $key ?: self::STATUS_PENDING));
+    }
+
     protected $fillable = [
         'user_id',
         'country_id',
@@ -61,6 +92,7 @@ class ProductOrder extends Model
         'invoice_url',
         'shiprocket_status',
         'cancellation_reason',
+        'reason', // return reason from ProfileController::returnOrder
         'created_at',
         'updated_at'
     ];

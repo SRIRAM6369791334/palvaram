@@ -49,7 +49,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helve
             </div>
             <div class="meta-item">
                 <div class="label">Payment Status</div>
-                <div class="val">{{ $order->payment_method }} • <strong style="color: {{ $order->payment_status === 'Paid' ? '#047857' : '#b45309' }};">{{ $order->payment_status }}</strong></div>
+                <div class="val">{{ $order->payment_method }} • <strong style="color: {{ strtolower($order->payment_status) === 'paid' ? '#047857' : '#b45309' }};">{{ ucfirst(strtolower($order->payment_status)) }}</strong></div>
             </div>
             <div class="meta-item">
                 <div class="label">Shipping City</div>

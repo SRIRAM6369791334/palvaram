@@ -126,7 +126,8 @@ class ProfileController extends Controller
             return response()->json(['success' => false, 'message' => 'Order not found.'], 404);
         }
 
-        $cancellableStatuses = ['order placed', 'pending'];
+        // 'order placed' kept for rows written before statuses were normalised.
+        $cancellableStatuses = [ProductOrder::STATUS_PENDING, 'order placed'];
         if (!in_array(strtolower($order->status), $cancellableStatuses)) {
             return response()->json([
                 'success' => false,
@@ -139,7 +140,7 @@ class ProfileController extends Controller
         DB::beginTransaction();
         try {
             $order->update([
-                'status' => 'Cancelled',
+                'status' => ProductOrder::STATUS_CANCELLED,
                 'cancellation_reason' => $reason
             ]);
 
@@ -155,7 +156,7 @@ class ProfileController extends Controller
                 'user_id' => Auth::id(),
                 'order_id' => $order->order_number,
                 'delivery_status' => 5,
-                'status' => 'Cancelled'
+                'status' => ProductOrder::STATUS_CANCELLED
             ]);
 
             foreach ($order->items as $item) {
@@ -211,7 +212,7 @@ class ProfileController extends Controller
             return response()->json(['success' => false, 'message' => 'Order not found.'], 404);
         }
 
-        if (strtolower($order->status) !== 'delivered') {
+        if (strtolower($order->status) !== ProductOrder::STATUS_DELIVERED) {
             return response()->json(['success' => false, 'message' => 'Only delivered orders can be requested for return.'], 400);
         }
 
@@ -220,10 +221,28 @@ class ProfileController extends Controller
             return response()->json(['success' => false, 'message' => 'Please provide a valid reason for your return request.'], 422);
         }
 
-        $order->update([
-            'status' => 'Return Requested',
-            'reason' => $reason
-        ]);
+        DB::transaction(function () use ($order, $reason) {
+            $order->update([
+                'status' => ProductOrder::STATUS_RETURN_REQUESTED,
+                'reason' => $reason
+            ]);
+
+            // The dashboard Return Requests page lists product_tracking rows with
+            // return_requested = 1. Flag the latest tracking row for this order
+            // (one row per order, so the request is listed once).
+            $tracking = ProductTracking::where('order_id', $order->order_number)->latest('id')->first();
+            if ($tracking) {
+                $tracking->update(['return_requested' => 1, 'status' => ProductOrder::STATUS_RETURN_REQUESTED]);
+            } else {
+                ProductTracking::create([
+                    'user_id' => $order->user_id,
+                    'order_id' => $order->order_number,
+                    'delivery_status' => 4,
+                    'status' => ProductOrder::STATUS_RETURN_REQUESTED,
+                    'return_requested' => 1,
+                ]);
+            }
+        });
 
         return response()->json([
             'success' => true,

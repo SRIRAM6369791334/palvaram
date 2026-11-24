@@ -38,13 +38,22 @@ class CartController extends Controller
 
         $cartItems = $query->whereHas('variant')->whereHas('product')->get();
 
+        // Same maths as CheckoutController::calculateTotals so cart and checkout agree:
+        // GST is per item (variant product_gst), shipping is only known at checkout.
         $subtotal = 0;
+        $gst = 0;
 
         foreach ($cartItems as $item) {
-            $subtotal += $item->variant->offer_price * $item->product_quantity;
+            $lineTotal = ($item->variant->offer_price ?? 0) * $item->product_quantity;
+            $subtotal += $lineTotal;
+            $gst += $lineTotal * (($item->variant->product_gst ?? 0) / 100);
         }
 
-        return view('pages.cart', compact('cartItems', 'subtotal'));
+        $gst = round($gst, 2);
+        $discount = min(max(0, (float) session('applied_coupon.discount', 0)), $subtotal);
+        $couponCode = session('applied_coupon.code');
+
+        return view('pages.cart', compact('cartItems', 'subtotal', 'gst', 'discount', 'couponCode'));
     }
 
     public function update(Request $request)

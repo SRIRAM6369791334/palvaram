@@ -87,7 +87,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes();
+// Public self-registration is off: dashboard accounts are created by an admin
+// (DashboardUserController). The old /register form wrote into the customer
+// users table and was reachable without login.
+Auth::routes(['register' => false]);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, "root"])->name("pages.home")->middleware("auth");

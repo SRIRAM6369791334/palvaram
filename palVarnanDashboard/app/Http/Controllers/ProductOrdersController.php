@@ -72,83 +72,56 @@ class ProductOrdersController extends Controller {
         ));
     }
 
+    /**
+     * Shiprocket order list. Syncs only Shiprocket-owned fields (status text,
+     * delivered date, return window) onto the latest tracking row per order.
+     * product_tracking.delivery_status is the dashboard's own pipeline code
+     * (0 placed .. 4 delivered, 5 cancelled) and is never overwritten with
+     * Shiprocket's status_code, which uses a different numbering.
+     */
     public function orderStat() {
-        $curl = curl_init();
-        curl_setopt_array( $curl, array(
-            CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/auth/login',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode([
-                'email' => config('services.shiprocket.email'),
-                'password' => config('services.shiprocket.password')
-            ]),
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json'
-            ),
-        ) );
-        $SR_login_Response = curl_exec( $curl );
-        curl_close( $curl );
-        $SR_login_Response_out = json_decode( $SR_login_Response );
-        $token = $SR_login_Response_out-> {
-            'token'}
-            ;
+        $finale = [];
 
-            $curl = curl_init();
-
-            curl_setopt_array( $curl, array(
-                CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/orders',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'GET',
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json',
-                    'Authorization: Bearer'.$token,
-                ),
-            ) );
-
-            $response = curl_exec( $curl );
-            curl_close( $curl );
-
-            $altresponse = json_decode( $response );
-            // $channelOrderId = $altresponse[ 'data' ][ 0 ][ 'channel_order_id' ];
-            // $channelOrders = $altresponse->data[ 0 ];
-            if ( isset( $altresponse->data ) && is_array( $altresponse->data ) ) {
-                foreach ( $altresponse->data as $index => $channelOrder ) {
-                    $channel_order_id = $channelOrder->channel_order_id;
-                    $channel_customer_name =  $channelOrder->customer_name;
-                    $channel_customer_email = $channelOrder->customer_email;
-                    $channel_customer_phone = $channelOrder->customer_phone;
-                    $channel_total = $channelOrder->total;
-                    $channel_status = $channelOrder->status;
-                    $channel_status_code = $channelOrder->status_code;
-                    $channel_delivered_date = $channelOrder->delivered_date;
-                    // Add 7 days to the delivered date using strtotime
-                    $prod = DB::table( 'product_slots' )->where( 'order_id', $channel_order_id )->first();
-                    $prodid = DB::table( 'products' )->where( 'id', $prod->product_id )->first();
-                    // $return_approval_timestamp = strtotime( $channel_delivered_date . + $prodid->approval_days );
-                    $return_approval_timestamp = strtotime( $channel_delivered_date . '+' . $prodid->approval_days . ' days' );
-                    // Convert the timestamp back to a date string
-                    $return_approval_date = date( 'Y-m-d', $return_approval_timestamp );
-
-                    DB::table( 'product_tracking' )->where( 'order_id', $channel_order_id )->update( [ 'delivery_status'=>$channel_status_code, 'status'=>$channel_status, 'delivered_date'=>$channel_delivered_date, 'return_approval_date'=>$return_approval_date ] );
-                }
-            } else {
-                echo 'No orders found.';
-            }
-            $finale = $altresponse->data;
-            // dd( $finale );
-
-            return view( 'pages.product_orders1', compact( 'finale' ) );
+        try {
+            $token = app(\App\Services\ShiprocketService::class)->getToken();
+            $baseUrl = rtrim(config('services.shiprocket.base_url', 'https://apiv2.shiprocket.in/v1/external'), '/');
+            $altresponse = \Illuminate\Support\Facades\Http::withToken($token)
+                ->timeout(20)
+                ->get($baseUrl . '/orders')
+                ->object();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Shiprocket order list failed: ' . $e->getMessage());
+            $altresponse = null;
         }
+
+        if ( isset( $altresponse->data ) && is_array( $altresponse->data ) ) {
+            $finale = $altresponse->data;
+            foreach ( $altresponse->data as $channelOrder ) {
+                $channel_order_id = $channelOrder->channel_order_id ?? null;
+                if ( ! $channel_order_id ) {
+                    continue;
+                }
+
+                $update = [ 'status' => $channelOrder->status ?? null ];
+
+                $channel_delivered_date = $channelOrder->delivered_date ?? null;
+                if ( ! empty( $channel_delivered_date ) && strtotime( $channel_delivered_date ) ) {
+                    $prod = DB::table( 'product_slots' )->where( 'order_id', $channel_order_id )->first();
+                    $product = $prod ? DB::table( 'products' )->where( 'id', $prod->product_id )->first() : null;
+                    $approvalDays = (int) ( $product->approval_days ?? 7 );
+                    $update['delivered_date'] = date( 'Y-m-d', strtotime( $channel_delivered_date ) );
+                    $update['return_approval_date'] = date( 'Y-m-d', strtotime( $channel_delivered_date . ' +' . $approvalDays . ' days' ) );
+                }
+
+                $latestId = DB::table( 'product_tracking' )->where( 'order_id', $channel_order_id )->max( 'id' );
+                if ( $latestId ) {
+                    DB::table( 'product_tracking' )->where( 'id', $latestId )->update( $update );
+                }
+            }
+        }
+
+        return view( 'pages.product_orders1', compact( 'finale' ) );
+    }
 
         /**
         * Show the form for creating a new resource.

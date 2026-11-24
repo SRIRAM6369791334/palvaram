@@ -62,7 +62,7 @@
 
                                 @forelse($cartItems as $item)
 
-                                <tr data-variant-id="{{ $item->product_varient_id }}" data-cart-id="{{ $item->id }}">
+                                <tr data-variant-id="{{ $item->product_varient_id }}" data-cart-id="{{ $item->id }}" data-gst="{{ (float) ($item->variant->product_gst ?? 0) }}">
 
                                     <td>
                                         <a href="javascript:void(0)"
@@ -210,9 +210,9 @@
                 <div class="cart-sidebar border border-gray-100 rounded-8 px-24 py-40">
                     <h6 class="text-xl mb-32">Cart Totals</h6>
                                         @php
-                        $delivery = $subtotal > 0 ? 50.00 : 0.00;
-                        $tax = round($subtotal * 0.16, 2);
-                        $grandTotal = $subtotal + $delivery + $tax;
+                        $tax = $gst ?? 0;
+                        $discount = $discount ?? 0;
+                        $grandTotal = max(0, $subtotal + $tax - $discount);
                     @endphp
                     <div class="bg-color-three rounded-8 p-24">
                         <div class="mb-32 flex-between gap-8">
@@ -221,14 +221,20 @@
                                 {{ $currencySymbol ?? "₹" }}{{ number_format($subtotal, 2) }}
                             </span>
                         </div>
+                        @if($discount > 0)
+                        <div class="mb-32 flex-between gap-8 text-success-600" id="cart-sidebar-discount-row">
+                            <span class="font-heading-two text-success-600">Coupon ({{ $couponCode }})</span>
+                            <span class="fw-semibold text-success-600" id="cart-sidebar-discount">-{{ $currencySymbol ?? "₹" }}{{ number_format($discount, 2) }}</span>
+                        </div>
+                        @endif
                         <div class="mb-32 flex-between gap-8">
-                            <span class="text-gray-900 font-heading-two">Estimated Delivery</span>
-                            <span class="text-gray-900 fw-semibold" id="cart-sidebar-delivery">
-                                {{ $currencySymbol ?? "₹" }}{{ number_format($delivery, 2) }}
+                            <span class="text-gray-900 font-heading-two">Shipping</span>
+                            <span class="text-gray-500 text-sm" id="cart-sidebar-delivery">
+                                Calculated at checkout
                             </span>
                         </div>
                         <div class="mb-0 flex-between gap-8">
-                            <span class="text-gray-900 font-heading-two">Estimated Taxes (16%)</span>
+                            <span class="text-gray-900 font-heading-two">GST</span>
                             <span class="text-gray-900 fw-semibold" id="cart-sidebar-tax">
                                 {{ $currencySymbol ?? "₹" }}{{ number_format($tax, 2) }}
                             </span>
@@ -368,29 +374,31 @@ document.querySelectorAll('.quantity-box').forEach(box => {
 
 // ── Recalculate sidebar subtotal ──────────────────────────────────────────────
 function updateCartTotal() {
+    // Mirrors CheckoutController::calculateTotals: per-item GST, shipping added at checkout.
     let subtotal = 0;
+    let tax = 0;
     let hasItems = false;
     document.querySelectorAll('.quantity-box').forEach(box => {
         hasItems = true;
+        const row = box.closest('tr');
         const input = box.querySelector('.quantity__input');
         const price = parseFloat(
-            box.closest('tr').querySelector('td:nth-child(3) span').textContent.replace(/[^\d.]/g, '')
+            row.querySelector('td:nth-child(3) span').textContent.replace(/[^\d.]/g, '')
         ) || 0;
-        subtotal += price * (parseInt(input.value) || 1);
+        const gstRate = parseFloat(row.dataset.gst) || 0;
+        const line = price * (parseInt(input.value) || 1);
+        subtotal += line;
+        tax += line * gstRate / 100;
     });
 
-    const delivery = (subtotal > 0 && hasItems) ? 50.00 : 0.00;
-    const tax = roundToTwo(subtotal * 0.16);
+    tax = roundToTwo(tax);
     const discEl = document.getElementById('cart-sidebar-discount');
-    const discount = discEl ? (parseFloat(discEl.textContent.replace(/[^\d.]/g, '')) || 0) : 0;
-    const grandTotal = Math.max(0, roundToTwo((subtotal + delivery + tax) - discount));
+    const discount = discEl ? Math.min(subtotal, parseFloat(discEl.textContent.replace(/[^\d.]/g, '')) || 0) : 0;
+    const grandTotal = Math.max(0, roundToTwo((subtotal + tax) - discount));
 
     const subtotalEl = document.getElementById('cart-sidebar-subtotal');
     const curr = '{{ $currencySymbol ?? "₹" }}';
     if (subtotalEl) subtotalEl.textContent = curr + subtotal.toFixed(2);
-
-    const deliveryEl = document.getElementById('cart-sidebar-delivery');
-    if (deliveryEl) deliveryEl.textContent = '{{ $currencySymbol ?? "₹" }}' + delivery.toFixed(2);
 
     const taxEl = document.getElementById('cart-sidebar-tax');
     if (taxEl) taxEl.textContent = '{{ $currencySymbol ?? "₹" }}' + tax.toFixed(2);

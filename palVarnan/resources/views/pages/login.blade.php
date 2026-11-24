@@ -331,7 +331,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            const targetUrl = redirectParam || res.body.redirect_url || "/";
+            // Use the server-validated path only (AuthController::login strips
+            // anything that isn't a same-site "/path"), never the raw ?redirect=.
+            const targetUrl = res.body.redirect_url || "/";
             loginSuccessMsg.textContent = "Login successful! Redirecting...";
             loginSuccessAlert.style.display = "flex";
             loginBtn.innerHTML = '<i class="ph-bold ph-check me-8"></i> Success';

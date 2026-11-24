@@ -118,27 +118,8 @@ class ProductSlotController extends Controller
 
     public function approverequest(Request $request){
 
-        $curl = curl_init();
-        curl_setopt_array( $curl, array(
-            CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/auth/login',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{"email": "thiruvenkatesh.sts@gmail.com","password": "Thiru@123"}',
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json'
-            ),
-        ) );
-        $SR_login_Response = curl_exec( $curl );
-        curl_close( $curl );
-        $SR_login_Response_out = json_decode( $SR_login_Response );
-        $token = $SR_login_Response_out-> {
-            'token'}
-            ;
+        // Shiprocket credentials come from .env (SHIPROCKET_EMAIL / SHIPROCKET_PASSWORD)
+        $token = app(\App\Services\ShiprocketService::class)->getToken();
             
         $curl = curl_init();
 
@@ -193,27 +174,8 @@ class ProductSlotController extends Controller
     public function approveReturnRequest(Request $request){
 
         // SHIPROCKET LOGIN
-        $curl = curl_init();
-        curl_setopt_array( $curl, array(
-            CURLOPT_URL => 'https://apiv2.shiprocket.in/v1/external/auth/login',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{"email": "thiruvenkatesh.sts@gmail.com","password": "Thiru@123"}',
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json'
-            ),
-        ) );
-        $SR_login_Response = curl_exec( $curl );
-        curl_close( $curl );
-        $SR_login_Response_out = json_decode( $SR_login_Response );
-        $token = $SR_login_Response_out-> {
-            'token'}
-            ;
+        // Shiprocket credentials come from .env (SHIPROCKET_EMAIL / SHIPROCKET_PASSWORD)
+        $token = app(\App\Services\ShiprocketService::class)->getToken();
 
         $order_id = $request->order_id;
         $order = DB::table('product_tracking')->where('order_id',$order_id)->get();
@@ -372,6 +334,14 @@ class ProductSlotController extends Controller
     public function rejectReturnRequests(Request $request){
         $order_id = $request->order_id;
         DB::table('product_tracking')->where('order_id',$order_id)->update(['return_requested'=> 3]);
+        // Storefront sets status 'return_requested' when the customer asks; a
+        // rejected request goes back to 'delivered'.
+        DB::table('product_orders')
+            ->where(function ($q) use ($order_id) {
+                $q->where('order_id', $order_id)->orWhere('order_number', $order_id);
+            })
+            ->where('status', 'return_requested')
+            ->update(['status' => 'delivered']);
 
         $requests = DB::table('product_tracking')->where('return_requested',1)->get();
 

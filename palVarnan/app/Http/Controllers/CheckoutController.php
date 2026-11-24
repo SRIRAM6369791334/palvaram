@@ -382,9 +382,9 @@ class CheckoutController extends Controller
                 'shipping_charge' => $shipping,
                 'total_amount' => $total,
                 'courier_name' => $request->selected_courier_name ?? 'Standard Delivery',
-                'status' => 'Order Placed',
+                'status' => ProductOrder::STATUS_PENDING,
                 'payment_method' => $request->payment_method,
-                'payment_status' => ($request->payment_method === 'Online Payment') ? 'Paid' : 'Pending',
+                'payment_status' => ($request->payment_method === 'Online Payment') ? ProductOrder::PAYMENT_PAID : ProductOrder::PAYMENT_PENDING,
                 'razorpay_order_id' => $request->razorpay_order_id,
                 'razorpay_payment_id' => $request->razorpay_payment_id,
             ];
