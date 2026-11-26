@@ -22,11 +22,20 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
+        $request->merge([
+            'email'        => strtolower(trim((string) $request->email)),
+            'phone_number' => $request->filled('phone_number')
+                ? preg_replace('/\D+/', '', (string) $request->phone_number)
+                : null,
+        ]);
+
         $request->validate([
-            'name' => 'required',
-            'last_name' => 'required',
+            'name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone_number' => 'nullable',
+            'phone_number' => 'nullable|digits_between:10,15|unique:users,phone_number,' . $user->id,
+        ], [
+            'phone_number.unique' => 'This mobile number is already linked to another account.',
         ]);
 
         // Check the password change first, so a wrong current password does not
@@ -57,7 +66,12 @@ class ProfileController extends Controller
             $data['password'] = bcrypt($request->password);
         }
 
-        $user->update($data);
+        try {
+            $user->update($data);
+        } catch (\Throwable $e) {
+            Log::error('Profile update failed: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Unable to update profile right now. Please try again.')->with('tab', 'personal');
+        }
 
         return back()->with('success', 'Profile updated successfully')->with('tab', 'personal');
     }

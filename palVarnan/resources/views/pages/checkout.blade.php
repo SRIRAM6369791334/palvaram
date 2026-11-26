@@ -810,6 +810,7 @@ async function fetchCouriers(pincode, paymentMethod) {
             listEl.innerHTML = '';
             listEl.style.display = 'flex';
 
+            const escAttr = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             data.couriers.forEach((courier, index) => {
                 const isChecked = index === 0 ? 'checked' : '';
                 const col = document.createElement('div');
@@ -817,10 +818,10 @@ async function fetchCouriers(pincode, paymentMethod) {
                 col.innerHTML = `
                     <label class="border border-gray-100 rounded-10 p-16 d-flex align-items-center justify-content-between gap-12 cursor-pointer courier-option-card ${index === 0 ? 'courier-card-active' : ''}" style="${index === 0 ? 'border: 2px solid #10b981;' : 'border: 1px solid #e5e7eb;'}">
                         <div class="d-flex align-items-center gap-10">
-                            <input type="radio" name="selected_courier_radio" value="${courier.id}" data-name="${courier.name}" data-rate="${courier.rate}" class="form-check-input mt-0 courier-radio" ${isChecked} onchange="onCourierSelected(this)">
+                            <input type="radio" name="selected_courier_radio" value="${escAttr(courier.id)}" data-name="${escAttr(courier.name)}" data-rate="${escAttr(courier.rate)}" class="form-check-input mt-0 courier-radio" ${isChecked} onchange="onCourierSelected(this)">
                             <div>
-                                <span class="d-block fw-semibold text-gray-900 text-sm">${courier.name}</span>
-                                <span class="text-xs text-gray-500"><i class="ph ph-clock me-2"></i> ETD: ${courier.etd}</span>
+                                <span class="d-block fw-semibold text-gray-900 text-sm">${escAttr(courier.name)}</span>
+                                <span class="text-xs text-gray-500"><i class="ph ph-clock me-2"></i> ETD: ${escAttr(courier.etd)}</span>
                             </div>
                         </div>
                         <span class="fw-bold text-main-600 text-sm">${currSymbol}${parseFloat(courier.rate).toFixed(2)}</span>
