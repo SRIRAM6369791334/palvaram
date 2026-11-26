@@ -134,7 +134,8 @@ class ProductController extends Controller
             $cartItems      = Cart::where('user_id', Auth::id())->get();
             $cartProductIds = $cartItems->pluck('product_varient_id')->toArray();
         } else {
-            $cartItems      = Cart::where('ip_addresscart', request()->cookie('guest_token') ?? request()->ip())
+            $guestIds       = array_values(array_unique(array_filter([request()->cookie('guest_token'), request()->ip()])));
+            $cartItems      = Cart::whereIn('ip_addresscart', $guestIds)
                                 ->whereNull('user_id')
                                 ->get();
             $cartProductIds = $cartItems->pluck('product_varient_id')->toArray();
@@ -239,7 +240,8 @@ class ProductController extends Controller
             $cartItems      = Cart::where('user_id', Auth::id())->get();
             $cartProductIds = $cartItems->pluck('product_varient_id')->toArray();
         } else {
-            $cartItems      = Cart::where('ip_addresscart', request()->cookie('guest_token') ?? request()->ip())
+            $guestIds       = array_values(array_unique(array_filter([request()->cookie('guest_token'), request()->ip()])));
+            $cartItems      = Cart::whereIn('ip_addresscart', $guestIds)
                                 ->whereNull('user_id')
                                 ->get();
             $cartProductIds = $cartItems->pluck('product_varient_id')->toArray();
