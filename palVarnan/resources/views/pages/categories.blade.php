@@ -387,6 +387,8 @@
                                     <img src="{{ env('MAIN_URL') }}images/{{ $category->category_image }}" 
                                          alt="{{ $category->category_name }}" 
                                          class="cat-card__thumb"
+                                         loading="lazy"
+                                         decoding="async"
                                          onerror="this.src='/assets/images/thumbs/category-img1.png'">
                                 @else
                                     <i class="ph-bold ph-squares-four text-main-600 text-2xl"></i>

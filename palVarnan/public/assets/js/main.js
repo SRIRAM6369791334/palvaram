@@ -1399,9 +1399,12 @@ if(copyCouponBtn && copyText) {
   // ==========================================
 
   // ========================= Preloader Js Start =====================
-    $(window).on("load", function(){
-      $('.preloader').fadeOut(); 
-    })
+    function hidePreloader() {
+      $('.preloader').fadeOut(200);
+    }
+    $(document).ready(hidePreloader);
+    $(window).on("load", hidePreloader);
+    setTimeout(hidePreloader, 2000);
     // ========================= Preloader Js End=====================
 
     // ========================= Header Sticky Js Start ==============
