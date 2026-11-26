@@ -752,11 +752,12 @@ let currentShippingCharge = 0;
 let currentDiscount = {{ (float)($couponDiscount ?? 0) }};
 let activePaymentMethod = 'Online Payment';
 const selectedPincode = "{{ $selectedAddress->pincode ?? '' }}";
+const currSymbol = @json($currencySymbol ?? "₹");
 
 function updateTotals() {
     const grandTotal = Math.max((baseSubtotalWithGst + currentShippingCharge) - currentDiscount, 0);
-    const currSymbol = '{{ $currencySymbol ?? "₹" }}'; document.getElementById('display-shipping-charge').innerText = currSymbol + currentShippingCharge.toFixed(2);
-    document.getElementById('display-grand-total').innerText = (typeof currSymbol !== 'undefined' ? currSymbol : '{{ $currencySymbol ?? "₹" }}') + grandTotal.toFixed(2);
+    document.getElementById('display-shipping-charge').innerText = currSymbol + currentShippingCharge.toFixed(2);
+    document.getElementById('display-grand-total').innerText = currSymbol + grandTotal.toFixed(2);
     document.getElementById('hidden_shipping_charge').value = currentShippingCharge;
 }
 
