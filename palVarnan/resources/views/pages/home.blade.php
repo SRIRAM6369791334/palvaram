@@ -1454,6 +1454,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.querySelectorAll(`.cart-control[data-variant-id="${variantId}"] .quantity__input`).forEach(inp => {
                     inp.value = finalQty;
                 });
+                if (typeof refreshCartSubtotal === 'function') {
+                    refreshCartSubtotal();
+                }
                 if (data.clamped) {
                     Swal.fire({ icon: 'info', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
                 }

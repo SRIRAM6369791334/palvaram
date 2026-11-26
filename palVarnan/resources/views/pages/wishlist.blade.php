@@ -230,8 +230,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 quantity           : 1
             })
         })
-        .then(r => r.json())
-        .then(data => {
+        .then(async r => {
+            const data = await r.json();
+            if (!r.ok || data.status === 'error') {
+                btn.disabled = false;
+                btn.innerHTML = origHTML;
+                Swal.fire({
+                    icon: 'warning',
+                    title: data.message || 'This product variant is currently unavailable.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                return;
+            }
+
             Swal.fire({
                 icon: 'success',
                 title: data.message || 'Added to Cart!',
@@ -242,9 +257,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 timerProgressBar: true
             });
 
-            // Update header cart count and floating cart bar
-            if (typeof updateCartCount === 'function') {
+            // Update header cart count only for newly added distinct items; otherwise refresh subtotal
+            if (data.status === 'added' && typeof updateCartCount === 'function') {
                 updateCartCount(1);
+            } else if (typeof refreshCartSubtotal === 'function') {
+                refreshCartSubtotal();
             }
 
             // Change button state

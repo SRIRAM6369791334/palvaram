@@ -422,6 +422,8 @@ function updateCartTotal() {
         if (checkoutBtn) {
             checkoutBtn.classList.add('disabled', 'opacity-50');
             checkoutBtn.setAttribute('disabled', 'disabled');
+            checkoutBtn.removeAttribute('href');
+            checkoutBtn.style.pointerEvents = 'none';
         }
     }
 }
@@ -445,6 +447,9 @@ document.querySelectorAll('.remove-cart-item').forEach(button => {
             if (data.success) {
                 row.remove();
                 updateCartTotal();
+                if (typeof updateCartCount === 'function') {
+                    updateCartCount(-1);
+                }
                 Swal.fire({
                     icon: 'success',
                     title: 'Removed!',
@@ -508,13 +513,14 @@ if (applyCouponBtn) {
                     confirmButtonColor: '#1c799b' 
                 });
                 let discRow = document.getElementById('cart-sidebar-discount-row');
+                const safeCode = String(data.code ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 if (!discRow) {
                     const subRow = document.getElementById('cart-sidebar-subtotal')?.parentElement;
                     if (subRow) {
                         discRow = document.createElement('div');
                         discRow.id = 'cart-sidebar-discount-row';
-                        discRow.className = 'mb-32 flex-between gap-8 text-success-600';
-                        discRow.innerHTML = `<span class="font-heading-two text-success-600">Coupon (${data.code})</span><span class="fw-semibold text-success-600" id="cart-sidebar-discount">-${curr}${parseFloat(data.discount).toFixed(2)}</span>`;
+                        discRow.className = 'mb-32 flex-between gap-12 text-success-600';
+                        discRow.innerHTML = `<span class="font-heading-two text-success-600 flex-shrink-0">Coupon (${safeCode})</span><span class="fw-semibold text-success-600 text-end text-nowrap" id="cart-sidebar-discount">-${curr}${parseFloat(data.discount).toFixed(2)}</span>`;
                         subRow.after(discRow);
                     }
                 } else {

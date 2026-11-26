@@ -140,7 +140,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource("subcategories", SubCategoryController::class)->only(["index","store"]);
     Route::post("updateSubCategories/{id}", [SubCategoryController::class, "update"]);
     Route::post("destroySubCategories/{id}", [SubCategoryController::class, "destroy"]);
-    Route::post("validateSubCategoryName", [SubCategoryController::class, "validateSubCategoryName"]);
 
 
     // Products page
@@ -395,7 +394,6 @@ Route::get('/oreport/export/pdf', [OrderwiseController::class, 'exportPDF'])->na
     Route::resource("todaydeals", TodayDealsController::class)->only(["index","store"]);
     Route::post("updatetodaydeals/{id}", [TodayDealsController::class, "update"]);
     Route::post("destroytodaydeals/{id}", [TodayDealsController::class, "destroy"]);
-    Route::post("validateSubCategoryName", [SubCategoryController::class, "validateSubCategoryName"]);
 
     // CANCEL REQUESTS
     Route::get('cancelrequests',[ProductSlotController::class,'cancelrequests']);

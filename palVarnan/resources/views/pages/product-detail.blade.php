@@ -1811,6 +1811,9 @@ function syncCart(variantId, quantity, input) {
         const data = await r.json();
         if (r.ok && data.success) {
             input.value = data.quantity !== undefined ? data.quantity : quantity;
+            if (typeof refreshCartSubtotal === 'function') {
+                refreshCartSubtotal();
+            }
             if (data.clamped) {
                 Swal.fire({ icon: 'info', title: data.message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
             }
@@ -2000,11 +2003,6 @@ document.querySelectorAll('.cart-control').forEach(controlDiv => {
         attachAddToCartEvent(controlDiv);
     }
 });
-
-function updateCartCount(delta) {
-    const el = document.getElementById('cart-count');
-    if (el) el.textContent = parseInt(el.textContent || 0) + delta;
-}
 
 // Variant Pill Click (Main Product)
 document.querySelectorAll('.variant-pill').forEach(function (pill) {
