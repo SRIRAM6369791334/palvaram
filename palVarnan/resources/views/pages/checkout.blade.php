@@ -889,7 +889,8 @@ async function handlePlaceOrderClick() {
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 },
                 body: JSON.stringify({
-                    // server computes the amount; it only needs to know which courier was picked
+                    // server computes the amount; shipping fields are cached temporarily for Razorpay webhook recovery
+                    ...Object.fromEntries(formData.entries()),
                     selected_courier_id: document.getElementById('hidden_courier_id').value
                 })
             });

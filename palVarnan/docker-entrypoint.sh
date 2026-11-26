@@ -35,5 +35,8 @@ mkdir -p /var/www/html/storage/app/public /var/www/html/public/images /var/www/h
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/images
 
+# Start lightweight auto-restarting background queue worker for Shiprocket + Order Confirmation emails
+(while true; do php artisan queue:work database --sleep=3 --tries=3 --timeout=60 --max-time=3600; sleep 5; done) &
+
 echo "==> Web Application ready. Starting Apache web server on port ${PORT}..."
 exec apache2-foreground

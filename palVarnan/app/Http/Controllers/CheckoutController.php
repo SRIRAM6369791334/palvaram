@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessOrderPostCheckout;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\District;
@@ -14,12 +15,15 @@ use App\Models\ProductTracking;
 use App\Models\ProductTransactionLog;
 use App\Models\ProductVarient;
 use App\Models\State;
+use App\Models\User;
 use App\Models\UserAddress;
 use App\Services\ShiprocketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Razorpay\Api\Api;
 
@@ -205,6 +209,33 @@ class CheckoutController extends Controller
     /**
      * Prepare Razorpay Order ID for standard modal checkout.
      */
+    private function snapshotCache()
+    {
+        try {
+            if (Schema::hasTable('cache')) {
+                return Cache::store('database');
+            }
+        } catch (\Throwable $e) {
+            // Fall back to default cache store
+        }
+
+        return Cache::store();
+    }
+
+    private function dispatchPostCheckout(int $orderId, ?int $selectedCourierId): void
+    {
+        try {
+            if (Schema::hasTable('jobs')) {
+                ProcessOrderPostCheckout::dispatch($orderId, $selectedCourierId)->onConnection('database');
+                return;
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Database queue dispatch failed, falling back to afterResponse: ' . $e->getMessage());
+        }
+
+        ProcessOrderPostCheckout::dispatchAfterResponse($orderId, $selectedCourierId);
+    }
+
     public function preparePayment(Request $request)
     {
         $user = Auth::user();
@@ -237,6 +268,31 @@ class CheckoutController extends Controller
                 'amount_paise' => $amountPaise,
             ]]);
 
+            // Store temporary checkout snapshot in DB cache (NOT product_orders) so the
+            // Razorpay webhook can create the Paid order if the browser closes after payment.
+            $snapshot = [
+                'user_id' => $user->id,
+                'country_id' => session('country_id') ?? $user->country_id ?? 243,
+                'shipping' => [
+                    'shipping_name' => $request->input('shipping_name', $user->name ?? ''),
+                    'shipping_email' => $request->input('shipping_email', $user->email ?? ''),
+                    'shipping_phone' => $request->input('shipping_phone', $user->phone_number ?? ''),
+                    'shipping_door_no' => $request->input('shipping_door_no', ''),
+                    'shipping_street' => $request->input('shipping_street', ''),
+                    'shipping_area' => $request->input('shipping_area', '-'),
+                    'shipping_landmark' => $request->input('shipping_landmark', ''),
+                    'shipping_city' => $request->input('shipping_city', ''),
+                    'shipping_state' => $request->input('shipping_state', ''),
+                    'shipping_pincode' => $request->input('shipping_pincode', ''),
+                ],
+                'selected_courier_id' => $request->input('selected_courier_id') ? (int) $request->input('selected_courier_id') : null,
+                'selected_courier_name' => $request->input('selected_courier_name', 'Standard Delivery'),
+                'totals' => $totals,
+                'amount_paise' => $amountPaise,
+                'cart_item_ids' => $cartItems->pluck('id')->all(),
+            ];
+            $this->snapshotCache()->put('rzp_checkout_' . $razorpayOrder['id'], $snapshot, now()->addHours(24));
+
             return response()->json([
                 'status' => 'success',
                 'razorpay_order_id' => $razorpayOrder['id'],
@@ -254,7 +310,7 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Store the order details across multi-tables, reduce stock, clear cart, and create Shiprocket order.
+     * Store the order details across multi-tables, reduce stock, clear cart, and queue Shiprocket/email.
      */
     public function placeOrder(Request $request)
     {
@@ -283,10 +339,25 @@ class CheckoutController extends Controller
             ], 422);
         }
 
-        // Razorpay Verification if Online Payment
+        // Fast-path idempotency: if this Razorpay payment/order already created an order
+        // (double-click, retry, or webhook beat the browser), return that existing order.
         if ($request->payment_method === 'Online Payment') {
             if (!$request->razorpay_payment_id || !$request->razorpay_signature || !$request->razorpay_order_id) {
                 return response()->json(['status' => 'error', 'message' => 'Payment verification details missing.'], 400);
+            }
+
+            $existingOrder = ProductOrder::where('razorpay_payment_id', $request->razorpay_payment_id)
+                ->orWhere('razorpay_order_id', $request->razorpay_order_id)
+                ->first();
+
+            if ($existingOrder) {
+                session()->forget(['applied_coupon', 'razorpay_pending', 'checkout_courier_rates']);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Order placed successfully!',
+                    'order_number' => $existingOrder->order_number,
+                    'redirect_url' => route('checkout.thankyou', ['order' => $existingOrder->order_number])
+                ]);
             }
 
             try {
@@ -302,94 +373,324 @@ class CheckoutController extends Controller
             }
         }
 
-        $cartItems = $this->getCartItems();
-        if ($cartItems->isEmpty()) {
-            return response()->json(['status' => 'error', 'message' => 'Cart is empty.'], 400);
+        $lockKey = $request->payment_method === 'Online Payment'
+            ? 'rzp_order_lock_' . $request->razorpay_order_id
+            : 'cod_order_lock_' . $userId;
+
+        $lock = $this->snapshotCache()->lock($lockKey, 15);
+        if (!$lock->get()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Your order is already being processed. Please wait a moment.'
+            ], 409);
         }
 
-        // Recalculate totals on the server (shipping + discount are not taken from the request)
-        $totals = $this->calculateTotals($cartItems, $request->payment_method, $request->selected_courier_id);
-        $subtotal = $totals['subtotal'];
-        $gstAmount = $totals['gst'];
-        $shipping = $totals['shipping'];
-        $discount = $totals['discount'];
-        $total = $totals['total'];
-
-        // Online payment: the signed Razorpay order must be the one we created for
-        // this checkout, for exactly this amount (stops "pay ₹1, get order marked Paid").
-        if ($request->payment_method === 'Online Payment') {
-            $pending = session('razorpay_pending');
-            if (!$pending
-                || ($pending['order_id'] ?? null) !== $request->razorpay_order_id
-                || (int) ($pending['amount_paise'] ?? -1) !== (int) round(max($total, 1) * 100)) {
-                Log::warning('Razorpay amount/order mismatch on placeOrder', [
-                    'user_id' => $userId,
-                    'razorpay_order_id' => $request->razorpay_order_id,
-                    'expected' => $pending,
-                    'computed_paise' => (int) round(max($total, 1) * 100),
-                ]);
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Payment amount did not match your order. Please contact support with your payment ID.'
-                ], 400);
-            }
-        }
-
-        $orderNumber = 'ORD-' . strtoupper(uniqid());
-
-        DB::beginTransaction();
         try {
-            // Concurrency Stock Validation (Issue #91): Lock and verify stock availability before order insertion
-            foreach ($cartItems as $item) {
-                $checkVariant = ProductVarient::lockForUpdate()->find($item->product_varient_id);
-                $available = (int) ($checkVariant->product_qty ?? 0);
-                if (!$checkVariant || $available < $item->product_quantity) {
-                    DB::rollBack();
-                    $pName = $item->product->product_name ?? 'An item in your cart';
+            // Re-check inside lock in case webhook or a concurrent click finished just before us.
+            if ($request->payment_method === 'Online Payment') {
+                $existingOrder = ProductOrder::where('razorpay_payment_id', $request->razorpay_payment_id)
+                    ->orWhere('razorpay_order_id', $request->razorpay_order_id)
+                    ->first();
+
+                if ($existingOrder) {
+                    session()->forget(['applied_coupon', 'razorpay_pending', 'checkout_courier_rates']);
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Order placed successfully!',
+                        'order_number' => $existingOrder->order_number,
+                        'redirect_url' => route('checkout.thankyou', ['order' => $existingOrder->order_number])
+                    ]);
+                }
+            }
+
+            $cartItems = $this->getCartItems();
+            if ($cartItems->isEmpty()) {
+                return response()->json(['status' => 'error', 'message' => 'Cart is empty.'], 400);
+            }
+
+            // Recalculate totals on the server (shipping + discount are not taken from the request)
+            $totals = $this->calculateTotals($cartItems, $request->payment_method, $request->selected_courier_id);
+
+            // Online payment: the signed Razorpay order must be the one we created for
+            // this checkout, for exactly this amount (stops "pay ₹1, get order marked Paid").
+            if ($request->payment_method === 'Online Payment') {
+                $pending = session('razorpay_pending');
+                if (!$pending
+                    || ($pending['order_id'] ?? null) !== $request->razorpay_order_id
+                    || (int) ($pending['amount_paise'] ?? -1) !== (int) round(max($totals['total'], 1) * 100)) {
+                    Log::warning('Razorpay amount/order mismatch on placeOrder', [
+                        'user_id' => $userId,
+                        'razorpay_order_id' => $request->razorpay_order_id,
+                        'expected' => $pending,
+                        'computed_paise' => (int) round(max($totals['total'], 1) * 100),
+                    ]);
                     return response()->json([
                         'status' => 'error',
-                        'message' => "Sorry, '{$pName}' is out of stock or does not have enough quantity available."
+                        'message' => 'Payment amount did not match your order. Please contact support with your payment ID.'
                     ], 400);
                 }
             }
 
-            // 1. Table: product_orders (Master)
-            $orderData = [
-                'user_id' => $userId,
-                'country_id' => session('country_id') ?? $user->country_id ?? 243,
-                'order_number' => $orderNumber,
-                'order_id' => $orderNumber, // For dashboard compatibility
-                'billing_name' => $request->shipping_name,
-                'billing_email' => $request->shipping_email,
-                'billing_phone' => $request->shipping_phone,
-                'billing_door_no' => $request->shipping_door_no,
-                'billing_street' => $request->shipping_street ?? '',
-                'billing_area' => $request->shipping_area ?? '-',
-                'billing_city' => $request->shipping_city,
-                'billing_state' => $request->shipping_state,
-                'billing_pincode' => $request->shipping_pincode,
+            $shippingPayload = [
                 'shipping_name' => $request->shipping_name,
                 'shipping_email' => $request->shipping_email,
                 'shipping_phone' => $request->shipping_phone,
                 'shipping_door_no' => $request->shipping_door_no,
                 'shipping_street' => $request->shipping_street ?? '',
                 'shipping_area' => $request->shipping_area ?? '-',
+                'shipping_landmark' => $request->shipping_landmark ?? '',
                 'shipping_city' => $request->shipping_city,
                 'shipping_state' => $request->shipping_state,
                 'shipping_pincode' => $request->shipping_pincode,
+            ];
+
+            $result = $this->createOrderInDatabase(
+                $userId,
+                (int) (session('country_id') ?? $user->country_id ?? 243),
+                $cartItems,
+                $shippingPayload,
+                $totals,
+                $request->payment_method,
+                $request->selected_courier_name ?? 'Standard Delivery',
+                $request->razorpay_order_id,
+                $request->razorpay_payment_id
+            );
+
+            if (!$result['ok']) {
+                return response()->json(['status' => 'error', 'message' => $result['message']], $result['status']);
+            }
+
+            $order = $result['order'];
+            session()->forget(['applied_coupon', 'razorpay_pending', 'checkout_courier_rates']);
+
+            if ($request->razorpay_order_id) {
+                $this->snapshotCache()->forget('rzp_checkout_' . $request->razorpay_order_id);
+            }
+
+            // Queue Shiprocket & Confirmation Email in background so Thank You page loads immediately
+            $selectedCourierId = $request->selected_courier_id ? (int) $request->selected_courier_id : null;
+            $this->dispatchPostCheckout($order->id, $selectedCourierId);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order placed successfully!',
+                'order_number' => $order->order_number,
+                'redirect_url' => route('checkout.thankyou', ['order' => $order->order_number])
+            ]);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /**
+     * Razorpay Server-to-Server Webhook (payment.captured).
+     * Creates the Paid order from the DB cache snapshot if the customer's browser closed
+     * before placeOrder() completed. Never creates unpaid/pending orders.
+     */
+    public function handleRazorpayWebhook(Request $request)
+    {
+        $webhookSecret = config('services.razorpay.webhook_secret');
+        if (empty($webhookSecret)) {
+            Log::error('Razorpay webhook received but RAZORPAY_WEBHOOK_SECRET is not configured.');
+            return response()->json(['status' => 'error', 'message' => 'Webhook not configured'], 503);
+        }
+
+        $signature = $request->header('X-Razorpay-Signature', '');
+        $rawPayload = $request->getContent();
+        $expectedSignature = hash_hmac('sha256', $rawPayload, $webhookSecret);
+
+        if (!$signature || !hash_equals($expectedSignature, $signature)) {
+            Log::warning('Razorpay webhook signature verification failed.');
+            return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 401);
+        }
+
+        $payload = json_decode($rawPayload, true);
+        $event = $payload['event'] ?? '';
+
+        if ($event !== 'payment.captured') {
+            return response()->json(['status' => 'ignored', 'event' => $event], 200);
+        }
+
+        $paymentEntity = $payload['payload']['payment']['entity'] ?? [];
+        $razorpayPaymentId = $paymentEntity['id'] ?? null;
+        $razorpayOrderId = $paymentEntity['order_id'] ?? null;
+        $paidAmountPaise = (int) ($paymentEntity['amount'] ?? 0);
+
+        if (!$razorpayPaymentId || !$razorpayOrderId) {
+            return response()->json(['status' => 'ignored', 'message' => 'Missing payment/order ID'], 200);
+        }
+
+        $lock = $this->snapshotCache()->lock('rzp_order_lock_' . $razorpayOrderId, 15);
+        if (!$lock->get()) {
+            // Browser placeOrder() is currently creating this order; tell Razorpay to retry briefly if needed
+            return response()->json(['status' => 'processing'], 200);
+        }
+
+        try {
+            // Idempotency: if browser already created the order, ensure it's marked paid and exit cleanly
+            $existingOrder = ProductOrder::where('razorpay_payment_id', $razorpayPaymentId)
+                ->orWhere('razorpay_order_id', $razorpayOrderId)
+                ->first();
+
+            if ($existingOrder) {
+                if ($existingOrder->payment_status !== ProductOrder::PAYMENT_PAID) {
+                    $existingOrder->update([
+                        'payment_status' => ProductOrder::PAYMENT_PAID,
+                        'razorpay_payment_id' => $razorpayPaymentId,
+                    ]);
+                }
+                $this->snapshotCache()->forget('rzp_checkout_' . $razorpayOrderId);
+                return response()->json(['status' => 'already_processed', 'order_number' => $existingOrder->order_number], 200);
+            }
+
+            $snapshot = $this->snapshotCache()->get('rzp_checkout_' . $razorpayOrderId);
+            if (!$snapshot) {
+                Log::warning('Razorpay webhook: no checkout snapshot found for captured payment', [
+                    'razorpay_order_id' => $razorpayOrderId,
+                    'razorpay_payment_id' => $razorpayPaymentId,
+                ]);
+                return response()->json(['status' => 'no_snapshot'], 200);
+            }
+
+            if ((int) ($snapshot['amount_paise'] ?? -1) !== $paidAmountPaise) {
+                Log::warning('Razorpay webhook: amount mismatch', [
+                    'razorpay_order_id' => $razorpayOrderId,
+                    'expected_paise' => $snapshot['amount_paise'] ?? null,
+                    'paid_paise' => $paidAmountPaise,
+                ]);
+                return response()->json(['status' => 'amount_mismatch'], 200);
+            }
+
+            $userId = (int) $snapshot['user_id'];
+            $cartQuery = Cart::with(['product', 'variant'])
+                ->where('user_id', $userId)
+                ->whereHas('variant')
+                ->whereHas('product');
+
+            if (!empty($snapshot['cart_item_ids'])) {
+                $cartQuery->whereIn('id', $snapshot['cart_item_ids']);
+            }
+            $cartItems = $cartQuery->get();
+
+            if ($cartItems->isEmpty()) {
+                Log::warning('Razorpay webhook: cart already empty for snapshot', [
+                    'user_id' => $userId,
+                    'razorpay_order_id' => $razorpayOrderId,
+                ]);
+                return response()->json(['status' => 'cart_empty'], 200);
+            }
+
+            $result = $this->createOrderInDatabase(
+                $userId,
+                (int) ($snapshot['country_id'] ?? 243),
+                $cartItems,
+                $snapshot['shipping'],
+                $snapshot['totals'],
+                'Online Payment',
+                $snapshot['selected_courier_name'] ?? 'Standard Delivery',
+                $razorpayOrderId,
+                $razorpayPaymentId
+            );
+
+            if (!$result['ok']) {
+                Log::error('Razorpay webhook: order creation failed', [
+                    'razorpay_order_id' => $razorpayOrderId,
+                    'razorpay_payment_id' => $razorpayPaymentId,
+                    'reason' => $result['message'],
+                ]);
+                return response()->json(['status' => 'error', 'message' => $result['message']], 200);
+            }
+
+            $order = $result['order'];
+            $this->snapshotCache()->forget('rzp_checkout_' . $razorpayOrderId);
+            $this->dispatchPostCheckout($order->id, $snapshot['selected_courier_id'] ?? null);
+
+            Log::info('Razorpay webhook created Paid order successfully', [
+                'order_number' => $order->order_number,
+                'razorpay_payment_id' => $razorpayPaymentId,
+            ]);
+
+            return response()->json(['status' => 'created', 'order_number' => $order->order_number], 200);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /**
+     * Atomically creates order rows across all tables, deducts stock, and clears ordered cart rows.
+     */
+    private function createOrderInDatabase(
+        int $userId,
+        int $countryId,
+        $cartItems,
+        array $shippingData,
+        array $totals,
+        string $paymentMethod,
+        string $courierName,
+        ?string $razorpayOrderId,
+        ?string $razorpayPaymentId
+    ): array {
+        $subtotal = $totals['subtotal'];
+        $gstAmount = $totals['gst'];
+        $shipping = $totals['shipping'];
+        $discount = $totals['discount'];
+        $total = $totals['total'];
+        $orderNumber = 'ORD-' . strtoupper(uniqid());
+
+        DB::beginTransaction();
+        try {
+            // Lock and verify stock availability before order insertion
+            foreach ($cartItems as $item) {
+                $checkVariant = ProductVarient::lockForUpdate()->find($item->product_varient_id);
+                $available = (int) ($checkVariant->product_qty ?? 0);
+                if (!$checkVariant || $available < $item->product_quantity) {
+                    DB::rollBack();
+                    $pName = $item->product->product_name ?? 'An item in your cart';
+                    return [
+                        'ok' => false,
+                        'status' => 400,
+                        'message' => "Sorry, '{$pName}' is out of stock or does not have enough quantity available."
+                    ];
+                }
+            }
+
+            // 1. Table: product_orders (Master)
+            $orderData = [
+                'user_id' => $userId,
+                'country_id' => $countryId,
+                'order_number' => $orderNumber,
+                'order_id' => $orderNumber, // For dashboard compatibility
+                'billing_name' => $shippingData['shipping_name'],
+                'billing_email' => $shippingData['shipping_email'],
+                'billing_phone' => $shippingData['shipping_phone'],
+                'billing_door_no' => $shippingData['shipping_door_no'],
+                'billing_street' => $shippingData['shipping_street'] ?? '',
+                'billing_area' => $shippingData['shipping_area'] ?? '-',
+                'billing_city' => $shippingData['shipping_city'],
+                'billing_state' => $shippingData['shipping_state'],
+                'billing_pincode' => $shippingData['shipping_pincode'],
+                'shipping_name' => $shippingData['shipping_name'],
+                'shipping_email' => $shippingData['shipping_email'],
+                'shipping_phone' => $shippingData['shipping_phone'],
+                'shipping_door_no' => $shippingData['shipping_door_no'],
+                'shipping_street' => $shippingData['shipping_street'] ?? '',
+                'shipping_area' => $shippingData['shipping_area'] ?? '-',
+                'shipping_city' => $shippingData['shipping_city'],
+                'shipping_state' => $shippingData['shipping_state'],
+                'shipping_pincode' => $shippingData['shipping_pincode'],
                 'subtotal' => $subtotal,
                 'gst_amount' => $gstAmount,
                 'shipping_charge' => $shipping,
                 'total_amount' => $total,
-                'courier_name' => $request->selected_courier_name ?? 'Standard Delivery',
+                'courier_name' => $courierName ?: 'Standard Delivery',
                 'status' => ProductOrder::STATUS_PENDING,
-                'payment_method' => $request->payment_method,
-                'payment_status' => ($request->payment_method === 'Online Payment') ? ProductOrder::PAYMENT_PAID : ProductOrder::PAYMENT_PENDING,
-                'razorpay_order_id' => $request->razorpay_order_id,
-                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'payment_method' => $paymentMethod,
+                'payment_status' => ($paymentMethod === 'Online Payment') ? ProductOrder::PAYMENT_PAID : ProductOrder::PAYMENT_PENDING,
+                'razorpay_order_id' => $razorpayOrderId,
+                'razorpay_payment_id' => $razorpayPaymentId,
             ];
 
-            if (\Illuminate\Support\Facades\Schema::hasColumn('product_orders', 'coupon_discount')) {
+            if (Schema::hasColumn('product_orders', 'coupon_discount')) {
                 $orderData['coupon_discount'] = $discount;
             }
 
@@ -399,16 +700,16 @@ class CheckoutController extends Controller
             ProductOrderUserAddress::create([
                 'user_id' => $userId,
                 'order_id' => $orderNumber,
-                'firstname' => $request->shipping_name,
+                'firstname' => $shippingData['shipping_name'],
                 'secondname' => '',
-                'address_line_one' => trim($request->shipping_door_no . ', ' . ($request->shipping_street ?? ''), ', '),
-                'address_line_two' => $request->shipping_area ?? '',
-                'landmark' => $request->shipping_landmark ?? '',
-                'city' => $request->shipping_city,
-                'state' => $request->shipping_state,
-                'pincode' => $request->shipping_pincode,
+                'address_line_one' => trim(($shippingData['shipping_door_no'] ?? '') . ', ' . ($shippingData['shipping_street'] ?? ''), ', '),
+                'address_line_two' => $shippingData['shipping_area'] ?? '',
+                'landmark' => $shippingData['shipping_landmark'] ?? '',
+                'city' => $shippingData['shipping_city'],
+                'state' => $shippingData['shipping_state'],
+                'pincode' => $shippingData['shipping_pincode'],
                 'phonecode' => '+91',
-                'address_phone_number' => $request->shipping_phone,
+                'address_phone_number' => $shippingData['shipping_phone'],
                 'address_type_id' => 1,
                 'address_type_name' => 'shipping'
             ]);
@@ -419,7 +720,7 @@ class CheckoutController extends Controller
                 'slot_id' => null,
                 'order_date' => now()->toDateString(),
                 'order_amount' => $total,
-                'amount_credited' => ($request->payment_method === 'Online Payment') ? $total : 0,
+                'amount_credited' => ($paymentMethod === 'Online Payment') ? $total : 0,
                 'amount_debited' => 0,
                 'user_id' => $userId
             ]);
@@ -438,7 +739,6 @@ class CheckoutController extends Controller
                 $productImage = $item->product->product_image ?? null;
                 $variantName = $item->variant->varient_name ?? $item->variant->varient ?? '';
 
-                // Table: product_order_items (Website Account Line Items)
                 ProductOrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
@@ -453,7 +753,6 @@ class CheckoutController extends Controller
                     'total' => $itemTotal,
                 ]);
 
-                // Table: product_slots (Dashboard Packing & Dispatch Operational Table)
                 ProductSlot::create([
                     'order_id' => $orderNumber,
                     'product_id' => $item->product_id,
@@ -465,10 +764,9 @@ class CheckoutController extends Controller
                     'gst_amt' => ($itemTotal * (($item->variant->product_gst ?? 0) / 100)),
                     'gst_per' => $item->variant->product_gst ?? 0,
                     'product_value' => $itemTotal,
-                    'delivery_status' => 0, // Pending
+                    'delivery_status' => 0,
                 ]);
 
-                // Stock reduction in productstocks table
                 $productStock = ProductStock::where('pro_ver_id', $item->product_varient_id)->first();
                 if ($productStock) {
                     $productStock->availablestock = max($productStock->availablestock - $item->product_quantity, 0);
@@ -476,7 +774,6 @@ class CheckoutController extends Controller
                     $productStock->save();
                 }
 
-                // Variant stock sync
                 $variant = ProductVarient::find($item->product_varient_id);
                 if ($variant) {
                     $variant->product_qty = max($variant->product_qty - $item->product_quantity, 0);
@@ -484,139 +781,24 @@ class CheckoutController extends Controller
                 }
             }
 
-            // 6. Clear Cart - only the rows that were just ordered. The old
-            // `orWhere('ip_addresscart', ip)` also deleted OTHER users' carts
-            // that shared the same IP (office Wi-Fi, proxy, load balancer).
+            // 6. Clear only the cart rows that were just ordered
             Cart::whereIn('id', $cartItems->pluck('id'))->delete();
-            session()->forget(['applied_coupon', 'razorpay_pending', 'checkout_courier_rates']);
 
             DB::commit();
 
+            return ['ok' => true, 'order' => $order];
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Order creation failed in DB transaction', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return response()->json(['status' => 'error', 'message' => 'Order failed to save: ' . $e->getMessage()], 500);
-        }
-
-        // 7. Shiprocket Order & AWB Integration
-        try {
-            $shiprocket = new ShiprocketService();
-
-            $orderItems = [];
-            $totalWeight = 0;
-            $maxLength = 0;
-            $maxBreadth = 0;
-            $maxHeight = 0;
-
-            foreach ($cartItems as $item) {
-                $orderItems[] = [
-                    "name" => ($item->product->product_name ?? 'Product') . " " . ($item->variant->varient_name ?? ''),
-                    "sku" => $item->variant->sku ?? $item->product->slug ?? 'SKU001',
-                    "units" => $item->product_quantity,
-                    "selling_price" => $item->variant->offer_price ?? $item->product->product_price ?? 0,
-                    "discount" => 0,
-                    "tax" => $item->variant->product_gst ?? 0,
-                    "hsn" => 441122
-                ];
-
-                $itemWeight = (float) ($item->variant->weight ?? 0.5);
-                $totalWeight += $itemWeight * $item->product_quantity;
-                $maxLength = max($maxLength, (float) ($item->variant->length ?? 10));
-                $maxBreadth = max($maxBreadth, (float) ($item->variant->breadth ?? 10));
-                $maxHeight = max($maxHeight, (float) ($item->variant->height ?? 10));
-            }
-
-            $totalWeight = max($totalWeight, 0.5);
-            $maxLength = max($maxLength, 10);
-            $maxBreadth = max($maxBreadth, 10);
-            $maxHeight = max($maxHeight, 10);
-
-            $billingParts = explode(' ', trim($request->shipping_name));
-            $lastName = count($billingParts) > 1 ? array_pop($billingParts) : 'Customer';
-            $firstName = count($billingParts) > 0 ? implode(' ', $billingParts) : $request->shipping_name;
-
-            $shiprocketOrderData = [
-                "order_id" => $orderNumber,
-                "order_date" => date('Y-m-d H:i'),
-                "pickup_location" => config('services.shiprocket.pickup_location', 'Home'),
-                "billing_customer_name" => $firstName,
-                "billing_last_name" => $lastName,
-                "billing_address" => $request->shipping_door_no . " " . $request->shipping_street,
-                "billing_address_2" => $request->shipping_area ?? "-",
-                "billing_city" => $request->shipping_city,
-                "billing_pincode" => $request->shipping_pincode,
-                "billing_state" => $request->shipping_state,
-                "billing_country" => "India",
-                "billing_email" => $request->shipping_email,
-                "billing_phone" => substr(preg_replace('/[^0-9]/', '', $request->shipping_phone), -10),
-                "shipping_is_billing" => true,
-                "order_items" => $orderItems,
-                "payment_method" => $request->payment_method === 'Online Payment' ? 'Prepaid' : 'COD',
-                "shipping_charges" => $shipping,
-                "giftwrap_charges" => 0,
-                "transaction_charges" => 0,
-                "total_discount" => $discount,
-                "sub_total" => $subtotal + $gstAmount,
-                "length" => $maxLength,
-                "breadth" => $maxBreadth,
-                "height" => $maxHeight,
-                "weight" => $totalWeight
+            return [
+                'ok' => false,
+                'status' => 500,
+                'message' => 'Order failed to save: ' . $e->getMessage()
             ];
-
-            Log::info('Creating Shiprocket order', ['order_id' => $orderNumber, 'payload' => $shiprocketOrderData]);
-            $shipResponse = $shiprocket->createOrder($shiprocketOrderData);
-
-            if (isset($shipResponse['order_id']) && isset($shipResponse['shipment_id'])) {
-                $shipmentId = $shipResponse['shipment_id'];
-                $order->update([
-                    'shiprocket_order_id' => $shipResponse['order_id'],
-                    'shiprocket_shipment_id' => $shipmentId,
-                    'shiprocket_status' => $shipResponse['status'] ?? 'NEW'
-                ]);
-
-                // Assign chosen courier if selected
-                if ($request->selected_courier_id) {
-                    $assignResponse = $shiprocket->assignAWB([
-                        'shipment_id' => $shipmentId,
-                        'courier_id' => $request->selected_courier_id
-                    ]);
-
-                    if (isset($assignResponse['status']) && $assignResponse['status'] == 200) {
-                        $awbData = $assignResponse['response']['data'];
-                        $order->update([
-                            'awb_code' => $awbData['awb_code'],
-                            'courier_name' => $awbData['courier_name'],
-                            'shiprocket_status' => 'AWB Assigned'
-                        ]);
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            Log::error('Shiprocket API Error on placeOrder: ' . $e->getMessage());
         }
-
-        // 8. Send Order Confirmation Email
-        try {
-            $recipientEmail = $order->shipping_email ?? $user->email;
-            if ($recipientEmail) {
-                $orderWithItems = ProductOrder::with('items')->find($order->id);
-                \Illuminate\Support\Facades\Mail::to($recipientEmail)
-                    ->send(new \App\Mail\OrderPlacedConfirmation($orderWithItems));
-                Log::info('Order confirmation email sent successfully to: ' . $recipientEmail . ' for order: ' . $orderNumber);
-            }
-        } catch (\Throwable $mailEx) {
-            Log::error('Order confirmation email sending failed: ' . $mailEx->getMessage());
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Order placed successfully!',
-            'order_number' => $orderNumber,
-            'redirect_url' => route('checkout.thankyou', ['order' => $orderNumber])
-        ]);
     }
 
     /**

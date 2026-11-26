@@ -86,6 +86,9 @@ Route::get('/pincode-lookup', [CheckoutController::class, 'lookupPincode'])->nam
 
 Route::get('/myaccount', [ProfileController::class, 'index'])->name('account.index');
 
+// Server-to-server Razorpay Webhook (CSRF-exempt in bootstrap/app.php)
+Route::post('/webhooks/razorpay', [CheckoutController::class, 'handleRazorpayWebhook'])->name('webhooks.razorpay');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
