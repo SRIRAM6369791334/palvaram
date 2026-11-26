@@ -252,8 +252,13 @@ class CheckoutController extends Controller
         $total = max($totals['total'], 1);
 
         try {
-            $key = config('services.razorpay.key');
-            $secret = config('services.razorpay.secret');
+            $key = trim((string) config('services.razorpay.key'));
+            $secret = trim((string) config('services.razorpay.secret'));
+
+            if ($key === '' || $secret === '') {
+                Log::error('Payment initiation failed: RAZORPAY_KEY or RAZORPAY_SECRET is empty.');
+                return response()->json(['status' => 'error', 'message' => 'Payment gateway is not configured. Please try Cash on Delivery or contact support.'], 503);
+            }
 
             $api = new Api($key, $secret);
             $amountPaise = (int) round($total * 100);
@@ -271,28 +276,32 @@ class CheckoutController extends Controller
 
             // Store temporary checkout snapshot in DB cache (NOT product_orders) so the
             // Razorpay webhook can create the Paid order if the browser closes after payment.
-            $snapshot = [
-                'user_id' => $user->id,
-                'country_id' => session('country_id') ?? $user->country_id ?? 243,
-                'shipping' => [
-                    'shipping_name' => $request->input('shipping_name', $user->name ?? ''),
-                    'shipping_email' => $request->input('shipping_email', $user->email ?? ''),
-                    'shipping_phone' => $request->input('shipping_phone', $user->phone_number ?? ''),
-                    'shipping_door_no' => $request->input('shipping_door_no', ''),
-                    'shipping_street' => $request->input('shipping_street', ''),
-                    'shipping_area' => $request->input('shipping_area', '-'),
-                    'shipping_landmark' => $request->input('shipping_landmark', ''),
-                    'shipping_city' => $request->input('shipping_city', ''),
-                    'shipping_state' => $request->input('shipping_state', ''),
-                    'shipping_pincode' => $request->input('shipping_pincode', ''),
-                ],
-                'selected_courier_id' => $request->input('selected_courier_id') ? (int) $request->input('selected_courier_id') : null,
-                'selected_courier_name' => $request->input('selected_courier_name', 'Standard Delivery'),
-                'totals' => $totals,
-                'amount_paise' => $amountPaise,
-                'cart_item_ids' => $cartItems->pluck('id')->all(),
-            ];
-            $this->snapshotCache()->put('rzp_checkout_' . $razorpayOrder['id'], $snapshot, now()->addHours(24));
+            try {
+                $snapshot = [
+                    'user_id' => $user->id,
+                    'country_id' => session('country_id') ?? $user->country_id ?? 243,
+                    'shipping' => [
+                        'shipping_name' => $request->input('shipping_name') ?: ($user->name ?? ''),
+                        'shipping_email' => $request->input('shipping_email') ?: ($user->email ?? ''),
+                        'shipping_phone' => $request->input('shipping_phone') ?: ($user->phone_number ?? ''),
+                        'shipping_door_no' => $request->input('shipping_door_no', ''),
+                        'shipping_street' => $request->input('shipping_street', ''),
+                        'shipping_area' => $request->input('shipping_area') ?: '-',
+                        'shipping_landmark' => $request->input('shipping_landmark', ''),
+                        'shipping_city' => $request->input('shipping_city', ''),
+                        'shipping_state' => $request->input('shipping_state', ''),
+                        'shipping_pincode' => $request->input('shipping_pincode', ''),
+                    ],
+                    'selected_courier_id' => $request->input('selected_courier_id') ? (int) $request->input('selected_courier_id') : null,
+                    'selected_courier_name' => $request->input('selected_courier_name') ?: 'Standard Delivery',
+                    'totals' => $totals,
+                    'amount_paise' => $amountPaise,
+                    'cart_item_ids' => $cartItems->pluck('id')->all(),
+                ];
+                $this->snapshotCache()->put('rzp_checkout_' . $razorpayOrder['id'], $snapshot, now()->addHours(24));
+            } catch (\Throwable $cacheEx) {
+                Log::warning('Could not store Razorpay webhook snapshot: ' . $cacheEx->getMessage());
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -305,8 +314,10 @@ class CheckoutController extends Controller
                 ],
                 'razorpay_key' => $key
             ]);
-        } catch (\Exception $e) {
-            Log::error('Payment initiation failed: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('Payment initiation failed: ' . $e->getMessage(), [
+                'key_prefix' => substr((string) config('services.razorpay.key'), 0, 12),
+            ]);
             return response()->json(['status' => 'error', 'message' => 'Payment initiation failed. Please try again.'], 500);
         }
     }
