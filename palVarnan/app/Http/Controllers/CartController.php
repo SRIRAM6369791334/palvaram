@@ -27,7 +27,7 @@ class CartController extends Controller
 
     public function index()
     {
-        $query = Cart::with(['product', 'variant']);
+        $query = Cart::with(['product', 'variant.unit', 'variant.size', 'variant.color']);
 
         if (Auth::check()) {
             $query->where('user_id', Auth::id());
@@ -104,13 +104,15 @@ class CartController extends Controller
             return response()->json(['status' => 'error', 'message' => 'This product is currently out of stock.'], 400);
         }
 
+        $guestToken = $request->cookie('guest_token') ?? $request->ip();
+
         if (Auth::check()) {
             $existing = Cart::where('user_id', Auth::id())
                 ->where('product_id', $request->product_id)
                 ->where('product_varient_id', $request->product_varient_id)
                 ->first();
         } else {
-            $existing = Cart::where('ip_addresscart', $request->ip())
+            $existing = Cart::where('ip_addresscart', $guestToken)
                 ->whereNull('user_id')
                 ->where('product_id', $request->product_id)
                 ->where('product_varient_id', $request->product_varient_id)
@@ -130,7 +132,7 @@ class CartController extends Controller
             $requestedQty = max(1, min((int)($request->quantity ?? 1), $availableStock));
             Cart::create([
                 'user_id'            => Auth::id(), // null for guests
-                'ip_addresscart'     => $request->ip(),
+                'ip_addresscart'     => $guestToken,
                 'product_id'         => $request->product_id,
                 'product_varient_id' => $request->product_varient_id,
                 'product_quantity'   => $requestedQty,
@@ -150,7 +152,7 @@ class CartController extends Controller
         if (Auth::check()) {
             $query->where('user_id', Auth::id());
         } else {
-            $query->where('ip_addresscart', $request->ip())->whereNull('user_id');
+            $query->where('ip_addresscart', $request->cookie('guest_token') ?? $request->ip())->whereNull('user_id');
         }
 
         $cart = $query->first();
@@ -194,7 +196,7 @@ class CartController extends Controller
         if (Auth::check()) {
             $query->where('user_id', Auth::id());
         } else {
-            $query->where('ip_addresscart', $request->ip())->whereNull('user_id');
+            $query->where('ip_addresscart', $request->cookie('guest_token') ?? $request->ip())->whereNull('user_id');
         }
 
         $query->delete();

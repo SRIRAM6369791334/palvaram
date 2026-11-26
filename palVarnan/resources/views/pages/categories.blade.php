@@ -389,7 +389,7 @@
                                          class="cat-card__thumb"
                                          loading="lazy"
                                          decoding="async"
-                                         onerror="this.src='/assets/images/thumbs/category-img1.png'">
+                                         onerror="this.onerror=null;this.src='/assets/images/logo/logo.png'">
                                 @else
                                     <i class="ph-bold ph-squares-four text-main-600 text-2xl"></i>
                                 @endif

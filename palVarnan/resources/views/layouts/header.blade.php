@@ -424,30 +424,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
                     .then(response => response.json())
                     .then(data => {
+                        const esc = (str) => String(str ?? '')
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#39;');
+
                         resultsBox.innerHTML = '';
 
                         if (data.length === 0) {
                             resultsBox.innerHTML = `
                                 <div class="p-16 text-muted text-center text-sm">
-                                    No products found for "${query}"
+                                    No products found for "${esc(query)}"
                                 </div>
                             `;
                         } else {
                             data.forEach(item => {
+                                const safeUrl = esc(item.url || '#');
+                                const safeImg = esc(item.image || '/assets/images/logo/logo.png');
+                                const safeName = esc(item.name || '');
+                                const safeType = esc(item.type || 'Product');
                                 resultsBox.innerHTML += `
-                                    <a href="${item.url}" 
+                                    <a href="${safeUrl}" 
                                        class="d-flex align-items-center gap-12 p-12 border-bottom border-neutral-40 text-decoration-none text-heading hover-bg-neutral-30 transition-1">
-                                        <img src="${item.image}" 
+                                        <img src="${safeImg}" 
                                              width="44"
                                              height="44"
                                              style="object-fit:cover;border-radius:6px;"
-                                             onerror="this.src='/assets/images/logo/logo.png'">
+                                             onerror="this.onerror=null;this.src='/assets/images/logo/logo.png'">
                                         <div class="overflow-hidden">
                                              <div class="fw-semibold text-sm text-truncate">
-                                                 ${item.name}
+                                                 ${safeName}
                                              </div>
                                              <small class="text-main-600 text-xs">
-                                                 ${item.type || 'Product'}
+                                                 ${safeType}
                                              </small>
                                         </div>
                                     </a>
@@ -465,7 +476,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         input.addEventListener("input", doSearch);
-        input.addEventListener("keyup", doSearch);
 
         document.addEventListener("click", function(e) {
             if (!form.contains(e.target)) {

@@ -463,7 +463,7 @@ window.addEventListener('DOMContentLoaded', function () {
     Swal.fire({
         icon: 'success',
         title: 'Success',
-        text: '{{ session('success') }}',
+        text: @json(session('success')),
         confirmButtonColor: palMainColor,
         confirmButtonText: 'OK'
     });
@@ -476,7 +476,7 @@ window.addEventListener('DOMContentLoaded', function () {
     Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: '{{ session('error') }}',
+        text: @json(session('error')),
         confirmButtonColor: palMainColor,
         confirmButtonText: 'OK'
     });
@@ -488,7 +488,7 @@ window.addEventListener('DOMContentLoaded', function () {
     Swal.fire({
         icon: 'info',
         title: 'Notice',
-        text: '{{ session('info') }}',
+        text: @json(session('info')),
         confirmButtonColor: palMainColor,
         confirmButtonText: 'OK'
     });
@@ -500,14 +500,14 @@ window.addEventListener('DOMContentLoaded', function () {
     Swal.fire({
         icon: 'error',
         title: 'Validation Error',
-        text: '{{ $errors->first() }}',
+        text: @json($errors->first()),
         confirmButtonColor: palMainColor,
         confirmButtonText: 'OK'
     });
 </script>
 @endif
 
-@if(isset($cartCount) && $cartCount > 0)
+@if(isset($cartCount) && $cartCount > 0 && !request()->is('cart', 'checkout*'))
 <div id="floating-cart-bar" onclick="window.location.href='/cart'" class="floating-cart-bar">
 
     {{-- Left: Icon & Info --}}
@@ -542,7 +542,7 @@ window.addEventListener('DOMContentLoaded', function () {
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 9999;
+    z-index: 1015;
     display: flex;
     align-items: center;
     justify-content: space-between;

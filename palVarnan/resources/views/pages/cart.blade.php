@@ -80,8 +80,15 @@
                                             <a href="{{ !empty($item->product->slug) ? '/product/' . $item->product->slug : '#' }}"
                                             class="table-product__thumb border border-gray-100 rounded-8 flex-center">
 
-                                                <img src="{{ env('MAIN_URL') }}images/{{ $item->product->product_image ?? 'default.png' }}"
-                                                alt="{{ $item->product->product_name ?? 'Product' }}">
+                                                @php
+                                                    $cartImg = $item->product->product_image ?? '';
+                                                    $cartImgUrl = \Illuminate\Support\Str::startsWith($cartImg, ['http://', 'https://'])
+                                                        ? $cartImg
+                                                        : ($cartImg ? rtrim(env('MAIN_URL'), '/') . '/images/' . ltrim($cartImg, '/') : '/assets/images/logo/logo.png');
+                                                @endphp
+                                                <img src="{{ $cartImgUrl }}"
+                                                alt="{{ $item->product->product_name ?? 'Product' }}"
+                                                onerror="this.onerror=null;this.src='/assets/images/logo/logo.png'">
 
                                             </a>
 

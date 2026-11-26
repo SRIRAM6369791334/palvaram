@@ -87,7 +87,7 @@ class HomeController extends Controller {
         $productOrdercompleteCount  = ProductOrder::query()->where( 'payment_status', 'paid' )->where( 'status', 'delivered' )->count();
         $totalAmount = ProductOrder::where( 'payment_status', 'paid' )->sum( 'total_amount' );
         $productrefund = ProductRefund::query()->where( 'refund_status', 0 )->count();
-        $productreturn = ProductOrder::query()->where( 'status', 'return' )->count();
+        $productreturn = ProductOrder::query()->whereIn( 'status', ['return', 'return_requested'] )->count();
 
         return view( 'index', compact( 'userCount', 'deliverPersonCount', 'categoryCount', 'productCount', 'areaCount', 'milkSubCount', 'prodcutOrdersCount', 'bannerImagesCount', 'milkOrders', 'productOrders', 'billing', 'pending', 'dispatch', 'delivery', 'ordersum', 'totalAmount', 'productrefund', 'productOrdercompleteCount', 'productreturn', 'subcategoryCount' ) );
 

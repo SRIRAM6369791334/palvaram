@@ -39,7 +39,20 @@ class Product extends Model {
     }
 
     public function reviews() {
-        return $this->hasMany( Review::class, 'prod_id', 'id' )->where('approval', 1)->latest();
+        $rel = $this->hasMany( Review::class, 'prod_id', 'id' );
+        static $hasApprovalCol = null;
+        if ($hasApprovalCol === null) {
+            try {
+                $hasApprovalCol = \Illuminate\Support\Facades\Schema::hasTable('reviews')
+                    && \Illuminate\Support\Facades\Schema::hasColumn('reviews', 'approval');
+            } catch (\Throwable $e) {
+                $hasApprovalCol = false;
+            }
+        }
+        if ($hasApprovalCol) {
+            $rel->where('approval', 1);
+        }
+        return $rel->latest();
     }
 
     public function allReviews() {

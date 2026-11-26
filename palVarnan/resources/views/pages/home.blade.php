@@ -628,7 +628,7 @@
     border: 1.5px solid #e2e8f0;
     border-radius: 10px;
     box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.2);
-    z-index: 1050;
+    z-index: 50;
     list-style: none;
     margin: 0;
     padding: 4px;

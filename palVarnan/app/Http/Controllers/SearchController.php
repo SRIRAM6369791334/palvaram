@@ -28,6 +28,15 @@ class SearchController extends Controller
 
         $results = [];
         $baseImageUrl = rtrim(env('MAIN_URL'), '/') . '/images/';
+        $formatImage = function ($path) use ($baseImageUrl) {
+            if (empty($path)) {
+                return '/assets/images/logo/logo.png';
+            }
+            if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://', '/'])) {
+                return $path;
+            }
+            return $baseImageUrl . ltrim($path, '/');
+        };
 
         $productQuery = Product::where('product_name', 'LIKE', "%{$safeQ}%");
         if ($countryId) {
@@ -44,52 +53,62 @@ class SearchController extends Controller
             $results[] = [
                 'name'  => $item->product_name,
                 'type'  => 'Product',
-                'image' => $baseImageUrl . $item->product_image,
+                'image' => $formatImage($item->product_image),
                 'url'   => url('/product/' . $item->slug),
             ];
         }
 
-        $variants = ProductVarient::with('product')
-            ->where('varient', 'LIKE', "%{$q}%")
-            ->limit(5)
-            ->get();
+        $variantQuery = ProductVarient::with('product')
+            ->whereHas('product', function ($pq) use ($countryId) {
+                if ($countryId) {
+                    $pq->where(function ($sq) use ($countryId) {
+                        $sq->whereRaw("FIND_IN_SET(?, country_id)", [$countryId])
+                          ->orWhere('country_id', $countryId)
+                          ->orWhereNull('country_id')
+                          ->orWhere('country_id', '');
+                    });
+                }
+            })
+            ->where('varient', 'LIKE', "%{$safeQ}%");
+        $variants = $variantQuery->limit(5)->get();
 
         foreach ($variants as $item) {
+            if (!$item->product) continue;
             $results[] = [
                 'name'  => ($item->product->product_name ?? '') . ' - ' . $item->varient,
                 'type'  => 'Variant',
-                'image' => !empty($item->varient_img)
-                    ? $baseImageUrl . $item->varient_img
-                    : (!empty($item->product->product_image)
-                        ? $baseImageUrl . $item->product->product_image
-                        : ''),
-                'url'   => url('/product/' . ($item->product->slug ?? '#')),
+                'image' => $formatImage($item->varient_img ?: $item->product->product_image),
+                'url'   => url('/product/' . $item->product->slug),
             ];
         }
 
-        $brands = Brand::where('brand_name', 'LIKE', "%{$q}%")
-            ->limit(5)
-            ->get();
+        $brandQuery = Brand::where('brand_name', 'LIKE', "%{$safeQ}%");
+        if ($countryId) {
+            $brandQuery->whereRaw("FIND_IN_SET(?, country_id)", [$countryId]);
+        }
+        $brands = $brandQuery->limit(5)->get();
 
         foreach ($brands as $item) {
             $results[] = [
                 'name'  => $item->brand_name,
                 'type'  => 'Brand',
-                'image' => $baseImageUrl . $item->brand_image,
+                'image' => $formatImage($item->brand_image),
                 'url'   => url('/products?brand=' . $item->id),
             ];
         }
 
-        $categories = Category::where('category_name', 'LIKE', "%{$q}%")
-            ->limit(5)
-            ->get();
+        $catQuery = Category::where('category_name', 'LIKE', "%{$safeQ}%");
+        if ($countryId) {
+            $catQuery->whereRaw("FIND_IN_SET(?, country_id)", [$countryId]);
+        }
+        $categories = $catQuery->limit(5)->get();
 
         foreach ($categories as $item) {
             $catSlug = !empty($item->slug) ? $item->slug : \Illuminate\Support\Str::slug($item->category_name);
             $results[] = [
                 'name'  => $item->category_name,
                 'type'  => 'Category',
-                'image' => $baseImageUrl . $item->category_image,
+                'image' => $formatImage($item->category_image),
                 'url'   => url('/products?category=' . $catSlug),
             ];
         }

@@ -756,42 +756,25 @@
     }
 
 
-    // Helper to check if image file actually exists on server
-    $imageExists = function($path) {
-        if (empty($path)) return false;
-        if (\Illuminate\Support\Str::startsWith($path, 'http://') || \Illuminate\Support\Str::startsWith($path, 'https://')) return true;
-        if (\Illuminate\Support\Str::startsWith($path, 'assets/')) {
-            return file_exists(public_path($path));
-        }
-        $dashFile = base_path('../palVarnanDashboard/public/images/' . $path);
-        if (file_exists($dashFile)) return true;
-        if (file_exists(public_path('images/' . $path)) || file_exists(public_path($path))) return true;
-        return false;
-    };
-
-    // Build image collection with only valid, existing images
+    // Build image collection (works on both local XAMPP and isolated Render containers)
     $galleryImages = collect();
-    if (!empty($product->product_image) && $imageExists($product->product_image)) {
+    if (!empty($product->product_image)) {
         $galleryImages->push($product->product_image);
     }
     if ($product->childImages && $product->childImages->count() > 0) {
         foreach ($product->childImages as $ci) {
-            if (!empty($ci->product_child_image) && $imageExists($ci->product_child_image) && !$galleryImages->contains($ci->product_child_image)) {
+            if (!empty($ci->product_child_image) && !$galleryImages->contains($ci->product_child_image)) {
                 $galleryImages->push($ci->product_child_image);
             }
         }
     }
     foreach ($product->variants as $pv) {
-        if (!empty($pv->varient_img) && $imageExists($pv->varient_img) && !$galleryImages->contains($pv->varient_img)) {
+        if (!empty($pv->varient_img) && !$galleryImages->contains($pv->varient_img)) {
             $galleryImages->push($pv->varient_img);
         }
     }
     if ($galleryImages->isEmpty()) {
-        if (!empty($product->product_image)) {
-            $galleryImages->push($product->product_image);
-        } else {
-            $galleryImages->push('assets/images/thumbs/product-img1.png');
-        }
+        $galleryImages->push('assets/images/thumbs/product-img1.png');
     }
 @endphp
 
@@ -897,16 +880,18 @@
 
                             <!-- Ratings, SKU & Stock Meta -->
                             <div class="flex-align flex-wrap gap-12 mb-16">
+                                @php
+                                    $headerReviewCount = $product->reviews ? $product->reviews->count() : 0;
+                                    $headerAvgRating = $headerReviewCount > 0 ? round($product->reviews->avg('ratings'), 1) : 0;
+                                @endphp
                                 <div class="flex-align gap-8">
                                     <div class="flex-align gap-4">
-                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
-                                        <span class="text-xs text-warning-600 d-flex"><i class="ph-fill ph-star"></i></span>
+                                        @for($si = 1; $si <= 5; $si++)
+                                            <span class="text-xs {{ $headerAvgRating >= $si ? 'text-warning-600' : 'text-gray-300' }} d-flex"><i class="ph-fill ph-star"></i></span>
+                                        @endfor
                                     </div>
-                                    <span class="text-xs fw-semibold text-neutral-800">4.8</span>
-                                    <span class="text-xs text-gray-500">(128 reviews)</span>
+                                    <span class="text-xs fw-semibold text-neutral-800">{{ $headerReviewCount > 0 ? number_format($headerAvgRating, 1) : 'New' }}</span>
+                                    <span class="text-xs text-gray-500">({{ $headerReviewCount }} {{ \Illuminate\Support\Str::plural('review', $headerReviewCount) }})</span>
                                 </div>
                                 <span class="text-gray-300">|</span>
                                 <span class="text-xs text-gray-700">

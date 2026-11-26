@@ -89,7 +89,7 @@ class WishlistController extends Controller
             ->with(['variant.unit', 'variant.size', 'variant.color'])
             ->first();
 
-        if ($existing) {
+        if ($existing && $existing->variant) {
             $v = $existing->variant;
             if ($v->size || $v->color) {
                 $parts = [];

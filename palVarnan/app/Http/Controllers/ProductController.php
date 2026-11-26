@@ -134,7 +134,7 @@ class ProductController extends Controller
             $cartItems      = Cart::where('user_id', Auth::id())->get();
             $cartProductIds = $cartItems->pluck('product_varient_id')->toArray();
         } else {
-            $cartItems      = Cart::where('ip_addresscart', request()->ip())
+            $cartItems      = Cart::where('ip_addresscart', request()->cookie('guest_token') ?? request()->ip())
                                 ->whereNull('user_id')
                                 ->get();
             $cartProductIds = $cartItems->pluck('product_varient_id')->toArray();
@@ -184,9 +184,23 @@ class ProductController extends Controller
 
         $countryId = session('country_id');
 
-        $product = Product::with(['variants.unit', 'variants.size', 'variants.color', 'category', 'brand', 'childImages', 'reviews'])
+        $product = Product::with(['variants.unit', 'variants.size', 'variants.color', 'category', 'brand'])
             ->where('slug', $slug)
             ->firstOrFail();
+
+        try {
+            $product->load('childImages');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Product childImages load failed: ' . $e->getMessage());
+            $product->setRelation('childImages', collect());
+        }
+
+        try {
+            $product->load('reviews');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Product reviews load failed: ' . $e->getMessage());
+            $product->setRelation('reviews', collect());
+        }
 
         $relatedProducts = Product::with(['variants.unit', 'variants.size', 'variants.color'])
             ->where('category_id', $product->category_id)
@@ -225,7 +239,7 @@ class ProductController extends Controller
             $cartItems      = Cart::where('user_id', Auth::id())->get();
             $cartProductIds = $cartItems->pluck('product_varient_id')->toArray();
         } else {
-            $cartItems      = Cart::where('ip_addresscart', request()->ip())
+            $cartItems      = Cart::where('ip_addresscart', request()->cookie('guest_token') ?? request()->ip())
                                 ->whereNull('user_id')
                                 ->get();
             $cartProductIds = $cartItems->pluck('product_varient_id')->toArray();
