@@ -15,12 +15,9 @@ class CartController extends Controller
      * Cart rows that belong to the current visitor (logged-in user, or guest by IP).
      * Used so a visitor can never update / delete someone else's cart row by id.
      */
-    private function guestIdentifiers(): array
+    private function guestToken(): string
     {
-        return array_values(array_unique(array_filter([
-            request()->cookie('guest_token'),
-            request()->ip(),
-        ])));
+        return request()->cookie('guest_token') ?? request()->ip();
     }
 
     private function ownedCartQuery()
@@ -29,7 +26,7 @@ class CartController extends Controller
             return Cart::where('user_id', Auth::id());
         }
 
-        return Cart::whereIn('ip_addresscart', $this->guestIdentifiers())
+        return Cart::where('ip_addresscart', $this->guestToken())
             ->whereNull('user_id');
     }
 
@@ -40,7 +37,7 @@ class CartController extends Controller
         if (Auth::check()) {
             $query->where('user_id', Auth::id());
         } else {
-            $query->whereIn('ip_addresscart', $this->guestIdentifiers())
+            $query->where('ip_addresscart', $this->guestToken())
                   ->whereNull('user_id');
         }
 
@@ -112,7 +109,7 @@ class CartController extends Controller
             return response()->json(['status' => 'error', 'message' => 'This product is currently out of stock.'], 400);
         }
 
-        $guestToken = $request->cookie('guest_token') ?? $request->ip();
+        $guestToken = $this->guestToken();
 
         if (Auth::check()) {
             $existing = Cart::where('user_id', Auth::id())
@@ -120,7 +117,7 @@ class CartController extends Controller
                 ->where('product_varient_id', $request->product_varient_id)
                 ->first();
         } else {
-            $existing = Cart::whereIn('ip_addresscart', $this->guestIdentifiers())
+            $existing = Cart::where('ip_addresscart', $guestToken)
                 ->whereNull('user_id')
                 ->where('product_id', $request->product_id)
                 ->where('product_varient_id', $request->product_varient_id)
@@ -160,7 +157,7 @@ class CartController extends Controller
         if (Auth::check()) {
             $query->where('user_id', Auth::id());
         } else {
-            $query->whereIn('ip_addresscart', $this->guestIdentifiers())->whereNull('user_id');
+            $query->where('ip_addresscart', $this->guestToken())->whereNull('user_id');
         }
 
         $cart = $query->first();
@@ -204,7 +201,7 @@ class CartController extends Controller
         if (Auth::check()) {
             $query->where('user_id', Auth::id());
         } else {
-            $query->whereIn('ip_addresscart', $this->guestIdentifiers())->whereNull('user_id');
+            $query->where('ip_addresscart', $this->guestToken())->whereNull('user_id');
         }
 
         $query->delete();
@@ -219,7 +216,7 @@ public function subtotal()
     if (Auth::check()) {
         $query->where('user_id', Auth::id());
     } else {
-        $query->whereIn('ip_addresscart', $this->guestIdentifiers())
+        $query->where('ip_addresscart', $this->guestToken())
               ->whereNull('user_id');
     }
 
@@ -272,7 +269,7 @@ public function subtotal()
         if (Auth::check()) {
             $query->where('user_id', Auth::id());
         } else {
-            $query->whereIn('ip_addresscart', $this->guestIdentifiers())->whereNull('user_id');
+            $query->where('ip_addresscart', $this->guestToken())->whereNull('user_id');
         }
         $subtotal = $query->whereHas('variant')->whereHas('product')->get()
             ->sum(fn($i) => ($i->variant->offer_price ?? 0) * $i->product_quantity);

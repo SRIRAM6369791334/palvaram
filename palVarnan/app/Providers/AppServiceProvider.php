@@ -71,13 +71,10 @@ class AppServiceProvider extends ServiceProvider
 
             } else {
                 
-                $guestIds = array_values(array_unique(array_filter([
-                    request()->cookie('guest_token'),
-                    request()->ip(),
-                ])));
+                $guestToken = request()->cookie('guest_token') ?? request()->ip();
 
                 $cartItems = Cart::with(['variant', 'product'])
-                    ->whereIn('ip_addresscart', $guestIds)
+                    ->where('ip_addresscart', $guestToken)
                     ->whereNull('user_id')
                     ->whereHas('variant')
                     ->whereHas('product')

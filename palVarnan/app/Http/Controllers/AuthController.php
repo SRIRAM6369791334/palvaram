@@ -98,17 +98,12 @@ class AuthController extends Controller
             session(['country_id' => $user->country_id]);
         }
 
-        // Migrate Guest Cart to Logged-in User
+        // Migrate Guest Cart to Logged-in User (strictly by per-browser guest_token cookie so same-Wi-Fi users never collide)
         try {
             $guestToken = $request->cookie('guest_token');
-            $guestItems = Cart::where(function ($q) use ($request, $guestToken) {
-                    $q->where('ip_addresscart', $request->ip());
-                    if ($guestToken) {
-                        $q->orWhere('ip_addresscart', $guestToken);
-                    }
-                })
-                ->whereNull('user_id')
-                ->get();
+            $guestItems = $guestToken
+                ? Cart::where('ip_addresscart', $guestToken)->whereNull('user_id')->get()
+                : collect();
 
             foreach ($guestItems as $item) {
                 $userExisting = Cart::where('user_id', $user->id)
