@@ -17,12 +17,20 @@ class AuthController extends Controller
 {
     public function registerStore(Request $request)
     {
+        $request->merge([
+            'email'        => strtolower(trim((string) $request->email)),
+            'phone_number' => preg_replace('/\D+/', '', (string) $request->phone_number),
+        ]);
+
         $request->validate([
-            'last_name'    => 'required',
-            'name'         => 'required',
+            'last_name'    => 'required|string|max:100',
+            'name'         => 'required|string|max:100',
             'email'        => 'required|email|unique:users,email',
-            'phone_number' => 'required',
+            'phone_number' => 'required|digits_between:10,15|unique:users,phone_number',
             'password'     => 'required|min:6',
+        ], [
+            'email.unique'        => 'This email address is already registered. Please sign in instead.',
+            'phone_number.unique' => 'This mobile number is already registered. Please sign in or use a different number.',
         ]);
 
         try {
@@ -39,7 +47,7 @@ class AuthController extends Controller
                 'name'         => $fullName,
                 'first_name'   => $request->name,
                 'last_name'    => $request->last_name,
-                'email'        => strtolower(trim($request->email)),
+                'email'        => $request->email,
                 'phone_number' => $request->phone_number,
                 'password'     => Hash::make($request->password),
             ]);
@@ -53,17 +61,19 @@ class AuthController extends Controller
             }
 
             return redirect('/login')->with('success', 'Registered Successfully');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Registration failed: ' . $e->getMessage());
+
+            $friendlyMessage = 'Unable to create account right now. Please try again.';
 
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Registration failed: ' . $e->getMessage()
+                    'message' => $friendlyMessage,
                 ], 500);
             }
 
-            return back()->withInput()->with('error', 'Registration failed: ' . $e->getMessage());
+            return back()->withInput()->with('error', $friendlyMessage);
         }
     }
 
