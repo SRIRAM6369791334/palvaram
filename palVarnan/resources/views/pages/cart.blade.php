@@ -215,35 +215,35 @@
                         $grandTotal = max(0, $subtotal + $tax - $discount);
                     @endphp
                     <div class="bg-color-three rounded-8 p-24">
-                        <div class="mb-32 flex-between gap-8">
-                            <span class="text-gray-900 font-heading-two">Subtotal</span>
-                            <span class="text-gray-900 fw-semibold" id="cart-sidebar-subtotal">
+                        <div class="mb-32 flex-between gap-12">
+                            <span class="text-gray-900 font-heading-two flex-shrink-0 text-nowrap">Subtotal</span>
+                            <span class="text-gray-900 fw-semibold text-end text-nowrap" id="cart-sidebar-subtotal">
                                 {{ $currencySymbol ?? "₹" }}{{ number_format($subtotal, 2) }}
                             </span>
                         </div>
                         @if($discount > 0)
-                        <div class="mb-32 flex-between gap-8 text-success-600" id="cart-sidebar-discount-row">
-                            <span class="font-heading-two text-success-600">Coupon ({{ $couponCode }})</span>
-                            <span class="fw-semibold text-success-600" id="cart-sidebar-discount">-{{ $currencySymbol ?? "₹" }}{{ number_format($discount, 2) }}</span>
+                        <div class="mb-32 flex-between gap-12 text-success-600" id="cart-sidebar-discount-row">
+                            <span class="font-heading-two text-success-600 flex-shrink-0">Coupon ({{ $couponCode }})</span>
+                            <span class="fw-semibold text-success-600 text-end text-nowrap" id="cart-sidebar-discount">-{{ $currencySymbol ?? "₹" }}{{ number_format($discount, 2) }}</span>
                         </div>
                         @endif
-                        <div class="mb-32 flex-between gap-8">
-                            <span class="text-gray-900 font-heading-two">Shipping</span>
-                            <span class="text-gray-500 text-sm" id="cart-sidebar-delivery">
+                        <div class="mb-32 flex-between gap-12 align-items-start">
+                            <span class="text-gray-900 font-heading-two flex-shrink-0 text-nowrap">Shipping</span>
+                            <span class="text-gray-500 text-sm text-end" id="cart-sidebar-delivery">
                                 Calculated at checkout
                             </span>
                         </div>
-                        <div class="mb-0 flex-between gap-8">
-                            <span class="text-gray-900 font-heading-two">GST</span>
-                            <span class="text-gray-900 fw-semibold" id="cart-sidebar-tax">
+                        <div class="mb-0 flex-between gap-12">
+                            <span class="text-gray-900 font-heading-two flex-shrink-0 text-nowrap">GST</span>
+                            <span class="text-gray-900 fw-semibold text-end text-nowrap" id="cart-sidebar-tax">
                                 {{ $currencySymbol ?? "₹" }}{{ number_format($tax, 2) }}
                             </span>
                         </div>
                     </div>  
                     <div class="bg-color-three rounded-8 p-24 mt-24">
-                        <div class="flex-between gap-8">
-                            <span class="text-gray-900 text-xl fw-semibold">Total</span>
-                            <span class="text-gray-900 text-xl fw-bold text-main-600" id="cart-sidebar-total">
+                        <div class="flex-between gap-12">
+                            <span class="text-gray-900 text-xl fw-semibold flex-shrink-0 text-nowrap">Total</span>
+                            <span class="text-gray-900 text-xl fw-bold text-main-600 text-end text-nowrap" id="cart-sidebar-total">
                                 {{ $currencySymbol ?? "₹" }}{{ number_format($grandTotal, 2) }}
                             </span>
                         </div>

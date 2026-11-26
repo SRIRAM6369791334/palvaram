@@ -23,7 +23,7 @@
     <!-- AOS Animation -->
     <link rel="stylesheet" href="/assets/css/aos.css">
     <!-- Main css -->
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/main.css?v={{ @filemtime(public_path('assets/css/main.css')) }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <!-- Global High-Contrast Button & SweetAlert2 Styling -->

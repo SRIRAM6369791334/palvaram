@@ -700,7 +700,7 @@
     border: 1.5px solid var(--pp-line);
     border-radius: 12px;
     box-shadow: 0 18px 40px -12px rgba(15, 23, 42, .22), 0 4px 10px -4px rgba(15, 23, 42, .08);
-    z-index: 1050;
+    z-index: 50;
     list-style: none;
     margin: 0;
     padding: 6px;

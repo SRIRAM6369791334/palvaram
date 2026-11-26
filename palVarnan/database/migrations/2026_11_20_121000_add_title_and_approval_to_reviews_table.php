@@ -12,14 +12,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            if (!Schema::hasColumn('reviews', 'title')) {
+        if (!Schema::hasTable('reviews')) {
+            return;
+        }
+
+        // Separate Schema::table calls: TiDB rejects referencing a column
+        // added in the same ALTER TABLE via ->after('title').
+        if (!Schema::hasColumn('reviews', 'title')) {
+            Schema::table('reviews', function (Blueprint $table) {
                 $table->string('title')->nullable()->after('ratings');
-            }
-            if (!Schema::hasColumn('reviews', 'approval')) {
+            });
+        }
+
+        if (!Schema::hasColumn('reviews', 'approval')) {
+            Schema::table('reviews', function (Blueprint $table) {
                 $table->tinyInteger('approval')->default(0)->after('title')->comment('0=Pending, 1=Approved, 2=Rejected');
-            }
-        });
+            });
+        }
 
         // Set existing reviews to approved
         DB::table('reviews')->whereNull('approval')->orWhere('approval', 0)->update(['approval' => 1]);

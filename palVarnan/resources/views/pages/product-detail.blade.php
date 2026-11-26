@@ -596,7 +596,7 @@
     border: 1px solid var(--gray-200, #e2e8f0);
     border-radius: 10px;
     box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
-    z-index: 1050;
+    z-index: 50;
     list-style: none;
     margin: 0;
     padding: 4px;
