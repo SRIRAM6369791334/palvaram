@@ -194,7 +194,7 @@ class ProfileController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Order cancellation failed: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Could not cancel order: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Could not cancel order right now. Please try again.'], 500);
         }
     }
 

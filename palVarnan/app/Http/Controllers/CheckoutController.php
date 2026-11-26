@@ -199,9 +199,10 @@ class CheckoutController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            Log::error('Shiprocket Service Error: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
-                'message' => 'Shiprocket Service Error: ' . $e->getMessage()
+                'message' => 'Could not fetch shipping couriers right now. Please try again.'
             ]);
         }
     }
@@ -305,7 +306,8 @@ class CheckoutController extends Controller
                 'razorpay_key' => $key
             ]);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Payment initiation failed: ' . $e->getMessage()], 500);
+            Log::error('Payment initiation failed: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'Payment initiation failed. Please try again.'], 500);
         }
     }
 
@@ -796,7 +798,7 @@ class CheckoutController extends Controller
             return [
                 'ok' => false,
                 'status' => 500,
-                'message' => 'Order failed to save: ' . $e->getMessage()
+                'message' => 'Unable to place your order right now. Please try again.'
             ];
         }
     }
