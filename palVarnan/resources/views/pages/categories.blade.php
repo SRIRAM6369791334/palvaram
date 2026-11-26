@@ -163,11 +163,17 @@
 }
 
 .cat-card__title {
-    font-size: 16.5px;
+    font-size: 15.5px;
     font-weight: 700;
     color: var(--cat-ink-primary);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     line-height: 1.3;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .cat-card__title a {
@@ -178,6 +184,27 @@
 
 .cat-card__title a:hover {
     color: var(--main-600, #026966);
+}
+
+.cat-card__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.cat-card__gift-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: #f3e8ff;
+    color: #7e22ce;
+    border: 1px solid #d8b4fe;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    line-height: 1.2;
 }
 
 .cat-card__badge {
@@ -394,19 +421,21 @@
                                     <i class="ph-bold ph-squares-four text-main-600 text-2xl"></i>
                                 @endif
                             </div>
-                            <div class="flex-grow-1 min-w-0">
-                                <h3 class="cat-card__title text-truncate">
+                            <div class="flex-grow-1" style="min-width: 0; overflow: hidden;">
+                                <h3 class="cat-card__title">
                                     <a href="{{ url('/products?category=' . \Illuminate\Support\Str::slug($category->category_name)) }}">
-                                        @if($category->is_gift)
-                                            <span class="badge bg-purple-100 text-purple-700 border border-purple-200 me-4" style="font-size: 10px; font-weight: 700; vertical-align: middle;">🎁 GIFT</span>
-                                        @endif
                                         {{ $category->category_name }}
                                     </a>
                                 </h3>
 
-                                <span class="cat-card__badge">
-                                    {{ $category->products_count ?? 0 }} {{ ($category->products_count ?? 0) === 1 ? 'item' : 'items' }}
-                                </span>
+                                <div class="cat-card__meta">
+                                    <span class="cat-card__badge">
+                                        {{ $category->products_count ?? 0 }} {{ ($category->products_count ?? 0) === 1 ? 'item' : 'items' }}
+                                    </span>
+                                    @if($category->is_gift)
+                                        <span class="cat-card__gift-badge">🎁 GIFT</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 

@@ -33,10 +33,10 @@ class AppServiceProvider extends ServiceProvider
         // Separate per-IP buckets for each sensitive form. (Plain `throttle:N,1`
         // shares ONE counter per IP across all routes, so a few wrong OTP tries
         // would also lock the user out of login.)
-        \Illuminate\Support\Facades\RateLimiter::for('login', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($r->ip()));
-        \Illuminate\Support\Facades\RateLimiter::for('register', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($r->ip()));
-        \Illuminate\Support\Facades\RateLimiter::for('otp-send', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by($r->ip()));
-        \Illuminate\Support\Facades\RateLimiter::for('otp-verify', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($r->ip()));
+        \Illuminate\Support\Facades\RateLimiter::for('login', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by(strtolower((string) $r->input('email')) . '|' . $r->ip()));
+        \Illuminate\Support\Facades\RateLimiter::for('register', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($r->ip()));
+        \Illuminate\Support\Facades\RateLimiter::for('otp-send', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by(strtolower((string) $r->input('email')) . '|' . $r->ip()));
+        \Illuminate\Support\Facades\RateLimiter::for('otp-verify', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by(strtolower((string) $r->input('email')) . '|' . $r->ip()));
         \Illuminate\Support\Facades\RateLimiter::for('contact', fn ($r) => \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($r->ip()));
 
         View::composer('*', function ($view) {
