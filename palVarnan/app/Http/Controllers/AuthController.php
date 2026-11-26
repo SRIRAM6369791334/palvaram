@@ -166,9 +166,8 @@ class AuthController extends Controller
             ]
         );
 
-        $sendOtpEmail = function (?string $mailer = null) use ($email, $otp, $user) {
-            $m = $mailer ? Mail::mailer($mailer) : Mail::getFacadeRoot();
-            $m->send([], [], function ($message) use ($email, $otp, $user) {
+        try {
+            Mail::send([], [], function ($message) use ($email, $otp, $user) {
                 $userName = htmlspecialchars($user->name ?? 'Customer');
                 $message->to($email)
                     ->subject('Password Reset OTP - Pal Varnan')
@@ -188,30 +187,13 @@ class AuthController extends Controller
                         </div>
                     ");
             });
-        };
-
-        try {
-            // On Render Free Tier, outbound SMTP ports (25/465/587) are blocked; prefer HTTPS transport if configured
-            $preferredHttps = config('services.brevo.key') ? 'brevo'
-                : (config('services.mail_webhook.url') ? 'webhook'
-                : (config('services.resend.key') ? 'resend_api' : null));
-
-            if ($preferredHttps && config('mail.default') === 'smtp') {
-                $sendOtpEmail($preferredHttps);
-            } else {
-                $sendOtpEmail();
-            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Verification code sent to your registered email.'
             ]);
         } catch (\Throwable $e) {
-            Log::error('Password reset email sending failed: ' . $e->getMessage(), [
-                'mailer' => config('mail.default'),
-                'host' => config('mail.mailers.smtp.host'),
-                'port' => config('mail.mailers.smtp.port'),
-            ]);
+            Log::error('Password reset email sending failed: ' . $e->getMessage());
             return response()->json([
                 'errors' => ['email' => ['Could not send verification email. Please try again.']]
             ], 500);

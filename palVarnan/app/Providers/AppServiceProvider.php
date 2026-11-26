@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-use App\Mail\Transports\HttpApiTransport;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
@@ -29,17 +27,6 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production' || request()->header('x-forwarded-proto') === 'https') {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
-
-        Mail::extend('brevo', fn () => new HttpApiTransport('brevo', [
-            'key' => config('services.brevo.key'),
-        ]));
-        Mail::extend('resend_api', fn () => new HttpApiTransport('resend_api', [
-            'key' => config('services.resend.key'),
-        ]));
-        Mail::extend('webhook', fn () => new HttpApiTransport('webhook', [
-            'url' => config('services.mail_webhook.url'),
-            'secret' => config('services.mail_webhook.secret'),
-        ]));
 
         Paginator::useBootstrapFive();
 

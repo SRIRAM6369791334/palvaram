@@ -45,20 +45,8 @@ return [
             'port' => env('MAIL_PORT', 2525),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
-            'timeout' => env('MAIL_TIMEOUT', 5),
+            'timeout' => env('MAIL_TIMEOUT', 10),
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
-        ],
-
-        'brevo' => [
-            'transport' => 'brevo',
-        ],
-
-        'resend_api' => [
-            'transport' => 'resend_api',
-        ],
-
-        'webhook' => [
-            'transport' => 'webhook',
         ],
 
         'ses' => [

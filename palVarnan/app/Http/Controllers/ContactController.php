@@ -23,8 +23,7 @@ class ContactController extends Controller
      */
     protected function isSmtpReachable(): bool
     {
-        $mailer = (string) config('mail.default', 'log');
-        if (in_array($mailer, ['log', 'array', 'brevo', 'resend', 'resend_api', 'webhook', 'postmark', 'ses'], true)) {
+        if (config('mail.default') === 'log') {
             return true;
         }
 
