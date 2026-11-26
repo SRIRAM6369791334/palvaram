@@ -316,9 +316,21 @@ class CheckoutController extends Controller
             ]);
         } catch (\Throwable $e) {
             Log::error('Payment initiation failed: ' . $e->getMessage(), [
+                'exception' => get_class($e),
                 'key_prefix' => substr((string) config('services.razorpay.key'), 0, 12),
             ]);
-            return response()->json(['status' => 'error', 'message' => 'Payment initiation failed. Please try again.'], 500);
+            $msg = strtolower($e->getMessage());
+            $errorCode = str_contains($msg, 'authentication failed')
+                ? 'RZP_AUTH_FAILED'
+                : ($e instanceof \Razorpay\Api\Errors\Error ? 'RZP_API_ERROR' : 'PAYMENT_INIT_ERROR');
+
+            return response()->json([
+                'status' => 'error',
+                'error_code' => $errorCode,
+                'message' => $errorCode === 'RZP_AUTH_FAILED'
+                    ? 'Payment gateway authentication failed. Please check Razorpay API key and secret.'
+                    : 'Payment initiation failed. Please try again.',
+            ], 500);
         }
     }
 
